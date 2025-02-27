@@ -1,4 +1,4 @@
-import { type LNMsgInfo, LNMsgID } from "./abstractMsg.js";
+import { type LNMsgInfo, type LNMsgID } from "./abstractMsg.js";
 import { ObjectiveArray, type Dict } from "@leicoin/utils/dataUtils";
 import { StatusMsg } from "./messages/status.js";
 import { ChallengeMsg, ChallengeREQMsg, ChallengeResponseMsg } from "./messages/challenge.js";
