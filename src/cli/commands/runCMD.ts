@@ -8,8 +8,8 @@ import { POS } from "@leicoin/pos";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Utils } from "@leicoin/utils";
 import { cli } from "../cli.js";
-import { CLICMD } from "../handler/command.js";
-import { CMDFlag, CMDFlagsParser, type FlagsParsingResult } from "../handler/commandFlags.js";
+import { CLICMD, CMDFlag, CMDFlagsParser, type FlagsParsingResult } from "@cleverjs/cli";
+import { CLICMDHandler } from "../index.js";
 
 export class RunCMD extends CLICMD {
     readonly name = "run";
@@ -43,6 +43,8 @@ export class RunCMD extends CLICMD {
         }
 
         Main.environment = "runtime";
+        CLICMDHandler.getInstance().environment = "runtime";
+        
         await cli.init("all", "all", true, true, Utils.procCWD);
         cli.default.info(`Starting LeiCoin-Node v${Main.version}...`);
 

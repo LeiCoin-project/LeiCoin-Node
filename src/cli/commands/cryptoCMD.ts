@@ -1,9 +1,9 @@
 import { LCrypt } from "@leicoin/crypto";
 import { Address32, AddressHex } from "@leicoin/common/models/address";
-import { PX } from "@leicoin/common/types/prefix";
-import { CLICMD, CLISubCMD } from "../handler/command.js";
 import { cli } from "../cli.js";
-import { CLIUtils } from "../utils.js";
+import { CLICMD, CLISubCMD } from "@cleverjs/cli";
+import { PX } from "@leicoin/common/types/prefix";
+import { CommonCLIMessages } from "../commandHandler.js";
 
 
 export class CryptoCMD extends CLISubCMD {
@@ -24,7 +24,7 @@ class GenKeyPairCMD extends CLICMD {
 
     public async run(args: string[]): Promise<void> {
         if (args.length !== 1) {
-            CLIUtils.invalidNumberOfArguments();
+            CommonCLIMessages.invalidNumberOfArguments();
             return;
         }
 

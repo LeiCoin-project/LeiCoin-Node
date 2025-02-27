@@ -50,7 +50,7 @@ export const CompileAutoCMD = new class CompileAutoCMD extends Command {
 }();
 
 export const CompileToTargetCMD = new class CompileToTargetCMD extends Command {
-    async run(args: string[], parent_args: string[]) {
+    async run(args: string[], meta: CLICMDExecMeta) {
         const platform = parent_args[0] as PlatformArg;
         if (Object.keys(Platforms).some(p => p === platform) === false) {
             console.log(`Invalid platform: ${platform}`);

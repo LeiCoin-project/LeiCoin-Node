@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { CMDFlagsParser, CMDFlag } from "../src/cli/flags.js";
+import { CMDFlagsParser, CMDFlag } from "@cleverjs/cli";
 
 describe("commands", () => {
     test("parse_flags", () => {

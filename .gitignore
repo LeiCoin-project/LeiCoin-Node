@@ -9,4 +9,3 @@ node_modules/
 /build/
 localtests/
 
-!package-lock.json

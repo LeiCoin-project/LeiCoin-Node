@@ -1,24 +1,20 @@
 import { Main } from "@leicoin/core";
 import { Utils } from "@leicoin/utils";
-import { cli } from "../cli.js";
-import { CLISubCMD } from "./command.js";
-import { BlockDBCMD } from "../commands/blockDBCMD.js";
-import { ChainstateDataCMD } from "../commands/chainstateDataCMD.js";
-import { CryptoCMD } from "../commands/cryptoCMD.js";
-import { MinterDBCMD } from "../commands/minterDBCMD.js";
-import { NetworkCMD } from "../commands/networkCMD.js";
-import { RunCMD } from "../commands/runCMD.js";
-import { StartServiceCMD } from "../commands/startServiceCMD.js";
-import { StopCMD } from "../commands/stopCMD.js";
-import { VersionCMD } from "../commands/versionCMD.js";
-import { WalletDBCMD } from "../commands/walletDBCMD.js";
-import { CMDFlag, CMDFlagsParser } from "./commandFlags.js";
+import { cli } from "./cli.js";
+import { BlockDBCMD } from "./commands/blockDBCMD.js";
+import { ChainstateDataCMD } from "./commands/chainstateDataCMD.js";
+import { CryptoCMD } from "./commands/cryptoCMD.js";
+import { MinterDBCMD } from "./commands/minterDBCMD.js";
+import { NetworkCMD } from "./commands/networkCMD.js";
+import { RunCMD } from "./commands/runCMD.js";
+import { StartServiceCMD } from "./commands/startServiceCMD.js";
+import { StopCMD } from "./commands/stopCMD.js";
+import { VersionCMD } from "./commands/versionCMD.js";
+import { WalletDBCMD } from "./commands/walletDBCMD.js";
+import { CLIApp, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
 
 
-export class CLICMDHandler extends CLISubCMD {
-    public name = "root";
-    public description = "CLI Root";
-    public usage = "Command has no usage";
+export class CLICMDHandler extends CLIApp {
 
     private flagParser = new CMDFlagsParser({
         '--cwd': new CMDFlag("string", "Set Directory where data, logs and config is stored")
@@ -28,7 +24,10 @@ export class CLICMDHandler extends CLISubCMD {
 
     public static getInstance() {
         if (!this.instance) {
-            this.instance = new CLICMDHandler();
+            this.instance = new CLICMDHandler(
+                "shell",
+                cli.cmd.info.bind(cli.cmd),
+            );
         }
         return this.instance;
     }
@@ -46,12 +45,7 @@ export class CLICMDHandler extends CLISubCMD {
         this.register(new NetworkCMD());
     }
 
-    protected async run_empty(parent_args: string[]): Promise<void> {
-        //cli.cmd.info(`Command not recognized. Type "${CLIUtils.parsePArgs(parent_args, true)}help" for available commands.`);
-        return;
-    }
-
-    public async run(args: string[], parent_args: string[]) {
+    public async run(args: string[]) {
 
         if (Main.environment === "command") {
 
@@ -84,11 +78,15 @@ export class CLICMDHandler extends CLISubCMD {
             
         }
         
-        await super.run(args, parent_args);
+        await super.run(args);
     }
 
-    public async handle(input: string) {
-        await this.run(input.trim().toLowerCase().split(" ").filter(arg => arg), []);
+}
+
+export class CommonCLIMessages {
+
+    static invalidNumberOfArguments(): void {
+        cli.cmd.info("Invalid number of arguments!");
     }
 
 }

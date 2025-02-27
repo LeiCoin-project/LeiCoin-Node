@@ -5,8 +5,8 @@ import { Blockchain } from "@leicoin/storage/blockchain";
 import { Uint64 } from "low-level";
 import { DataUtils } from "@leicoin/utils/dataUtils";
 import { cli } from "../cli.js";
-import { CLICMD, CLISubCMD } from "../handler/command.js";
-import { CLIUtils } from "../utils.js";
+import { CLICMD, CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
+import { CommonCLIMessages } from "../commandHandler.js";
 
 export class MinterDBCMD extends CLISubCMD {
     readonly name = "minterdb";
@@ -20,11 +20,11 @@ export class MinterDBCMD extends CLISubCMD {
         this.register(new GetNextMinterCMD());
     }
 
-    async run(args: string[], parent_args: string[]) {
+    async run(args: string[], meta: CLICMDExecMeta) {
         await Blockchain.init();
         await Blockchain.waitAllChainsInit();
 
-        super.run(args, parent_args);
+        super.run(args, meta);
     }
 
 }
@@ -35,9 +35,9 @@ class ReadCMD extends CLICMD {
     readonly description = "Read the Minter database";
     readonly usage = "read (<minter_address> | all)";
 
-    public async run(args: string[], parent_args: string[]): Promise<void> {
+    public async run(args: string[]): Promise<void> {
         if (args.length !== 1) {
-            CLIUtils.invalidNumberOfArguments();
+            CommonCLIMessages.invalidNumberOfArguments();
             return;
         }
 
@@ -71,9 +71,9 @@ class InsertCMD extends CLICMD {
     readonly description = "Insert Data into the Minter database";
     readonly usage = "insert <minter_address> <stake> <version>";
 
-    public async run(args: string[], parent_args: string[]): Promise<void> {
+    public async run(args: string[]): Promise<void> {
         if (args.length !== 3) {
-            CLIUtils.invalidNumberOfArguments();
+            CommonCLIMessages.invalidNumberOfArguments();
             return;
         }
 
@@ -88,9 +88,9 @@ class RemoveCMD extends CLICMD {
     readonly description = "Remove Data from the Minter database";
     readonly usage = "remove <minter_address>";
 
-    public async run(args: string[], parent_args: string[]): Promise<void> {
+    public async run(args: string[]): Promise<void> {
         if (args.length !== 1) {
-            CLIUtils.invalidNumberOfArguments();
+            CommonCLIMessages.invalidNumberOfArguments();
             return;
         }
 
@@ -110,9 +110,9 @@ class GetNextMinterCMD extends CLICMD {
     readonly description = "Get the next minter for a slot";
     readonly usage = "getnext <slot>";
 
-    public async run(args: string[], parent_args: string[]): Promise<void> {
+    public async run(args: string[]): Promise<void> {
         if (args.length !== 1) {
-            CLIUtils.invalidNumberOfArguments();
+            CommonCLIMessages.invalidNumberOfArguments();
             return;
         }
 
