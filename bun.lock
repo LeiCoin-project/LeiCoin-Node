@@ -25,22 +25,22 @@
         "ansi-escapes": "^4.3.2",
         "chalk": "^4.1.2",
         "classic-level": "^1.4.1",
-        "cron": "^3.5.0",
+        "cron": "^4.1.0",
         "date-fns": "^3.6.0",
         "dotenv": "^16.4.7",
         "elliptic": "^6.6.1",
-        "elysia": "^1.2.12",
+        "elysia": "^1.2.22",
         "level-read-stream": "^1.1.1",
         "low-level": "^1.0.12",
         "reflect-metadata": "^0.2.2",
       },
       "devDependencies": {
-        "@types/bun": "^1.2.2",
+        "@types/bun": "^1.2.4",
         "@types/cors": "^2.8.17",
         "@types/elliptic": "^6.4.18",
-        "@types/node": "^22.13.1",
+        "@types/node": "^22.13.5",
         "@types/readable-stream": "^4.0.18",
-        "bun": "^1.2.2",
+        "bun": "^1.2.4",
         "typescript": "^5.7.3",
       },
     },
@@ -421,7 +421,7 @@
 
     "cookie": ["cookie@1.0.2", "", {}, "sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA=="],
 
-    "cron": ["cron@3.5.0", "", { "dependencies": { "@types/luxon": "~3.4.0", "luxon": "~3.5.0" } }, "sha512-0eYZqCnapmxYcV06uktql93wNWdlTmmBFP2iYz+JPVcQqlyFYcn1lFuIk4R54pkOmE7mcldTAPZv6X5XA4Q46A=="],
+    "cron": ["cron@4.1.0", "", { "dependencies": { "@types/luxon": "~3.4.0", "luxon": "~3.5.0" } }, "sha512-wmcuXr2qP0UZStYgwruG6jC2AYSO9n5VMm2t93hmcEXEjWY3S2bsXe3sfGUrTs/uQ1AvRCrZ0Pp9Q032L/V9tw=="],
 
     "date-fns": ["date-fns@3.6.0", "", {}, "sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww=="],
 
