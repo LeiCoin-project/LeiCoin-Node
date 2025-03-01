@@ -1,3 +1,3 @@
 
 export { cli } from "./cli.js";
-export { CLICMDHandler } from "./handler/commandHandler.js"
+export { CLICMDHandler } from "./commandHandler.js"

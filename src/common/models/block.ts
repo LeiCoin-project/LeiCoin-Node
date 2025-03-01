@@ -9,7 +9,8 @@ import { Signature } from "@leicoin/crypto";
 export class BlockBody extends Container {
 
     constructor(
-        public transactions: Transaction[]
+        public transactions: Transaction[],
+        //public slashings: Uint256[] = []
     ) {super()}
 
     protected static fromDict(obj: Dict<any>) {

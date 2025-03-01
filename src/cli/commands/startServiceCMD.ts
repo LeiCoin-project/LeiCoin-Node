@@ -1,7 +1,7 @@
 import { HTTP_API } from "@leicoin/http-api";
 import { Utils } from "@leicoin/utils";
 import { cli } from "../cli.js";
-import { CLICMD, CLISubCMD } from "../handler/command.js";
+import { CLICMD, CLISubCMD } from "@cleverjs/cli";
 
 export class StartServiceCMD extends CLISubCMD {
     readonly name = "start-service";
@@ -20,7 +20,7 @@ class StartAPI extends CLICMD {
     readonly description = "Start the API service";
     readonly usage = "api [options]";
 
-    public async run(args: string[], parent_args: string[]) {
+    public async run(args: string[]) {
         if (HTTP_API.started) {
             cli.cmd.info("API service already started");
             return;

@@ -1,6 +1,6 @@
 import { Main } from "@leicoin/core";
 import { cli } from "../cli.js";
-import { CLICMD } from "../handler/command.js";
+import { CLICMD } from "@cleverjs/cli";
 
 export class VersionCMD extends CLICMD {
     readonly name = "--version";

@@ -11,15 +11,15 @@ import { Verification } from "@leicoin/verification";
 
 class Wallets {
 
-    public static readonly senderWallets: SecretWallet[] = [];
+    static readonly senderWallets: SecretWallet[] = [];
 
-    public static readonly targetAddresses: AddressHex[] = [];
+    static readonly targetAddresses: AddressHex[] = [];
 
     private static count: number;
 
     private static initialized = false;
 
-    public static async init(count: number) {
+    static async init(count: number) {
         if (this.initialized) return;
         this.initialized = true;
 
@@ -79,7 +79,7 @@ export class TXSpeedTest {
 
     private static initialized = false;
 
-    public static async init(count: number) {
+    static async init(count: number) {
         if (this.initialized) return;
         this.initialized = true;
 
@@ -141,7 +141,7 @@ export class TXSpeedTest {
         this.block.signature.set(LCrypt.sign(this.block.hash, PX.A_0e, minterPrivateKey));
     }
 
-    public static async runVerify() {
+    static async runVerify() {
         console.log("Starting Verification Speed Test...")
         console.time("TX Verify Speed");
 
@@ -163,7 +163,7 @@ export class TXSpeedTest {
     }
 
 
-    public static async runExecute() {
+    static async runExecute() {
         console.log("Starting Execution Speed Test...");
         console.time("TX Execute Speed");
 
@@ -173,7 +173,7 @@ export class TXSpeedTest {
         console.log("Finished Execution Speed Test!");
     }
 
-    public static async end() {
+    static async end() {
         await Blockchain.stop();
 
         fs.rmSync(__dirname + "/blockchain_data", {recursive: true});

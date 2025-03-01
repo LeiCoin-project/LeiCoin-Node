@@ -1,6 +1,6 @@
 
 export abstract class Command {
-    abstract run(args: string[], parent_args: string[]): Promise<void>;
+    abstract run(args: string[], meta: CLICMDExecMeta): Promise<void>;
 }
 
 export abstract class SubCommand extends Command {
