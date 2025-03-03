@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { cli } from "@leicoin/cli";
 import { HTTP_API } from "@leicoin/http-api";
-import { POS } from "@leicoin/pos";
+import { SlotExecutionManager } from "@leicoin/pos";
 import { LeiCoinNetNode } from "@leicoin/net";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { type IModuleLike } from "./dataUtils.js";
@@ -36,7 +36,7 @@ export class Utils {
 
             await Promise.all([
                 this.stopService(HTTP_API),
-                this.stopService(POS),
+                this.stopService(SlotExecutionManager),
                 this.stopService(LeiCoinNetNode)
             ]);
 

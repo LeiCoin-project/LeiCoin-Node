@@ -6,7 +6,7 @@ import { type ModuleLike } from "@leicoin/utils/dataUtils";
 import { CronJob } from "cron";
 import { Slot } from "./slot";
 
-export class POS implements ModuleLike<typeof POS> {
+export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionManager> {
     public static initialized = false;
     public static started = false;
 
@@ -22,7 +22,7 @@ export class POS implements ModuleLike<typeof POS> {
         this.minters.push(...minters);
      
         this.slotTask = new CronJob('1,6,11,16,21,26,31,36,41,46,51,56 * * * * *', () => {
-            const nextSlotIndex = Uint64.from(POS.calulateCurrentSlotIndex() + 1);
+            const nextSlotIndex = Uint64.from(SlotExecutionManager.calulateCurrentSlotIndex() + 1);
 
             //this.endSlot(this.currentSlot.index);
             this.startNewSlot(nextSlotIndex);

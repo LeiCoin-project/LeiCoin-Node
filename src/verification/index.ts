@@ -4,7 +4,7 @@ import { VCode, VCodes } from "./codes.js";
 import { PX } from "@leicoin/common/types/prefix";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Block } from "@leicoin/common/models/block";
-import { POS } from "@leicoin/pos";
+import { SlotExecutionManager } from "@leicoin/pos";
 
 
 export class Verification {
@@ -51,7 +51,7 @@ export class Verification {
     public static async verifyBlockProposal(block: Block | null): Promise<Verification.Code> {
         if (!block) return 12501;
 
-        const currentSlot = await POS.getCurrentSlot();
+        const currentSlot = await SlotExecutionManager.getCurrentSlot();
 
         if (!currentSlot) return 12500;
 

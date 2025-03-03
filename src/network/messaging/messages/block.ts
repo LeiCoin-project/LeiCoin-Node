@@ -8,7 +8,7 @@ import { CB } from "@leicoin/utils/callbacks";
 import { AutoProcessingQueue } from "@leicoin/utils/queue";
 import { Block } from "@leicoin/common/models/block";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
-import { POS } from "@leicoin/pos";
+import { SlotExecutionManager } from "@leicoin/pos";
 import { Slot } from "@leicoin/pos/slot";
 import { Verification } from "@leicoin/verification";
 import { NetworkSyncManager } from "../../index.js";
@@ -35,14 +35,14 @@ export namespace NewBlockMsg {
             const block = data.block;
             if (!block) return null;
 
-            if (!block.slotIndex.eqn(POS.calulateCurrentSlotIndex())) {
+            if (!block.slotIndex.eqn(SlotExecutionManager.calulateCurrentSlotIndex())) {
                 this.handleUnverifiableForkBlock(block);
                 return null;
             }
 
             if (NetworkSyncManager.state === "synchronized") {
 
-                const currentSlot = await POS.getSlot(block.slotIndex);
+                const currentSlot = await SlotExecutionManager.getSlot(block.slotIndex);
                 if (currentSlot) {
                     const verification_result = await Verification.verifyBlockProposal(data.block);
     

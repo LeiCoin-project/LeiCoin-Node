@@ -4,7 +4,7 @@ import { HTTP_API } from "@leicoin/http-api";
 import { NetworkSyncManager } from "@leicoin/net";
 import { LeiCoinNetNode } from "@leicoin/net";
 import { MinterClient } from "@leicoin/minter";
-import { POS } from "@leicoin/pos";
+import { SlotExecutionManager } from "@leicoin/pos";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Utils } from "@leicoin/utils";
 import { cli } from "../cli.js";
@@ -77,7 +77,7 @@ export class RunCMD extends CLICMD {
             });
         }
 
-        POS.init(
+        SlotExecutionManager.init(
             config.minter?.active ?
                 MinterClient.createMinters(config.minter.credentials) :
                 []
@@ -85,7 +85,7 @@ export class RunCMD extends CLICMD {
 
         await NetworkSyncManager.doStartupSync(flags["--ignore-no-peers"] as boolean);
         
-        POS.start();
+        SlotExecutionManager.start();
 
         cli.default.info(`LeiCoin-Node started in Full Node mode`);
     }

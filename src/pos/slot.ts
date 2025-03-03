@@ -3,7 +3,7 @@ import { type Block } from "@leicoin/common/models/block";
 import { type Uint64 } from "low-level";
 import { Execution } from "./execution.js";
 import { cli } from "@leicoin/cli";
-import { POS } from "./index.js";
+import { SlotExecutionManager } from "./index.js";
 import { formatDate } from "date-fns/format";
 import { UTCDate } from "@date-fns/utc/date";
 import { ExecutionCheckpoint } from "@leicoin/utils/executionCheckpoint";
@@ -27,14 +27,14 @@ export class Slot {
         readonly index: Uint64,
         readonly minter: AddressHex,
     ) {
-        let timeUntilSlotStart = POS.calculateSlotExecutionTime(index) - Date.now();
+        let timeUntilSlotStart = SlotExecutionManager.calculateSlotExecutionTime(index) - Date.now();
         if (timeUntilSlotStart < 0) timeUntilSlotStart = 0;
         new Schedule(async() => await this.onSlotStart(), timeUntilSlotStart);
         this.blockTimeout = new Schedule(async() => await this.onBlockNotMinted(), timeUntilSlotStart + 5_000);
     }
 
     static async create(index: Uint64) {
-        const latestSlot = await POS.getSlot(index.sub(1));
+        const latestSlot = await SlotExecutionManager.getSlot(index.sub(1));
         if (latestSlot) {
             // Ensure minterdb was upodated before selecting the next minter
             // problem: dont ensure that minterdb is updated before block executed
@@ -50,7 +50,7 @@ export class Slot {
 
         cli.pos.info(`Starting new slot: ${this.index.toBigInt()} at ${formatDate(new UTCDate(), "dd-MMM-yyyy HH:mm:ss:SSS")}, Minter: ${this.minter.toHex()}`);
 
-        for (const mc of POS.minters) {
+        for (const mc of SlotExecutionManager.minters) {
             if (this.isMinter(mc.credentials.address)) {
                 await mc.mint(this);
                 break;
