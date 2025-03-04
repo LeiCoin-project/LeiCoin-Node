@@ -7,7 +7,7 @@ import type { LNMsgRequestHandler, LNBroadcastingMsgHandler, LNMsgDefaultHandler
 import { LNMsgID, LNAbstractMsgBody } from "./messaging/abstractMsg.js";
 import { MessageRouter } from "./messaging/index.js";
 import { LNController, PeerSocketController } from "./controller.js";
-import { AutoProcessingQueue, ProcessState, Queue } from "@leicoin/utils/queue";
+import { AutoProcessingQueue, type ProcessState, Queue } from "@leicoin/utils/queue";
 import { LNDataPaket } from "./packets.js";
 import { NetworkUtils } from "@leicoin/utils/network-utils";
 import { BoundedExecutor } from "@leicoin/utils/boundedExecutor";
