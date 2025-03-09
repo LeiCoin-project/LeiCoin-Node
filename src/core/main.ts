@@ -13,13 +13,7 @@ export class Main {
         this.initialized = true;
 
         const args = process.argv.slice(2);
-
-        await CLICMDHandler.getInstance().run(
-            args.map(arg => arg.toLowerCase())
-                .filter(arg => arg),
-            []
-        );
-
+        await CLICMDHandler.getInstance().handle(args);
     }
 
     public static get environment(): typeof Main._environment {

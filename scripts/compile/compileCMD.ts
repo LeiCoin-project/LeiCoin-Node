@@ -1,5 +1,5 @@
-import { Command } from "../command.js";
-import { Compiler, PlatformArg, Platforms } from "../compiler.js";
+import { CLICMD, CLICMDAlias, CLICMDExecMeta } from "@cleverjs/cli";
+import { Compiler, PlatformArg, Platforms } from "./compiler.js";
 
 class CompileUtils {
     static async getPackageJSONVersion() {
@@ -16,7 +16,7 @@ class CompileUtils {
             const version = await this.getPackageJSONVersion()
             return [version, false];
         }
-        const argv_version = args[0] || process.env.BUN_VERSION;
+        const argv_version = args[0] || process.env.LEICOIN_NODE_TARGET_VERSION;
         const version = argv_version || await this.getPackageJSONVersion();
 
         if (!version) {
@@ -29,7 +29,11 @@ class CompileUtils {
     }
 }
 
-export const CompileAllCMD = new class CompileAllCMD extends Command {
+export class CompileAllCMD extends CLICMD {
+    readonly name = "all";
+    readonly description = "Compile for all platforms";
+    readonly usage = "all";
+
     async run(args: string[]) {
         const builds: Promise<void>[] = [];
 
@@ -40,23 +44,23 @@ export const CompileAllCMD = new class CompileAllCMD extends Command {
         }
         await Promise.all(builds);
     }
-}();
+}
 
-export const CompileAutoCMD = new class CompileAutoCMD extends Command {
-    async run(args: string[]) {
-        const version_settings = await CompileUtils.getTargetVersion(args);
-        await new Compiler("auto", ...version_settings).build();
-    }
-}();
+export class CompileToTargetCMD extends CLICMD {
+    readonly name = "auto";
+    readonly description = "Compile for a specified platform";
+    readonly usage = "[<platform> | auto | all] [<version>] [--no-version-tag]";
+    readonly aliases = Object.keys(Platforms);
 
-export const CompileToTargetCMD = new class CompileToTargetCMD extends Command {
     async run(args: string[], meta: CLICMDExecMeta) {
-        const platform = parent_args[0] as PlatformArg;
-        if (Object.keys(Platforms).some(p => p === platform) === false) {
+        const platform = (meta.parent_args.at(-1) || "auto") as PlatformArg;
+
+        if (Object.keys(Platforms).some(p => p === platform) === false && platform !== "auto") {
             console.log(`Invalid platform: ${platform}`);
             return;
         }
         const version_settings = await CompileUtils.getTargetVersion(args);
         await new Compiler(platform, ...version_settings).build();
     }
-}();
+
+}

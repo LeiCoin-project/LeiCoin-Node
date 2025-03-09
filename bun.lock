@@ -4,7 +4,7 @@
     "": {
       "name": "leicoin-node",
       "dependencies": {
-        "@cleverjs/cli": "^1.1.2",
+        "@cleverjs/cli": "^1.1.6",
         "@date-fns/utc": "^1.2.0",
         "@elysiajs/cors": "^1.2.0",
         "@leicoin/cli": "^1.0.0",
@@ -29,7 +29,7 @@
         "date-fns": "^3.6.0",
         "dotenv": "^16.4.7",
         "elliptic": "^6.6.1",
-        "elysia": "^1.2.22",
+        "elysia": "^1.2.25",
         "level-read-stream": "^1.1.1",
         "low-level": "^1.0.12",
         "reflect-metadata": "^0.2.2",
@@ -38,10 +38,10 @@
         "@types/bun": "^1.2.4",
         "@types/cors": "^2.8.17",
         "@types/elliptic": "^6.4.18",
-        "@types/node": "^22.13.5",
+        "@types/node": "^22.13.10",
         "@types/readable-stream": "^4.0.18",
         "bun": "^1.2.4",
-        "typescript": "^5.7.3",
+        "typescript": "^5.8.2",
       },
     },
     "src/cli": {
@@ -315,7 +315,7 @@
     "classic-level@1.4.1": "patches/classic-level@1.4.1.patch",
   },
   "packages": {
-    "@cleverjs/cli": ["@cleverjs/cli@1.1.5", "", {}, "sha512-TIJV0LyvMytjWZGq81+ohNOvu+KTbpr71Ta+T9pz+3LjFAzY9t7BS3rEyO2TKuERJN75aDAaIVDYbIqgqkQaUA=="],
+    "@cleverjs/cli": ["@cleverjs/cli@1.1.7", "", {}, "sha512-pcsYQnEYnEaglpi1undPSeK+t8JNCQmRQ1N+gw98u0DFu108x1TyVxyQrXlbEg2YkJlPsRuDE0gj8t9qXOrO8g=="],
 
     "@date-fns/utc": ["@date-fns/utc@1.2.0", "", {}, "sha512-YLq+crMPJiBmIdkRmv9nZuZy1mVtMlDcUKlg4mvI0UsC/dZeIaGoGB5p/C4FrpeOhZ7zBTK03T58S0DFkRNMnw=="],
 

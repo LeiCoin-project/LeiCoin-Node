@@ -11,7 +11,7 @@ import { StartServiceCMD } from "./commands/startServiceCMD.js";
 import { StopCMD } from "./commands/stopCMD.js";
 import { VersionCMD } from "./commands/versionCMD.js";
 import { WalletDBCMD } from "./commands/walletDBCMD.js";
-import { CLIApp, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
+import { CLIApp, CLICMDExecMeta, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
 
 
 export class CLICMDHandler extends CLIApp {
@@ -45,7 +45,7 @@ export class CLICMDHandler extends CLIApp {
         this.register(new NetworkCMD());
     }
 
-    public async run(args: string[]) {
+    public async run(args: string[], meta: CLICMDExecMeta) {
 
         if (Main.environment === "command") {
 
@@ -78,7 +78,8 @@ export class CLICMDHandler extends CLIApp {
             
         }
         
-        await super.run(args);
+        // @ts-ignore
+        await super.run(args, meta);
     }
 
 }
