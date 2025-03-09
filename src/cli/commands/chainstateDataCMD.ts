@@ -8,7 +8,7 @@ export class ChainstateDataCMD extends CLISubCMD {
     readonly description = "Manage the local Chainstate";
     readonly usage = "chainstate <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new ReadCMD());
     }
 

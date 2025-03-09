@@ -9,13 +9,13 @@ export abstract class SubCommand extends Command {
 
     constructor() {
         super();
-        this.registerCommands();
+        this.onInit();
     }
 
     protected register(key: string, cmd: Command) {
         this.registry[key] = cmd;
     }
 
-    protected abstract registerCommands(): void;
+    protected abstract onInit(): void;
 
 }

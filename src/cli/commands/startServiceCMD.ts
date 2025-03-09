@@ -10,7 +10,7 @@ export class StartServiceCMD extends CLISubCMD {
 
     readonly environment = "runtime";
 
-    protected registerCommands() {
+    protected onInit() {
         this.register(new StartAPI());
     }
 }

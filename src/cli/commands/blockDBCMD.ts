@@ -10,7 +10,7 @@ export class BlockDBCMD extends CLISubCMD {
     readonly description = "Manage the Block database";
     readonly usage = "blockdb <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new ReadCMD());
     }
 

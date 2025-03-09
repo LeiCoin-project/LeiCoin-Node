@@ -6,7 +6,7 @@ import { Platforms } from "./compiler.js";
 
 const CompileCMD = new class CompileCMD extends SubCommand {
 
-    protected registerCommands() {
+    protected onInit() {
         this.register("help", HelpCMD);
         this.register("-h", HelpCMD);
         this.register("--help", HelpCMD);

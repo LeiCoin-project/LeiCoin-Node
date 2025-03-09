@@ -13,7 +13,7 @@ export class WalletDBCMD extends CLISubCMD {
     readonly description = "Manage the Wallet database";
     readonly usage = "walletdb <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new ReadCMD());
         this.register(new InsertCMD());
         this.register(new RemoveCMD());

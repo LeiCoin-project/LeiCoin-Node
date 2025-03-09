@@ -8,7 +8,7 @@ export class NetworkCMD extends CLISubCMD {
     readonly description = "LeiCoin network related commands";
     readonly usage = "network <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new StatsCMD());   
     }
 

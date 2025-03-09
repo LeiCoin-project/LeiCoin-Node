@@ -13,7 +13,7 @@ export class MinterDBCMD extends CLISubCMD {
     readonly description = "Manage the Minter database";
     readonly usage = "minterdb <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new ReadCMD());
         this.register(new InsertCMD());
         this.register(new RemoveCMD());

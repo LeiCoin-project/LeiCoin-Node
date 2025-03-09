@@ -32,7 +32,7 @@ export class CLICMDHandler extends CLIApp {
         return this.instance;
     }
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new RunCMD());
         this.register(new StopCMD());
         this.register(new CryptoCMD());

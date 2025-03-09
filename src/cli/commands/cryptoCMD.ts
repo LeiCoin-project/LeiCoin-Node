@@ -11,7 +11,7 @@ export class CryptoCMD extends CLISubCMD {
     readonly description = "Crypto commands";
     readonly usage = "crypto <command> [...args]";
 
-    protected registerCommands(): void {
+    protected onInit(): void {
         this.register(new GenKeyPairCMD());
     }
 
