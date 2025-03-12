@@ -39,27 +39,27 @@ export namespace NewBlockMsg {
                 return null;
             }
 
-            if (NetworkSyncManager.state === "synchronized") {
-
-                const currentSlot = await SlotExecutionManager.getSlot(block.slotIndex);
-                if (currentSlot) {
-                    const verification_result = await Verification.verifyBlockProposal(data.block);
-    
-                    if (verification_result !== 12000) {
-                        /** @todo CLI Debug Mode for log messages like this */
-                        //cli.data.info(`Block rejected. Code: ${verification_result}, Message: ${VCodes[verification_result]}`);
-                        this.handleUnverifiableForkBlock(block);
-                        return null;
-                    }
-                    
-                    currentSlot.processBlock(block, FallbackIncomingBlockQueue);
-                } else {
-                    FallbackIncomingBlockQueue.enqueue(block);
-                }
-
-            } else {                
+            if (NetworkSyncManager.state !== "synchronized") {
                 NetworkSyncManager.blockQueue.enqueue(block);
+                return data;
             }
+
+            const currentSlot = await SlotExecutionManager.getSlot(block.slotIndex);
+            if (!currentSlot) {
+                FallbackIncomingBlockQueue.enqueue(block);
+                return data;
+            }
+            
+            const verification_result = await Verification.verifyBlockProposal(data.block);
+    
+            if (verification_result !== 12000) {
+                /** @todo CLI Debug Mode for log messages like this */
+                //cli.data.info(`Block rejected. Code: ${verification_result}, Message: ${VCodes[verification_result]}`);
+                this.handleUnverifiableForkBlock(block);
+                return null;
+            }
+
+            currentSlot.processBlock(block, FallbackIncomingBlockQueue);
             return data;
         }
 
