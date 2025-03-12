@@ -1,5 +1,4 @@
 import { LNBroadcastingMsgHandler, LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
-import { cli } from "@leicoin/cli";
 import { BE, type DataEncoder } from "@leicoin/encoding";
 import { Uint64 } from "low-level";
 import { ErrorResponseMsg } from "./error.js";
