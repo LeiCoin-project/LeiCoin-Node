@@ -8,15 +8,15 @@ import { Signature } from "@leicoin/crypto";
 
 export class BlockHeader extends HashableContainer {
     constructor(
-        public index: Uint64,
-        public slotIndex: Uint64,
-        public hash: Uint256,
-        public previousHash: Uint256,
-        public timestamp: Uint64,
-        public minter: AddressHex,
-        public signature: Signature,
-        public body_hash: Uint256,
-        public readonly version: PX = PX.A_00
+        readonly index: Uint64,
+        readonly slotIndex: Uint64,
+        readonly hash: Uint256,
+        readonly previousHash: Uint256,
+        readonly timestamp: Uint64,
+        readonly minter: AddressHex,
+        readonly signature: Signature,
+        readonly body_hash: Uint256,
+        readonly version: PX = PX.A_00
     ) {super()}
 
     protected static fromDict(obj: Dict<any>) {
@@ -55,7 +55,7 @@ export class BlockHeader extends HashableContainer {
 export class BlockBody extends HashableContainer {
 
     constructor(
-        public transactions: Transaction[],
+        readonly transactions: Transaction[],
         //public slashings: Uint256[] = []
     ) {super()}
 
@@ -72,16 +72,16 @@ export class BlockBody extends HashableContainer {
 export class Block extends BlockHeader {
 
     constructor(
-        public index: Uint64,
-        public slotIndex: Uint64,
-        public hash: Uint256,
-        public previousHash: Uint256,
-        public timestamp: Uint64,
-        public minter: AddressHex,
-        public signature: Signature,
-        public body: BlockBody,
-        public body_hash: Uint256 = body.calculateHash(),
-        public readonly version: PX = PX.A_00
+        readonly index: Uint64,
+        readonly slotIndex: Uint64,
+        readonly hash: Uint256,
+        readonly previousHash: Uint256,
+        readonly timestamp: Uint64,
+        readonly minter: AddressHex,
+        readonly signature: Signature,
+        readonly body: BlockBody,
+        readonly body_hash: Uint256 = body.calculateHash(),
+        readonly version: PX = PX.A_00
     ) {super(
         index,
         slotIndex,
@@ -128,6 +128,3 @@ export class Block extends BlockHeader {
     ]
 
 }
-
-
-

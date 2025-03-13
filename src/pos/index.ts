@@ -4,14 +4,14 @@ import { Constants } from "@leicoin/utils/constants";
 import { type MinterClient } from "@leicoin/minter";
 import { type ModuleLike } from "@leicoin/utils/dataUtils";
 import { CronJob } from "cron";
-import { Slot } from "./slot";
+import { SlotExecution } from "./slot";
 
 export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionManager> {
     public static initialized = false;
     public static started = false;
 
     private static slotTask: CronJob;
-    private static readonly slots = new UintMap<Promise<Slot>>();
+    private static readonly slots = new UintMap<Promise<SlotExecution>>();
 
     static readonly minters: MinterClient[] = [];
 
@@ -71,7 +71,7 @@ export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionMana
     }
 
     static async startNewSlot(slotIndex: Uint64) {
-        const newSlot = Slot.create(slotIndex);
+        const newSlot = SlotExecution.create(slotIndex);
         this.slots.set(slotIndex, newSlot);
     }
 

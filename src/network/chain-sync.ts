@@ -8,7 +8,7 @@ import { BlocksMsg, GetBlocksMsg } from "./messaging/messages/block.js";
 import { cli } from "@leicoin/cli";
 import { Utils } from "@leicoin/utils";
 import { Block } from "@leicoin/common/models/block";
-import { Slot } from "@leicoin/pos/slot";
+import { SlotExecution } from "@leicoin/pos/slot";
 import { LeiCoinNetNode } from "./node.js";
 
 export class NetworkSyncManager {
@@ -52,7 +52,7 @@ export class NetworkSyncManager {
         let blocksSuccessfullyProcessedCount = 0;
 
         for (const block of blocks) {
-            const result = await Slot.processPastSlot(block.slotIndex, block);
+            const result = await SlotExecution.processPastSlot(block.slotIndex, block);
             if (result) blocksSuccessfullyProcessedCount++;
         }
 
@@ -133,7 +133,7 @@ export class NetworkSyncManager {
         
         while (this.blockQueue.size > 0) {
             const block = this.blockQueue.dequeue() as Block;
-            const result = await Slot.processPastSlot(block.slotIndex, block);
+            const result = await SlotExecution.processPastSlot(block.slotIndex, block);
             if (result) sync_stats.blocksSuccessfullyProcessedCount.iadd(1);
         }
 

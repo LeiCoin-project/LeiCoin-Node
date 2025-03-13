@@ -12,7 +12,7 @@ import { Blockchain } from "@leicoin/storage/blockchain";
 import { Verification } from "@leicoin/verification";
 import { FallbackIncomingBlockQueue } from "@leicoin/net/types";
 
-export class Slot {
+export class SlotExecution {
 
     public block?: Block;
 
@@ -42,7 +42,7 @@ export class Slot {
         }
 
         const nextMinter = await Blockchain.minters.selectNextMinter(index);
-        return new Slot(index, nextMinter);
+        return new SlotExecution(index, nextMinter);
     }
 
     protected async onSlotStart() {

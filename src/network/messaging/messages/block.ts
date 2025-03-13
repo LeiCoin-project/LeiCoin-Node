@@ -8,7 +8,7 @@ import { AutoProcessingQueue } from "@leicoin/utils/queue";
 import { Block } from "@leicoin/common/models/block";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { SlotExecutionManager } from "@leicoin/pos";
-import { Slot } from "@leicoin/pos/slot";
+import { SlotExecution } from "@leicoin/pos/slot";
 import { Verification } from "@leicoin/verification";
 import { NetworkSyncManager } from "../../index.js";
 
@@ -79,7 +79,7 @@ export namespace NewBlockMsg {
 
 const FallbackIncomingBlockQueue = new AutoProcessingQueue<Block>(async (ps) => {
     const block = ps.data;
-    await Slot.processPastSlot(block.slotIndex, block);
+    await SlotExecution.processPastSlot(block.slotIndex, block);
     ps.proccessed.resolve();
 });
 export type { FallbackIncomingBlockQueue };

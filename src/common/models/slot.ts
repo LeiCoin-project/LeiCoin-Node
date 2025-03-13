@@ -2,6 +2,8 @@
 // import { Block } from "./block.js";
 // import { Slashing } from "./slashing.js";
 
+import { Uint64 } from "low-level";
+
 // interface SlotProposedBlock {
 //     status: "proposed";
 //     data: Block;
@@ -12,17 +14,15 @@
 //     data: null;
 // }
 
-// export class Slot {
+export class Slot {
 
-//     index: Uint64;
-//     block: SlotProposedBlock | SlotEmptyBlock;
-//     slashings: Slashing[];
+    index: Uint64;
+    
+    constructor(index: Uint64, block: SlotProposedBlock | SlotEmptyBlock, slashings: Slashing[]) {
+        this.index = index;
+        this.block = block;
+        this.slashings = slashings;
+    }
 
-//     constructor(index: Uint64, block: SlotProposedBlock | SlotEmptyBlock, slashings: Slashing[]) {
-//         this.index = index;
-//         this.block = block;
-//         this.slashings = slashings;
-//     }
-
-// }
+}
 

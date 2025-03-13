@@ -5,7 +5,7 @@ import { AddressHex } from "@leicoin/common/models/address";
 import { Block, BlockBody } from "@leicoin/common/models/block";
 import { MinterCredentials } from "@leicoin/common/models/minterData";
 import { PX } from "@leicoin/common/types/prefix";
-import { Slot } from "@leicoin/pos/slot";
+import { SlotExecution } from "@leicoin/pos/slot";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Mempool } from "@leicoin/storage/mempool";
 import { Verification } from "@leicoin/verification";
@@ -81,7 +81,7 @@ export class MinterClient {
 		return block;
 	}
 
-    async mint(currentSlot: Slot) {
+    async mint(currentSlot: SlotExecution) {
 		const block = await this.createNewBlock(currentSlot.index);
 
 		LNController.broadcast(new LNMsgRegistry.NEW_BLOCK(block));
