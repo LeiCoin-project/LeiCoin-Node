@@ -37,7 +37,7 @@ export class LNDataPaket {
         const length = new Uint32(hexData.slice(0, 4));
         const data = hexData.slice(4);
 
-        if (length.gt(LNDataPaket.MAX_BYTE_SIZE) || length.eqn(data.getLen())) {
+        if (length.gt(LNDataPaket.MAX_BYTE_SIZE) || !length.eq(data.getLen())) {
             return null;
         }
         

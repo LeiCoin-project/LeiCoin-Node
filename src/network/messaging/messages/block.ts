@@ -34,7 +34,7 @@ export namespace NewBlockMsg {
             const block = data.block;
             if (!block) return null;
 
-            if (!block.slotIndex.eqn(SlotExecutionManager.calulateCurrentSlotIndex())) {
+            if (!block.slotIndex.eq(SlotExecutionManager.calulateCurrentSlotIndex())) {
                 this.handleUnverifiableForkBlock(block);
                 return null;
             }

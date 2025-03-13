@@ -156,10 +156,6 @@ class Uint160 {
         return this.compare(value) === 0;
     }
 
-    public eqn(value: NumberLike) {
-        return this.compare(value) !== 0;
-    }
-
     protected addUint(value: Uint160) {
         let carry = 0;
         for (let i = this.buffer.byteLength - 1; i >= 0; i--) {

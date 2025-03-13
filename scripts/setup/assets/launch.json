@@ -4,14 +4,14 @@
             "type": "bun",
             "name": "Test",
             "request": "launch",
-            "program": "bun run test",
+            "program": "test",
             "cwd": "${workspaceFolder}"
         },
         {
             "type": "bun",
             "name": "Debug",
             "request": "launch",
-            "program": "bun run debug",
+            "program": "debug",
             "cwd": "${workspaceFolder}"
         }
     ]

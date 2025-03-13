@@ -22,7 +22,7 @@ export class MinterClient {
 		if (!Verification.verifyAddress(this.credentials.address, PX.A_0e)) {
 			return { cb: false, message: "MinterClient could not be started: Invalid Address." };
 		}
-		if (AddressHex.fromPrivateKey(PX.A_0e, this.credentials.privateKey).eqn(this.credentials.address)) {
+		if (!AddressHex.fromPrivateKey(PX.A_0e, this.credentials.privateKey).eq(this.credentials.address)) {
 			return { cb: false, message: "MinterClient could not be started: Invalid PrivateKey - Address Pair." };
 		}
 		return { cb: true };
@@ -77,7 +77,7 @@ export class MinterClient {
 		)
 
 		block.hash.set(block.calculateHash());
-		block.signature = LCrypt.sign(block.calculateHash(), PX.A_0e, this.credentials.privateKey);
+		block.signature.set(LCrypt.sign(block.hash, PX.A_0e, this.credentials.privateKey));
 		return block;
 	}
 

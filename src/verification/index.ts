@@ -16,11 +16,11 @@ export class Verification {
     public static async verifyTransaction(tx: Transaction, chain = "main"): Promise<Verification.Code> {
         
         if (!tx) return 12501;
-        if (tx.txid.eqn(tx.calculateHash())) return 12504;
+        if (!tx.txid.eq(tx.calculateHash())) return 12504;
 
         const senderWallet = await Blockchain.chains[chain].wallets.getWallet(tx.senderAddress);
 
-        if (senderWallet.getNonce().eqn(tx.nonce)) return 12508;
+        if (!senderWallet.getNonce().eq(tx.nonce)) return 12508;
         if (!senderWallet.isSubtractMoneyPossible(tx.amount)) return 12524;
         
         return 12000;
@@ -35,7 +35,7 @@ export class Verification {
 
         let { targetChain, parentChain } = chainstateMatch;
         
-        if (block.calculateHash().eqn(block.hash)) {
+        if (!block.calculateHash().eq(block.hash)) {
             return { status: 12504 };
         }
         
@@ -55,8 +55,8 @@ export class Verification {
 
         if (!currentSlot) return 12500;
 
-        if (block.slotIndex.eqn(currentSlot.index)) return 12540;
-        if (block.minter.eqn(currentSlot.minter)) return 12534;
+        if (!block.slotIndex.eq(currentSlot.index)) return 12540;
+        if (!block.minter.eq(currentSlot.minter)) return 12534;
         if (currentSlot.block) return 12535;
 
         return 12000;

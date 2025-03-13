@@ -107,7 +107,7 @@ export class Slot {
 
         const minter = await Blockchain.minters.selectNextMinter(index);
 
-        if (!block || block.minter.eqn(minter)) {
+        if (!block || !block.minter.eq(minter)) {
             return false;
         }
 

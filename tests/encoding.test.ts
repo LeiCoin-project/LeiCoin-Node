@@ -23,6 +23,8 @@ describe("encoding", () => {
             new BlockBody([])
         );
 
+        block.hash.set(block.calculateHash());
+
         const decoded: any = Block.fromDecodedHex(block.encodeToHex());
         const decoded2 = Block.fromDecodedHex(decoded.encodeToHex());
 

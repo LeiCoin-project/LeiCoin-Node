@@ -9,20 +9,20 @@ import { LCrypt, Signature } from "@leicoin/crypto";
 export class Transaction extends HashableContainer {
 
     constructor(
-        public txid: Uint256,
-        public senderAddress: AddressHex,
-        public recipientAddress: AddressHex,
-        public amount: Uint64,
-        public nonce: Uint64,
-        public timestamp: Uint64,
-        public input: Uint,
-        public signature: Signature,
-        public readonly version = PX.V_00
+        readonly txid: Uint256,
+        readonly senderAddress: AddressHex,
+        readonly recipientAddress: AddressHex,
+        readonly amount: Uint64,
+        readonly nonce: Uint64,
+        readonly timestamp: Uint64,
+        readonly input: Uint,
+        readonly signature: Signature,
+        readonly version = PX.V_00
     ) {super()}
 
     public static createCoinbaseTransaction(mc: MinterCredentials) {
 
-        const coinbase = new Transaction(
+        const coinbase_tx = new Transaction(
             Uint256.alloc(),
             AddressHex.from("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2"),
             mc.address,
@@ -33,11 +33,10 @@ export class Transaction extends HashableContainer {
             Signature.alloc(),
         );
 
-        const hash = LCrypt.sha256(coinbase.encodeToHex(true));
-        coinbase.txid = hash;
-        coinbase.signature = LCrypt.sign(hash, PX.V_00, Uint256.alloc());
+        coinbase_tx.txid.set(coinbase_tx.calculateHash());
+        coinbase_tx.signature.set(LCrypt.sign(coinbase_tx.txid, PX.V_00, Uint256.alloc()));
 
-        return coinbase;
+        return coinbase_tx;
     }
 
     protected static fromDict(obj: any) {
@@ -45,7 +44,7 @@ export class Transaction extends HashableContainer {
 
         const tx = new Transaction(
             obj.txid,
-            null as any,
+            AddressHex.fromSignature(obj.txid, obj.signature),
             obj.recipientAddress,
             obj.amount,
             obj.nonce,
@@ -55,7 +54,7 @@ export class Transaction extends HashableContainer {
             obj.version
         );
 
-        tx.senderAddress = AddressHex.fromSignature(tx.txid, tx.signature);
+        if (!tx.calculateHash().eq(tx.txid)) return null;
 
         return tx;
     }
