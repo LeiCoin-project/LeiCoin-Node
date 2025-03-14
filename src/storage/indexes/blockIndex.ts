@@ -6,7 +6,7 @@ export class BlockIndexDB extends IndexDB {
     protected readonly path = "/indexes/block";
 
     async getBlockHash(index: Uint64) {
-        return await this.getData(index);
+        return await this.level.safe_get(index);
     }
 
     async setBlockHash(index: Uint64, hash: Uint256) {
@@ -14,7 +14,7 @@ export class BlockIndexDB extends IndexDB {
     }
 
     async removeIndex(index: Uint64) {
-        return this.delData(index);
+        return this.level.safe_del(index);
     }
 
 }

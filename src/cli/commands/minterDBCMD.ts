@@ -44,7 +44,7 @@ class ReadCMD extends CLICMD {
         if (args[0] === "all") {
             cli.cmd.info(
                 "Minters:\n" + 
-                (await Blockchain.minters.getAllKeys()).map((address) => {
+                (await Blockchain.minters.getAllAddresses()).map((address) => {
                     return address.toHex();
                 }).join("\n")
             );

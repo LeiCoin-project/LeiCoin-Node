@@ -15,7 +15,7 @@ export class BlockDB extends LevelBasedStorage {
         if (!overwrite) {
             // @todo blockdb
             this.level.get(block.hash);
-            if (this.getData(block.hash)) {
+            if (this.level.safe_get(block.hash)) {
                 cli.data.info(`Block ${block.hash} already exists in Chain: ${this.chain}.`);
                 return { cb: CB.ERROR };
             }

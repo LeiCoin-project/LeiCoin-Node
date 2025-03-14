@@ -23,29 +23,6 @@ export abstract class LevelBasedStorage {
         await this.level.close();
     }
 
-    
-    async getAllKeys() {
-        return this.level.keys().all();
-    }
-    
-
-    protected async getData(key: Uint) {
-        try {
-            return await this.level.get(key);
-        } catch {
-            return null;
-        }
-    }
-
-    protected async delData(key: Uint) {
-        try {
-            await this.level.del(key);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
 }
 
 export abstract class LevelBasedStorageWithRangeIndexes extends LevelBasedStorage {

@@ -13,7 +13,7 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes {
     protected keyPrefix = PX.A_0e;
 
     public async getMinter(address: AddressHex) {
-        const raw_minter_data = await this.getData(address);
+        const raw_minter_data = await this.level.safe_get(address);
         if (!raw_minter_data) return null;
         return MinterData.fromDecodedHex(address, raw_minter_data);
     }
@@ -23,7 +23,7 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes {
     }
 
     public async removeMinter(minter: MinterData) {
-        return this.delData(minter.address);
+        return this.level.safe_del(minter.address);
     }
 
     private async adjustStakeByBlock(block: Block) {
@@ -50,6 +50,10 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes {
         }
 
         throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
+    }
+
+    async getAllAddresses() {
+        return this.level.keys().all();
     }
 
 }

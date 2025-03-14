@@ -12,7 +12,7 @@ export class WalletDB extends LevelBasedStorage {
     protected path = "/wallets";
 
     async getWallet(address: AddressHex) {
-        const raw_wallet = await this.getData(address);
+        const raw_wallet = await this.level.safe_get(address);
         if (!raw_wallet) return Wallet.createEmptyWallet(address);
         return Wallet.fromDecodedHex(address, raw_wallet) || Wallet.createEmptyWallet(address);
     }
@@ -22,7 +22,7 @@ export class WalletDB extends LevelBasedStorage {
     }
 
     async existsWallet(address: AddressHex): Promise<boolean> {
-        const raw_wallet = await this.getData(address);
+        const raw_wallet = await this.level.safe_get(address);
         if (!raw_wallet) return false;
         return Wallet.fromDecodedHex(address, raw_wallet) ? true : false;
     }
@@ -81,7 +81,11 @@ export class WalletDB extends LevelBasedStorage {
     }
 
     async deleteWallet(address: AddressHex) {
-        return this.delData(address);
+        return this.level.safe_del(address);
+    }
+
+    async getAllAddresses() {
+        return this.level.keys().all();
     }
 
 }
