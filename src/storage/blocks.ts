@@ -1,20 +1,27 @@
 import { CB } from "@leicoin/utils/callbacks";
 import { cli } from "@leicoin/cli";
-import { StorageUtils } from "../utils.js";
+import { StorageUtils } from "./utils.js";
 import { Uint64 } from "low-level";
 import { Block } from "@leicoin/common/models/block";
+import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 
-export class BlockDB {
-    
-    private chain: string;
-    
-    constructor(chain = "main") {
-        this.chain = chain;
-        StorageUtils.ensureDirectoryExists('/blocks', this.chain);
-    }
+
+export class BlockDB extends LevelBasedStorage {
+
+    protected readonly path = "/blocks";
 
     public add(block: Block, overwrite = false) {
-        const blockIndex = block.index.toBigInt().toString();
+
+        if (!overwrite) {
+            // @todo blockdb
+            this.level.get(block.hash);
+            if (this.getData(block.hash)) {
+                cli.data.info(`Block ${block.hash} already exists in Chain: ${this.chain}.`);
+                return { cb: CB.ERROR };
+            }
+        }
+        this.level.put(block.hash, block.encodeToHex());
+
         try {
             const blockFilePath = `/blocks/${blockIndex}.lcb`;
             // Check if the block file already exists.
@@ -106,5 +113,4 @@ export class BlockDB {
     }*/
 
 }
-
 

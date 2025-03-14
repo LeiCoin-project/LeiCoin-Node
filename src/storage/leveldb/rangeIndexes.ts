@@ -38,7 +38,7 @@ export class LevelKeyIndexRange {
     }
 }
 
-export class LevelIndexes {
+export class LevelRangeIndexes {
 
     static readonly rangeSize = 256;
 
@@ -61,7 +61,7 @@ export class LevelIndexes {
     async load() {
         if (this.initialized) return;
 
-        for (let i = 0; i < LevelIndexes.rangeSize; i++) {
+        for (let i = 0; i < LevelRangeIndexes.rangeSize; i++) {
             const currentRange = LevelKeyIndexRange.fromStep(i, this.byteLength, this.prefix);
 
             const keyStream = this.level.createKeyStream({gte: currentRange.firstPossibleKey, lte: currentRange.lastPossibleKey});

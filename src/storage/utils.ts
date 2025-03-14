@@ -52,7 +52,7 @@ export class StorageUtils {
     
     
     // Function to ensure the existence of a directory
-    static ensureDirectoryExists(directoryPath: string, fork: string, silent?: boolean) {
+    static ensureDirectoryExists(directoryPath: string, fork = "main", silent?: boolean) {
         try {
             if (!this.existsPath(directoryPath, fork)) {
                 this.mkDir(directoryPath, fork);

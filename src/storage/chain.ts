@@ -1,7 +1,7 @@
-import { BlockDB } from "./state/blocks.js";
+import { BlockDB } from "./blocks.js";
 import { MinterDB } from "./state/minters.js";
 import { SmartContractStateDB } from "./state/smart-contract.js";
-import { WalletDB } from "./wallets.js";
+import { WalletDB } from "./state/wallets.js";
 
 export class Chain {
 
@@ -21,9 +21,9 @@ export class Chain {
 
     public async waitAllinit() {
         await Promise.all([
-            this.wallets.init(),
-            this.cstates.init(),
-            this.minters.init(),
+            this.wallets.open(),
+            this.cstates.open(),
+            this.minters.open(),
         ])
     }
 

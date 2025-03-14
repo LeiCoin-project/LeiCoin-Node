@@ -4,7 +4,7 @@
     "": {
       "name": "leicoin-node",
       "dependencies": {
-        "@cleverjs/cli": "^1.1.7",
+        "@cleverjs/cli": "^1.1.8",
         "@date-fns/utc": "^1.2.0",
         "@elysiajs/cors": "^1.2.0",
         "@leicoin/cli": "^1.0.0",
@@ -31,7 +31,7 @@
         "elliptic": "^6.6.1",
         "elysia": "^1.2.25",
         "level-read-stream": "^1.1.1",
-        "low-level": "^1.0.12",
+        "low-level": "^1.0.14",
         "reflect-metadata": "^0.2.2",
       },
       "devDependencies": {

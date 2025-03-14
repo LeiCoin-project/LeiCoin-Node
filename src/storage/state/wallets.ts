@@ -2,12 +2,12 @@ import { CB } from "@leicoin/utils/callbacks";
 import { cli } from "@leicoin/cli";
 import { Wallet } from "@leicoin/common/models/wallet";
 import { Block } from "@leicoin/common/models/block";
-import { Blockchain } from "./blockchain.js";
+import { Blockchain } from "../blockchain.js";
 import { AddressHex } from "@leicoin/common/models/address";
 import { Uint, Uint64 } from "low-level";
-import { LevelBasedStateStorage } from "./leveldb/levelBasedStorage.js";
+import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
 
-export class WalletDB extends LevelBasedStateStorage {
+export class WalletDB extends LevelBasedStorage {
 
     protected path = "/wallets";
 
@@ -29,6 +29,7 @@ export class WalletDB extends LevelBasedStateStorage {
 
     async addMoneyToWallet(address: AddressHex, amount: Uint64) {
         const wallet = await this.getWallet(address);
+        // @todo walletdb
         if (this.chain === "main") {
             for (const [chainName, chain] of Object.entries(Blockchain.chains)) {
                 if (chainName === "main") continue;

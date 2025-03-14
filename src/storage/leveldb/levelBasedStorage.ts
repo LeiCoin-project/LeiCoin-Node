@@ -1,27 +1,21 @@
-import path from "path";
 import { LevelDB } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
-import { LevelIndexes } from "./indexes.js";
+import { LevelRangeIndexes } from "./rangeIndexes.js";
 
-export abstract class LevelBasedStateStorage {
+export abstract class LevelBasedStorage {
 
     protected level: LevelDB = null as any;
     protected abstract path: string;
-    protected chain: string = "";
 
     private initialized = false;
 
-    constructor(chain: string) {
-        this.chain = chain;
-    }
-
-    async init() {
+    async open() {
         if (this.initialized) return;
         this.initialized = true;
         
-        StorageUtils.ensureDirectoryExists(this.path, this.chain);
-        this.level = new LevelDB(path.join(StorageUtils.getBlockchainDataFilePath(this.path, this.chain)));
+        StorageUtils.ensureDirectoryExists(this.path);
+        this.level = new LevelDB(StorageUtils.getBlockchainDataFilePath(this.path));
         await this.level.open();
     }
 
@@ -45,27 +39,24 @@ export abstract class LevelBasedStateStorage {
 
     protected async delData(key: Uint) {
         try {
-            return await this.level.del(key);
+            await this.level.del(key);
+            return true;
         } catch {
-            return null;
+            return false;
         }
     }
 
 }
 
-export abstract class LevelBasedStateStorageWithIndexes extends LevelBasedStateStorage {
+export abstract class LevelBasedStorageWithRangeIndexes extends LevelBasedStorage {
 
     protected abstract keyByteLengthWithoutPrefix: number;
     protected keyPrefix: Uint = Uint.alloc(0);
-    protected indexes: LevelIndexes = null as any;
+    protected indexes: LevelRangeIndexes = null as any;
 
-    constructor(chain: string) {
-        super(chain);
-    }
-
-    async init() {
-        await super.init();
-        this.indexes = new LevelIndexes(this.level, this.keyByteLengthWithoutPrefix, this.keyPrefix);
+    async open() {
+        await super.open();
+        this.indexes = new LevelRangeIndexes(this.level, this.keyByteLengthWithoutPrefix, this.keyPrefix);
         await this.indexes.load();
     }
 
