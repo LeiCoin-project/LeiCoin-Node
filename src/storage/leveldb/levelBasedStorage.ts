@@ -2,10 +2,15 @@ import { LevelDB } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
+import { LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
 
 export abstract class LevelBasedStorage {
 
-    protected level: LevelDB = null as any;
+    protected level: LevelDB<InstanceType<typeof this.levelKeyEncoder>, InstanceType<typeof this.levelValueEncoder>> = null as any;
+
+    protected readonly levelKeyEncoder: new (...args: any) => Uint = Uint;
+    protected readonly levelValueEncoder: new (...args: any) => Uint = Uint;
+
     protected abstract path: string;
 
     private initialized = false;
@@ -15,7 +20,10 @@ export abstract class LevelBasedStorage {
         this.initialized = true;
         
         StorageUtils.ensureDirectoryExists(this.path);
-        this.level = new LevelDB(StorageUtils.getBlockchainDataFilePath(this.path));
+        this.level = new LevelDB(StorageUtils.getBlockchainDataFilePath(this.path), {
+            //keyEncoding: this.levelKeyEncoder,
+            //valueEncoding: this.levelValueEncoder
+        });
         await this.level.open();
     }
 

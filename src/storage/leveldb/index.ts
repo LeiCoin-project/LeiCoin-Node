@@ -51,6 +51,10 @@ export class LevelDB<KDefault = Uint, VDefault = Uint> extends ClassicLevel<KDef
         }
     }
 
+    async has(key: KDefault): Promise<boolean> {
+        return (await this.safe_get(key)) !== null;
+    }
+
 
     public createReadStream(options?: ReadStreamOptions & Omit<AbstractIteratorOptions<KDefault, VDefault>, 'keys' | 'values'>) {
         return new EntryStream(this, options);
