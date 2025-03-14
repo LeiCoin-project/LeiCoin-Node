@@ -1,27 +1,32 @@
 import { CB } from "@leicoin/utils/callbacks";
 import { cli } from "@leicoin/cli";
 import { StorageUtils } from "./utils.js";
-import { Uint64 } from "low-level";
+import { Uint, Uint64 } from "low-level";
 import { Block } from "@leicoin/common/models/block";
 import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
-
+import { LevelDBEncoders } from "./leveldb/encoders.js";
+import { LevelDB } from "./leveldb/index.js";
 
 export class BlockDB extends LevelBasedStorage {
 
     protected readonly path = "/blocks";
 
-    public add(block: Block, overwrite = false) {
+    //protected level: LevelDB<InstanceType<typeof this.levelKeyEncoder>, InstanceType<typeof this.levelKeyEncoder>> = null as any;
+
+    protected readonly levelKeyEncoder = Uint64;
+
+    async add(block: Block, overwrite = false) {
 
         if (!overwrite) {
-            // @todo blockdb
-            this.level.get(block.hash);
-            if (this.level.safe_get(block.hash)) {
-                cli.data.info(`Block ${block.hash} already exists in Chain: ${this.chain}.`);
-                return { cb: CB.ERROR };
+            if (await this.level.has(block.index)) {
+                cli.data.info(`Block ${blockIndex} already exists and cannot be overwritten.`);
+                return false;
             }
         }
-        this.level.put(block.hash, block.encodeToHex());
 
+        this.level.put(block.index, block.encodeToHex());
+
+        const blockIndex = block.index.toBigInt().toString();
         try {
             const blockFilePath = `/blocks/${blockIndex}.lcb`;
             // Check if the block file already exists.

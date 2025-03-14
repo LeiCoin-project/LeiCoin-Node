@@ -6,7 +6,10 @@ export class ForkChoice {
 
     static async on_Block(block: BlockHeader, chain: Chain) {
 
+        const state = chain.state;
+        const blocks = chain.blocks;
 
+        
 
     }
 

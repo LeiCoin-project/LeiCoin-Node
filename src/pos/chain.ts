@@ -1,5 +1,5 @@
 import { Block, BlockHeader } from "@leicoin/common/models/block";
-import { Uint256 } from "low-level";
+import { Uint256, Uint64 } from "low-level";
 
 export class BlockStore {
 
@@ -11,29 +11,15 @@ export class BlockStore {
 
     }
 
-    async addTemporary(block: Block) {
-
-    }
-
-
-    async get(hash: Uint256): Promise<Block | null> {
+    async get(index: Uint64): Promise<Block | null> {
         
     }
 
-    async getHeader(hash: Uint256): Promise<BlockHeader | null> {
+    async getHeader(index: Uint64): Promise<BlockHeader | null> {
 
     }
 
-    async getByIndex(index: number): Promise<Block | null> {
-
-    }
-
-    async getHeaderByIndex(index: number): Promise<BlockHeader | null> {
-
-    }
-
-
-    async deleteTemporary(hash: Uint256) {
+    async delete(hash: Uint256) {
 
     }
     
