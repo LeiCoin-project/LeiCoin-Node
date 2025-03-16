@@ -17,7 +17,7 @@ export class Execution {
             forked = true;
         }
     
-        Blockchain.chains[targetChain].blocks.add(block);
+        await Blockchain.chains[targetChain].blocks.add(block);
         Blockchain.chainstate.updateChainStateByBlock(
             targetChain,
             parentChain,

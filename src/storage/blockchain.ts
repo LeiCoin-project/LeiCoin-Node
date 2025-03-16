@@ -11,7 +11,6 @@ export class Blockchain implements BasicModuleLike<typeof Blockchain> {
     static chainstate: Chainstate;
     static readonly chains: {[chain: string]: Chain} = {};
 
-    static get name() { return "main" }
     static get blocks() { return this.chains["main"].blocks }
     static get wallets() { return this.chains["main"].wallets }
     static get cstates() { return this.chains["main"].cstates }
@@ -25,11 +24,9 @@ export class Blockchain implements BasicModuleLike<typeof Blockchain> {
         this.setupEvents();
 
         this.chainstate = Chainstate.getInstance();
-        for (const chainName in this.chainstate.getAllChainStates()) {
-            this.chains[chainName] = new Chain(chainName);
-        }
+
         if (!this.chains["main"]) {
-            this.chains["main"] = new Chain("main");
+            this.chains["main"] = new Chain();
         }
     }
 
@@ -37,39 +34,44 @@ export class Blockchain implements BasicModuleLike<typeof Blockchain> {
         StorageUtils.ensureDirectoryExists('/forks', "main");
     }
 
-    static async createFork(targetChainID: string, parentChainID: string, baseBlock: Block) {
+    // static async createFork(targetChainID: string, parentChainID: string, baseBlock: Block) {
         
-        const parentLatestBlock = this.chainstate.getLatestBlock(parentChainID) as Block;
+    //     const parentLatestBlock = this.chainstate.getLatestBlock(parentChainID) as Block;
 
-        if (parentChainID !== "main") {
-            StorageUtils.copyChain(parentChainID, targetChainID);
-        }
+    //     if (parentChainID !== "main") {
+    //         StorageUtils.copyChain(parentChainID, targetChainID);
+    //     }
 
-        const forkChain = new Chain(targetChainID);
-        await forkChain.waitAllinit();
+    //     const forkChain = new Chain(targetChainID);
+    //     await forkChain.waitAllinit();
 
-        this.chains[targetChainID] = forkChain;
-        const parentChain = this.chains[parentChainID];
+    //     this.chains[targetChainID] = forkChain;
+    //     const parentChain = this.chains[parentChainID];
         
-        for (const blockIndex = parentLatestBlock.index.clone(); blockIndex.gte(baseBlock.index); blockIndex.isub(1)) {
+    //     for (const blockIndex = parentLatestBlock.index.clone(); blockIndex.gte(baseBlock.index); blockIndex.isub(1)) {
+            
+    //         const block = await parentChain.blocks.get(blockIndex);
+    //         if (!block) {
+    //             continue;
+    //         }
 
-            for (const transactionData of (parentChain.blocks.get(blockIndex).data as Block).body.transactions) {
+    //         for (const transactionData of block.body.transactions) {
 
-                const senderWallet = await parentChain.wallets.getWallet(transactionData.senderAddress);
-                const recipientWallet = await parentChain.wallets.getWallet(transactionData.recipientAddress);
+    //             const senderWallet = await parentChain.wallets.getWallet(transactionData.senderAddress);
+    //             const recipientWallet = await parentChain.wallets.getWallet(transactionData.recipientAddress);
     
-                senderWallet.adjustNonce(-1);
-                senderWallet.addMoney(transactionData.amount);
-                recipientWallet.subtractMoneyIFPossible(transactionData.amount);
+    //             senderWallet.adjustNonce(-1);
+    //             senderWallet.addMoney(transactionData.amount);
+    //             recipientWallet.subtractMoneyIFPossible(transactionData.amount);
     
-                await forkChain.wallets.setWallet(senderWallet);
-                await forkChain.wallets.setWallet(recipientWallet);
-            }
+    //             await forkChain.wallets.setWallet(senderWallet);
+    //             await forkChain.wallets.setWallet(recipientWallet);
+    //         }
     
-            forkChain.blocks.delete(blockIndex, true);
-        }
+    //         forkChain.blocks.delete(blockIndex);
+    //     }
 
-    }
+    // }
 
     // public transferForkToMain(fork: string) {
 
