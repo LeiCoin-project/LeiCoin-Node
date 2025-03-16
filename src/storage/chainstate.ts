@@ -203,13 +203,13 @@ export class Chainstate {
     }
 
 
-    public isBlockChainStateMatching(block: Block): {
+    async isBlockChainStateMatching(block: Block): Promise<{
         status: 12532 | 12533;
     } | {
         status: 12000;
         targetChain: string;
         parentChain: string;
-    } {
+    }> {
 
         if (block.index.eq(0)) {
             const latestBlockInfo = this.getChainState();
@@ -222,7 +222,7 @@ export class Chainstate {
         let previousBlock: Block | null = null;
 
         for (const chain of Object.values(this.getAllChainStates())) {
-            const chainPreviousBlock = Blockchain.chains[chain.id].blocks.get(block.index.sub(1)).data;
+            const chainPreviousBlock = await Blockchain.chains[chain.id].blocks.get(block.index.sub(1));
 
             if (chainPreviousBlock?.hash.eq(block.previousHash)) {
                 parentChain = chain;
@@ -234,7 +234,7 @@ export class Chainstate {
         if (!parentChain || !previousBlock)
             return { status: 12532 }; // Previous block not found
 
-        const targetBlock = Blockchain.chains[parentChain.id].blocks.get(block.index).data;
+        const targetBlock = await Blockchain.chains[parentChain.id].blocks.get(block.index);
 
         if (targetBlock) {
             if (targetBlock?.hash.eq(block.hash))

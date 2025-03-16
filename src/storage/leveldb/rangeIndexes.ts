@@ -38,7 +38,7 @@ export class LevelKeyIndexRange {
     }
 }
 
-export class LevelRangeIndexes {
+export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> {
 
     static readonly rangeSize = 256;
 
@@ -52,7 +52,7 @@ export class LevelRangeIndexes {
      * @param ranges - An array of LevelKeyIndexRange defining the ranges for indexing (default is an empty array).
      */
     constructor(
-        protected readonly level: LevelDB,
+        protected readonly level: LevelDB<K, V>,
         protected readonly byteLength: number,
         protected readonly prefix: Uint = Uint.alloc(0),
         protected readonly ranges: LevelKeyIndexRange[] = []
@@ -64,7 +64,7 @@ export class LevelRangeIndexes {
         for (let i = 0; i < LevelRangeIndexes.rangeSize; i++) {
             const currentRange = LevelKeyIndexRange.fromStep(i, this.byteLength, this.prefix);
 
-            const keyStream = this.level.createKeyStream({gte: currentRange.firstPossibleKey, lte: currentRange.lastPossibleKey});
+            const keyStream = this.level.createKeyStream({gte: currentRange.firstPossibleKey as K, lte: currentRange.lastPossibleKey as K});
 
             for await (const address of keyStream) {
                 currentRange.size.iadd(1);

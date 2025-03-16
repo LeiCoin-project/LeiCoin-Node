@@ -5,22 +5,21 @@ import { WalletDB } from "./state/wallets.js";
 
 export class Chain {
 
-    readonly name: string;
     readonly blocks: BlockDB;
     readonly wallets: WalletDB;
     readonly cstates: SmartContractStateDB;
     readonly minters: MinterDB;
 
-    constructor(name = "main") {
-        this.name = name;
-        this.blocks = new BlockDB(name);
-        this.wallets = new WalletDB(name);
-        this.cstates = new SmartContractStateDB(name);
-        this.minters = new MinterDB(name);
+    constructor() {
+        this.blocks = new BlockDB();
+        this.wallets = new WalletDB();
+        this.cstates = new SmartContractStateDB();
+        this.minters = new MinterDB();
     }
 
     public async waitAllinit() {
         await Promise.all([
+            this.blocks.open(),
             this.wallets.open(),
             this.cstates.open(),
             this.minters.open(),
@@ -29,6 +28,7 @@ export class Chain {
 
     public async close() {
         await Promise.all([
+            this.blocks.close(),
             this.wallets.close(),
             this.cstates.close(),
             this.minters.close(),

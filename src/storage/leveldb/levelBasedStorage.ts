@@ -1,17 +1,17 @@
 import { LevelDB } from "./index.js";
 import { StorageUtils } from "../utils.js";
-import { Uint } from "low-level";
+import { Uint, Uint64 } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
 import { LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
 
-export abstract class LevelBasedStorage {
-
-    protected level: LevelDB<InstanceType<typeof this.levelKeyEncoder>, InstanceType<typeof this.levelValueEncoder>> = null as any;
-
-    protected readonly levelKeyEncoder: new (...args: any) => Uint = Uint;
-    protected readonly levelValueEncoder: new (...args: any) => Uint = Uint;
+export abstract class LevelBasedStorage<K extends Uint = Uint, V extends Uint = Uint> {
 
     protected abstract path: string;
+
+    protected level: LevelDB<K, V> = null as any;
+
+    protected readonly levelKeyEncoder = LevelDBEncoders.Uint;
+    protected readonly levelValueEncoder = LevelDBEncoders.Uint;
 
     private initialized = false;
 
@@ -20,9 +20,9 @@ export abstract class LevelBasedStorage {
         this.initialized = true;
         
         StorageUtils.ensureDirectoryExists(this.path);
-        this.level = new LevelDB(StorageUtils.getBlockchainDataFilePath(this.path), {
-            //keyEncoding: this.levelKeyEncoder,
-            //valueEncoding: this.levelValueEncoder
+        this.level = new LevelDB<K, V>(StorageUtils.getBlockchainDataFilePath(this.path), {
+            keyEncoding: this.levelKeyEncoder as LevelDBEncoderLike<K>,
+            valueEncoding: this.levelValueEncoder as LevelDBEncoderLike<V>
         });
         await this.level.open();
     }
@@ -33,11 +33,11 @@ export abstract class LevelBasedStorage {
 
 }
 
-export abstract class LevelBasedStorageWithRangeIndexes extends LevelBasedStorage {
+export abstract class LevelBasedStorageWithRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> extends LevelBasedStorage<K, V> {
 
     protected abstract keyByteLengthWithoutPrefix: number;
     protected keyPrefix: Uint = Uint.alloc(0);
-    protected indexes: LevelRangeIndexes = null as any;
+    protected indexes: LevelRangeIndexes<K, V> = null as any;
 
     async open() {
         await super.open();

@@ -30,7 +30,7 @@ export class Verification {
 
         if (!block) return { status: 12501 };
 
-        const chainstateMatch = Blockchain.chainstate.isBlockChainStateMatching(block);
+        const chainstateMatch = await Blockchain.chainstate.isBlockChainStateMatching(block);
         if (chainstateMatch.status !== 12000) return chainstateMatch;
 
         let { targetChain, parentChain } = chainstateMatch;

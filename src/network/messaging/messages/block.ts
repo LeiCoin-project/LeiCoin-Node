@@ -67,7 +67,7 @@ export namespace NewBlockMsg {
             const chainID = block.hash.toHex();
             await Blockchain.createFork(chainID, chainID, block);
         
-            Blockchain.chains[chainID].blocks.add(block);
+            await Blockchain.chains[chainID].blocks.add(block);
             Blockchain.chainstate.updateChainStateByBlock(
                 chainID,
                 chainID,
@@ -124,9 +124,9 @@ export namespace GetBlocksMsg {
             const maxIndex = index.add(data.count);
             
             while (index.lt(maxIndex)) {
-                const block = Blockchain.blocks.get(index);
-                if (block.cb !== CB.SUCCESS || !block.data) break;
-                blocks.push(block.data);
+                const block = await Blockchain.blocks.get(index);
+                if (!block) break;
+                blocks.push(block);
                 index.iadd(1);
             }
 
