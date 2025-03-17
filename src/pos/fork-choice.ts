@@ -24,8 +24,7 @@ export class ForkChoice {
         if (!previousBlock) return false;
         if (previousBlock.hash !== block.previousHash) return false;
 
-
-
+        return true;
     }
 
 
