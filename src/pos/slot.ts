@@ -11,6 +11,7 @@ import { Schedule } from "@leicoin/utils/schedule";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Verification } from "@leicoin/verification";
 import { FallbackIncomingBlockQueue } from "@leicoin/net/types";
+import { POSUtils } from "./utils.js";
 
 export class SlotExecution {
 
@@ -27,7 +28,7 @@ export class SlotExecution {
         readonly index: Uint64,
         readonly minter: AddressHex,
     ) {
-        let timeUntilSlotStart = SlotExecutionManager.calculateSlotExecutionTime(index) - Date.now();
+        let timeUntilSlotStart = POSUtils.calculateSlotExecutionTime(index) - Date.now();
         if (timeUntilSlotStart < 0) timeUntilSlotStart = 0;
         new Schedule(async() => await this.onSlotStart(), timeUntilSlotStart);
         this.blockTimeout = new Schedule(async() => await this.onBlockNotMinted(), timeUntilSlotStart + 5_000);

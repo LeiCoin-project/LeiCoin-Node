@@ -1,5 +1,7 @@
-import { Block, BlockHeader } from "@leicoin/common/models/block";
-import { Uint256, Uint64 } from "low-level";
+import type { AddressHex } from "@leicoin/common/models/address";
+import type { Block, BlockHeader } from "@leicoin/common/models/block";
+import type { MinterData } from "@leicoin/common/models/minterData";
+import type { Uint256, Uint64 } from "low-level";
 
 export class BlockStore {
 
@@ -25,11 +27,32 @@ export class BlockStore {
     
 }
 
+export class MinterState {
+
+    async set(minter: MinterData) {
+
+    }
+
+    async get(address: AddressHex): Promise<MinterData | null> {
+        
+    }
+
+    async delete(address: AddressHex) {
+
+    }
+
+    async getProposer(slotIndex: Uint64): Promise<MinterData> {
+
+    }
+
+}
+
 
 export class ChainState {
 
     constructor(
         readonly latestBlockHeader: BlockHeader,
+        readonly minters: MinterState,
     ) {}
 
 }
@@ -37,6 +60,7 @@ export class ChainState {
 export class Chain {
 
     constructor(
+        readonly time: Uint64,
         readonly blocks: BlockStore,
         readonly state: ChainState
     ) {}

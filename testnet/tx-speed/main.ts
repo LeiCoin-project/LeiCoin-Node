@@ -109,8 +109,7 @@ export class TXSpeedTest {
                 Signature.empty()
             );
 
-            tx.txid.set(tx.calculateHash());
-            tx.signature = LCrypt.sign(tx.txid, PX.A_00, senderWallet.privateKey);
+            tx.sign(senderWallet.privateKey);
 
             transactions.push(tx);
         }
@@ -129,7 +128,6 @@ export class TXSpeedTest {
             Uint64.from(0),
             Uint256.empty(),
             Uint256.empty(),
-            Uint64.from(Date.now()),
             minterAddress,
             Signature.empty(),
             new BlockBody(
@@ -137,8 +135,7 @@ export class TXSpeedTest {
             )
         );
 
-        this.block.hash.set(this.block.calculateHash());
-        this.block.signature.set(LCrypt.sign(this.block.hash, PX.A_0e, minterPrivateKey));
+        this.block.sign(minterPrivateKey);
     }
 
     static async runVerify() {

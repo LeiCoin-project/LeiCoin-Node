@@ -3,7 +3,6 @@ import { BE, type DataEncoder } from "@leicoin/encoding";
 import { Uint64 } from "low-level";
 import { ErrorResponseMsg } from "./error.js";
 import { Blockchain } from "@leicoin/storage/blockchain";
-import { CB } from "@leicoin/utils/callbacks";
 import { AutoProcessingQueue } from "@leicoin/utils/queue";
 import { Block } from "@leicoin/common/models/block";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
@@ -11,6 +10,7 @@ import { SlotExecutionManager } from "@leicoin/pos";
 import { SlotExecution } from "@leicoin/pos/slot";
 import { Verification } from "@leicoin/verification";
 import { NetworkSyncManager } from "../../index.js";
+import { POSUtils } from "@leicoin/pos/utils";
 
 export class NewBlockMsg extends LNAbstractMsgBody {
 
@@ -34,7 +34,7 @@ export namespace NewBlockMsg {
             const block = data.block;
             if (!block) return null;
 
-            if (!block.slotIndex.eq(SlotExecutionManager.calulateCurrentSlotIndex())) {
+            if (!block.slotIndex.eq(POSUtils.calulateCurrentSlotIndex())) {
                 this.handleUnverifiableForkBlock(block);
                 return null;
             }

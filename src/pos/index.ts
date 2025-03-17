@@ -5,6 +5,7 @@ import { type MinterClient } from "@leicoin/minter";
 import { type ModuleLike } from "@leicoin/utils/dataUtils";
 import { CronJob } from "cron";
 import { SlotExecution } from "./slot";
+import { POSUtils } from "./utils";
 
 export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionManager> {
     public static initialized = false;
@@ -22,7 +23,7 @@ export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionMana
         this.minters.push(...minters);
      
         this.slotTask = new CronJob('1,6,11,16,21,26,31,36,41,46,51,56 * * * * *', () => {
-            const nextSlotIndex = Uint64.from(SlotExecutionManager.calulateCurrentSlotIndex() + 1);
+            const nextSlotIndex = POSUtils.calulateCurrentSlotIndex().add(1);
 
             //this.endSlot(this.currentSlot.index);
             this.startNewSlot(nextSlotIndex);
@@ -60,16 +61,6 @@ export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionMana
         cli.pos.info("POS stopped");
     }
 
-    static calulateCurrentSlotIndex() {
-        return Math.floor(
-            (Date.now() - Constants.GENESIS_TIME) / Constants.SLOT_TIME
-        );
-    }
-
-    static calculateSlotExecutionTime(index: Uint64) {
-        return Constants.GENESIS_TIME + index.toInt() * Constants.SLOT_TIME;
-    }
-
     static async startNewSlot(slotIndex: Uint64) {
         const newSlot = SlotExecution.create(slotIndex);
         this.slots.set(slotIndex, newSlot);
@@ -92,7 +83,7 @@ export class SlotExecutionManager implements ModuleLike<typeof SlotExecutionMana
     }
 
     static getCurrentSlot() {
-        return this.slots.get(Uint64.from(this.calulateCurrentSlotIndex()));
+        return this.slots.get(POSUtils.calulateCurrentSlotIndex());
     }
     
 }

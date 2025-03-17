@@ -10,6 +10,7 @@ import { Blockchain } from "@leicoin/storage/blockchain";
 import { Mempool } from "@leicoin/storage/mempool";
 import { Verification } from "@leicoin/verification";
 import { Uint256, Uint64 } from "low-level";
+import { POSUtils } from "@leicoin/pos/utils";
 
 
 export class MinterClient {
@@ -67,7 +68,6 @@ export class MinterClient {
 			currentSlotIndex,
 			Uint256.alloc(),
 			previousBlock?.hash || Uint256.alloc(),
-			Uint64.from(new Date().getTime()),
 			this.credentials.address,
 			Signature.empty(),
 			
@@ -76,8 +76,7 @@ export class MinterClient {
 			)
 		)
 
-		block.hash.set(block.calculateHash());
-		block.signature.set(LCrypt.sign(block.hash, PX.A_0e, this.credentials.privateKey));
+		block.sign(this.credentials.privateKey);
 		return block;
 	}
 

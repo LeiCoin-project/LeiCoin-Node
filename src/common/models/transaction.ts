@@ -4,7 +4,7 @@ import { PX } from "../types/prefix.js";
 import { MinterCredentials } from "./minterData.js";
 import { BE, DataEncoder } from "@leicoin/encoding";
 import { HashableContainer } from "./container.js";
-import { LCrypt, Signature } from "@leicoin/crypto";
+import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
 
 export class Transaction extends HashableContainer {
 
@@ -33,8 +33,7 @@ export class Transaction extends HashableContainer {
             Signature.alloc(),
         );
 
-        coinbase_tx.txid.set(coinbase_tx.calculateHash());
-        coinbase_tx.signature.set(LCrypt.sign(coinbase_tx.txid, PX.V_00, Uint256.alloc()));
+        coinbase_tx.sign(PrivateKey.empty());
 
         return coinbase_tx;
     }
@@ -69,6 +68,11 @@ export class Transaction extends HashableContainer {
         BE.Custom("input", { type: "prefix", val: "unlimited" }),
         BE(Signature, "signature", true)
     ]
+
+    public sign(privateKey: PrivateKey) {
+        this.txid.set(this.calculateHash());
+        this.signature.set(LCrypt.sign(this.txid, PX.A_00, privateKey));
+    }
 
 }
 

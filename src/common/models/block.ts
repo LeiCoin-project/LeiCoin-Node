@@ -4,7 +4,8 @@ import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
 import { BE, DataEncoder } from "@leicoin/encoding";
 import { HashableContainer } from "./container.js";
-import { Signature } from "@leicoin/crypto";
+import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
+import { POSUtils } from "@leicoin/pos/utils";
 
 export class BlockHeader extends HashableContainer {
     constructor(
@@ -12,10 +13,10 @@ export class BlockHeader extends HashableContainer {
         readonly slotIndex: Uint64,
         readonly hash: Uint256,
         readonly previousHash: Uint256,
-        readonly timestamp: Uint64,
         readonly minter: AddressHex,
         readonly signature: Signature,
         readonly body_hash: Uint256,
+        readonly timestamp: Uint64 = Uint64.from(POSUtils.calculateSlotExecutionTime(slotIndex)),
         readonly version: PX = PX.A_00
     ) {super()}
 
@@ -27,10 +28,10 @@ export class BlockHeader extends HashableContainer {
             obj.slotIndex,
             obj.hash,
             obj.previousHash,
-            obj.timestamp,
             AddressHex.fromSignature(obj.hash, obj.signature),
             obj.signature,
             obj.body_hash,
+            Uint64.from(POSUtils.calculateSlotExecutionTime(obj.slotIndex)),
             obj.version
         );
 
@@ -45,10 +46,14 @@ export class BlockHeader extends HashableContainer {
         BE.BigInt("slotIndex"),
         BE(Uint256, "hash", true),
         BE(Uint256, "previousHash"),
-        BE.BigInt("timestamp"),
         BE(Signature,"signature", true),
         BE(Uint256, "body_hash"),
     ]
+
+    public sign(privateKey: PrivateKey) {
+        this.hash.set(this.calculateHash());
+        this.signature.set(LCrypt.sign(this.hash, PX.A_0e, privateKey));
+    }
 
 }
 
@@ -76,21 +81,21 @@ export class Block extends BlockHeader {
         readonly slotIndex: Uint64,
         readonly hash: Uint256,
         readonly previousHash: Uint256,
-        readonly timestamp: Uint64,
         readonly minter: AddressHex,
         readonly signature: Signature,
         readonly body: BlockBody,
         readonly body_hash: Uint256 = body.calculateHash(),
+        readonly timestamp: Uint64 = Uint64.from(POSUtils.calculateSlotExecutionTime(slotIndex)),
         readonly version: PX = PX.A_00
     ) {super(
         index,
         slotIndex,
         hash,
         previousHash,
-        timestamp,
         minter,
         signature,
         body_hash,
+        timestamp,
         version
     )}
 
@@ -102,11 +107,11 @@ export class Block extends BlockHeader {
             obj.slotIndex,
             obj.hash,
             obj.previousHash,
-            obj.timestamp,
             AddressHex.fromSignature(obj.hash, obj.signature),
             obj.signature,
             obj.body,
             obj.body_hash,
+            Uint64.from(POSUtils.calculateSlotExecutionTime(obj.slotIndex)),
             obj.version
         );
 
@@ -121,10 +126,9 @@ export class Block extends BlockHeader {
         BE.BigInt("slotIndex"),
         BE(Uint256, "hash", true),
         BE(Uint256, "previousHash"),
-        BE.BigInt("timestamp"),
         BE(Signature,"signature", true),
         BE(Uint256, "body_hash"),
-        BE.Object("body", BlockBody),
+        BE.Object("body", BlockBody, true)
     ]
 
 }

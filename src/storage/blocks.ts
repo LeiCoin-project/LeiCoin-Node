@@ -10,13 +10,11 @@ export class BlockDB extends LevelBasedStorage<Uint64> {
     protected readonly levelKeyEncoder = LevelDBEncoders.Uint64;
 
     async add(block: Block, overwrite = false) {
-
         if (!overwrite) {
             if (await this.level.has(block.index)) {
                 return false;
             }
         }
-
         await this.level.put(block.index, block.encodeToHex());
         return true;
     }

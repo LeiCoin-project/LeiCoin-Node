@@ -17,7 +17,6 @@ describe("encoding", () => {
             Uint64.from(0),
             Uint256.empty(),
             Uint256.empty(),
-            Uint64.from(0),
             address,
             Signature.empty(),
             new BlockBody([])
