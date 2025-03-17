@@ -1,6 +1,5 @@
-import { BlockHeader } from "@leicoin/common/models/block";
-import { BasicBinaryMap, Uint256, Uint64 } from "low-level";
-import { Chain } from "./chain.js";
+import { type BlockHeader } from "@leicoin/common/models/block";
+import { type Chain } from "./chain.js";
 import { POSUtils } from "./utils.js";
 
 export class ForkChoice {
