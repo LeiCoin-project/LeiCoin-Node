@@ -17,7 +17,7 @@ type LNMsgRegistry<I extends readonly LNMsgInfo[], T = ObjectiveArray<I>> = {
 };
 
 class LNMsgUtils {
-    static createLNMsgRegistry<T extends readonly LNMsgInfo[]>(msgs: T) {
+    static createLNMsgRegistry<T extends readonly LNMsgInfo[]>(msgs: [...T]) {
         const registry: Dict<LNMsgInfo> = {};
         for (const msg of msgs) {
             registry[msg.Name] = msg;
@@ -45,8 +45,7 @@ export const LNMsgRegistry = LNMsgUtils.createLNMsgRegistry([
 
     ChainstateMsg,
     GetChainstateMsg,
-] as const);
-
+]);
 
 
 /** @tode Find a new Name for MessageRouter that is more accurate */

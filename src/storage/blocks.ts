@@ -2,12 +2,15 @@ import { type Uint64 } from "low-level";
 import { Block } from "@leicoin/common/models/block";
 import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 import { LevelDBEncoders } from "./leveldb/encoders.js";
+import { FastEvents } from "@leicoin/utils/fastevents"
 
 export class BlockDB extends LevelBasedStorage<Uint64> {
 
     protected readonly path = "/blocks";
 
     protected readonly levelKeyEncoder = LevelDBEncoders.Uint64;
+
+    protected readonly eventEmitter = new FastEvents.SingleEmitter<[Block]>();
 
     async add(block: Block, overwrite = false) {
         if (!overwrite) {
@@ -30,6 +33,15 @@ export class BlockDB extends LevelBasedStorage<Uint64> {
      */
     public delete(index: Uint64) {
         return this.level.safe_del(index);
+    }
+
+    
+    public on_update(callback: (block: Block) => Promise<void> | void) {
+        return this.eventEmitter.on(callback) as FastEvents.Subscription;
+    }
+
+    public unsubscribe_update(id: FastEvents.Subscription) {
+        return this.eventEmitter.unsubscribe(id);
     }
 
 }

@@ -1,52 +1,9 @@
-import type { AddressHex } from "@leicoin/common/models/address";
 import type { Block, BlockHeader } from "@leicoin/common/models/block";
-import type { MinterData } from "@leicoin/common/models/minterData";
-import type { Uint256, Uint64 } from "low-level";
-
-export class BlockStore {
-
-    constructor() {
-        
-    }
-
-    async add(block: Block) {
-
-    }
-
-    async get(index: Uint64): Promise<Block | null> {
-        
-    }
-
-    async getHeader(index: Uint64): Promise<BlockHeader | null> {
-
-    }
-
-    async delete(hash: Uint256) {
-
-    }
-    
-}
-
-export class MinterState {
-
-    async set(minter: MinterData) {
-
-    }
-
-    async get(address: AddressHex): Promise<MinterData | null> {
-        
-    }
-
-    async delete(address: AddressHex) {
-
-    }
-
-    async getProposer(slotIndex: Uint64): Promise<MinterData> {
-
-    }
-
-}
-
+import type { AddressHex } from "@leicoin/common/models/address";
+import type { BlockStore, MinterState } from "./store.js";
+import type { Uint64 } from "low-level";
+import type { FastEvents } from "@leicoin/utils/fastevents";
+import { POSUtils } from "./utils.js";
 
 export class ChainState {
 
@@ -59,10 +16,34 @@ export class ChainState {
 
 export class Chain {
 
+    protected updateListenerSubscription: FastEvents.Subscription;
+
     constructor(
         readonly time: Uint64,
-        readonly blocks: BlockStore,
+        protected readonly blocks: BlockStore,
         readonly state: ChainState
-    ) {}
-    
+    ) {
+        //this.updateListenerSubscription = this.blocks.
+    }
+
+    async getBlock(index: Uint64) {
+        return await this.blocks.get(index);
+    }
+    async getBlockHeader(index: Uint64) {
+        return await this.blocks.getHeader(index);
+    }
+
+    async getMinter(address: AddressHex) {
+        return await this.state.minters.get(address);
+    }
+
+    async getProposer(slotIndex: Uint64 = POSUtils.calulateCurrentSlotIndex(this.time)) {
+        return await this.state.minters.getProposer(slotIndex);
+    }
+
+    async update(block: Block) {
+        
+    }
+
+
 }

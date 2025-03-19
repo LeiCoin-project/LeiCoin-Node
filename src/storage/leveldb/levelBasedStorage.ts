@@ -1,6 +1,6 @@
 import { LevelDB } from "./index.js";
 import { StorageUtils } from "../utils.js";
-import { Uint, Uint64 } from "low-level";
+import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
 import { LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
 

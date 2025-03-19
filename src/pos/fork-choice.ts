@@ -7,10 +7,9 @@ export class ForkChoice {
     static async on_Block(block: BlockHeader, chain: Chain) {
 
         const state = chain.state;
-        const blocks = chain.blocks;
 
         const currentSlotIndex = POSUtils.calulateCurrentSlotIndex(chain.time);
-        const currentProposer_promise = state.minters.getProposer(currentSlotIndex);
+        const currentProposer_promise = chain.getProposer(currentSlotIndex);
 
         if (!currentSlotIndex.eq(block.slotIndex)) return false;
 
@@ -19,7 +18,7 @@ export class ForkChoice {
 
         if (state.latestBlockHeader.index.gte(block.index)) return false;
 
-        const previousBlock = await blocks.get(block.index.sub(1));
+        const previousBlock = await chain.getBlock(block.index.sub(1));
         if (!previousBlock) return false;
         if (previousBlock.hash !== block.previousHash) return false;
 
