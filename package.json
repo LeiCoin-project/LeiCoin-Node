@@ -16,7 +16,6 @@
 		"debug:noCompact": "bun run ./build/src",
 		"debug:noCompactNewTsc": "tsc && bun run build/src",
 		"bundle": "bun run ./scripts/bundle",
-		"tsc": "tsc",
 		"compile": "bun run ./scripts/compile",
 		"release": "bun run ./scripts/build/withEntryPoint",
 		"start": "./build/bin/leicoin-node"
