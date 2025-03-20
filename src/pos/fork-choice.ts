@@ -9,7 +9,7 @@ export class ForkChoice {
         const state = chain.state;
 
         const currentSlotIndex = POSUtils.calulateCurrentSlotIndex(chain.time);
-        const currentProposer_promise = chain.getProposer(currentSlotIndex);
+        const currentProposer_promise = state.getProposer(currentSlotIndex);
 
         if (!currentSlotIndex.eq(block.slotIndex)) return false;
 
