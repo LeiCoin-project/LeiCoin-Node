@@ -6,7 +6,7 @@ import { Uint } from "low-level";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { LNBroadcastingMsgHandler, LNMsgRequestHandler } from "../abstractMsgHandler.js";
 import { Dict } from "@leicoin/utils/dataUtils";
-import { BE, type DataEncoder } from "@leicoin/encoding";
+import { BE, type DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 
 export class NewTransactionMsg extends LNAbstractMsgBody {

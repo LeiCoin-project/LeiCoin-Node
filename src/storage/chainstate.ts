@@ -7,7 +7,7 @@ import { Dict } from "@leicoin/utils/dataUtils";
 import { StorageUtils } from "./utils.js";
 import { Blockchain } from "./blockchain.js";
 import { LCrypt } from "@leicoin/crypto";
-import { ObjectEncoding, DataEncoder, BE } from "@leicoin/encoding";
+import { ObjectEncoding, DataEncoder, BE } from "flexbuf";
 
 
 export class ForkChainstateData {

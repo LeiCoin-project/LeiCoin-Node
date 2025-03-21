@@ -1,5 +1,5 @@
 import { Uint16 } from "low-level";
-import { BE, type DataEncoder } from "@leicoin/encoding";
+import { BE, type DataEncoder } from "flexbuf";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { LNMsgResponseHandler } from "../abstractMsgHandler.js";
 

@@ -1,10 +1,10 @@
 import { type Uint } from "low-level";
-import { BE, type DataEncoder } from "@leicoin/encoding";
+import { BE, type DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 import { LNAbstractMsgBody, type LNMsgBodyConstructor, LNMsgID } from "../abstractMsg.js";
 import { LNMsgDefaultHandler } from "../abstractMsgHandler";
 import { StatusMsg } from "./status.js";
-import { ObjectEncoding } from "@leicoin/encoding";
+import { ObjectEncoding } from "flexbuf";
 import { cli } from "@leicoin/cli";
 import { MessageRouter } from "../index.js";
 

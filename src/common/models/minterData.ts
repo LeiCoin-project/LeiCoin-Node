@@ -2,7 +2,7 @@ import { NumberLike, Uint, Uint64 } from "low-level";
 import { cli } from "@leicoin/cli";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
-import { BE, DataEncoder, ObjectEncoding } from "@leicoin/encoding";
+import { BE, DataEncoder, ObjectEncoding } from "flexbuf";
 import { PrivateKey } from "@leicoin/crypto";
 
 export class MinterData {

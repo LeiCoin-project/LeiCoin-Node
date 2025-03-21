@@ -2,7 +2,7 @@ import { LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { ForkChainstateData } from "@leicoin/storage/chainstate";
 import { Dict } from "@leicoin/utils/dataUtils";
-import { BE, DataEncoder } from "@leicoin/encoding";
+import { BE, DataEncoder } from "flexbuf";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { ErrorResponseMsg } from "./error.js";
 import { NetworkSyncManager } from "../../chain-sync.js";

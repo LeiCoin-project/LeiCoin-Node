@@ -1,5 +1,5 @@
 import { LNBroadcastingMsgHandler, LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
-import { BE, type DataEncoder } from "@leicoin/encoding";
+import { BE, type DataEncoder } from "flexbuf";
 import { Uint64 } from "low-level";
 import { ErrorResponseMsg } from "./error.js";
 import { Blockchain } from "@leicoin/storage/blockchain";

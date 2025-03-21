@@ -3,7 +3,7 @@ import { cli } from "@leicoin/cli";
 import { LockedUint } from "@leicoin/common/types/prefix";
 import { type Dict } from "@leicoin/utils/dataUtils";
 import { type LNBasicMsgHandler } from "./abstractMsgHandler.js";
-import { DataEncoder, ObjectEncoding } from "@leicoin/encoding";
+import { DataEncoder, ObjectEncoding } from "flexbuf";
 
 /**
  * Stores the message types used in the LeiCoin network

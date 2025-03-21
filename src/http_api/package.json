@@ -10,7 +10,6 @@
       "@leicoin/cli": "^1.0.0",
       "@leicoin/config": "^1.0.0",
       "@leicoin/crypto": "^1.0.0",
-      "@leicoin/encoding": "^1.0.0",
       "@leicoin/net": "^1.0.0",
       "@leicoin/minter": "^1.0.0",
       "@leicoin/common": "^1.0.0",

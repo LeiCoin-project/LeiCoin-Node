@@ -4,7 +4,7 @@ import { type Dict } from "@leicoin/utils/dataUtils";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { LNMsgDefaultHandler } from "../abstractMsgHandler.js";
 import { type PeerSocket } from "../../socket.js";
-import { BE, DataEncoder } from "@leicoin/encoding";
+import { BE, DataEncoder } from "flexbuf";
 
 export class StatusMsg extends LNAbstractMsgBody {
 

@@ -1,6 +1,6 @@
 // import { cli } from "@leicoin/cli";
 // import Crypto from "@leicoin/crypto";
-// import { ObjectEncoding, EncodingSettings } from "@leicoin/encoding";
+// import { ObjectEncoding, EncodingSettings } from "flexbuf";
 // import { Uint, Uint64 } from "@leicoin/utils/binary";
 // import { DataUtils } from "@leicoin/utils/dataUtils";
 // import { AddressHex } from "./address.js";

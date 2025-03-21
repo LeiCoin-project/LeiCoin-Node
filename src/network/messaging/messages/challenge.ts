@@ -1,5 +1,5 @@
 import { BasicBinaryMap, Uint256, Uint32 } from "low-level";
-import { BE, DataEncoder } from "@leicoin/encoding";
+import { BE, DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 import { LNMsgDefaultHandler, LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";

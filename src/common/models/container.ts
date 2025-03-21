@@ -1,7 +1,7 @@
 import { type Uint } from "low-level";
 import { cli } from "@leicoin/cli";
 import { LCrypt } from "@leicoin/crypto";
-import { DataEncoder, ObjectEncoding } from "@leicoin/encoding";
+import { DataEncoder, ObjectEncoding } from "flexbuf";
 
 type NewContainer<T extends Container> = new (...args: any[]) => T;
 
