@@ -2,8 +2,7 @@ import { AddressHex } from "./address.js";
 import { Uint, Uint256, Uint64 } from "low-level";
 import { PX } from "../types/prefix.js";
 import { MinterCredentials } from "./minterData.js";
-import { BE, DataEncoder } from "flexbuf";
-import { HashableContainer } from "./container.js";
+import { BE, DataEncoder, HashableContainer } from "flexbuf";
 import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
 
 export class Transaction extends HashableContainer {

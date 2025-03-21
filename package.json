@@ -60,7 +60,7 @@
 		"dotenv": "^16.4.7",
 		"elliptic": "^6.6.1",
 		"elysia": "^1.2.25",
-		"flexbuf": "^1.1.1",
+		"flexbuf": "^1.2.0",
 		"level-read-stream": "^1.1.1",
 		"low-level": "latest",
 		"reflect-metadata": "^0.2.2"
