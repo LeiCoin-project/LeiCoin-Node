@@ -75,7 +75,7 @@ function main {
     
     LOCAL_VERSION=$(get_current_version)
 
-    if [ "v$VERSION" == "latest" ]; then
+    if [ "$VERSION" == "latest" ]; then
         
         REMOTE_VERSION=$(get_latest_version $EXPERIMENTAL)
 
