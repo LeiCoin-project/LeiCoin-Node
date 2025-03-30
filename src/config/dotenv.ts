@@ -1,5 +1,5 @@
 import path from "path";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { type Dict } from "@leicoin/utils/dataUtils";
 import dotenv from "dotenv";
 import fs from "fs";
 import { Utils } from "@leicoin/utils";

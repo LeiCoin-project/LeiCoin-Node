@@ -1,1 +1,1 @@
-{"extends": "../../tsconfig.mod.json"}
+{"extends": "../../tsconfig/tsconfig.mod.json"}

@@ -8,7 +8,7 @@
 		"setup": "bun run ./scripts/setup",
 		"clean": "rm -rf node_modules",
 		"test": "bun test",
-		"typecheck": "tsc --noEmit --skipLibCheck --esModuleInterop --target esnext --moduleResolution bundler --module esnext --strict ./src/**/*.ts",
+		"typecheck": "tsc -p ./tsconfig/tsconfig.typecheck.json",
 		"testnet": "bun run ./testnet",
 		"debug": "bun run ./src/index.ts",
 		"debug:bundle": "bun run ./build/bundle/leicoin-node.js",

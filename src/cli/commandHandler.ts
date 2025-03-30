@@ -11,7 +11,7 @@ import { StartServiceCMD } from "./commands/startServiceCMD.js";
 import { StopCMD } from "./commands/stopCMD.js";
 import { VersionCMD } from "./commands/versionCMD.js";
 import { WalletDBCMD } from "./commands/walletDBCMD.js";
-import { CLIApp, CLICMDExecMeta, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
+import { CLIApp, type CLICMDExecMeta, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
 
 
 export class CLICMDHandler extends CLIApp {
