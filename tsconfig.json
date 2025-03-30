@@ -1,56 +1,26 @@
 {
-  "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        /* Visit https://aka.ms/tsconfig to read more about this file */
 
-    // Environment setup & latest features
-    "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleDetection": "auto",
-    // "allowJs": true,
-    // "checkJs": true, 
-
-    // Module and Emit options
-    "moduleResolution": "bundler",
-    "declaration": true,
-    "outDir": "./build/src/",
-    "incremental": true,
-    // "noEmit": true,
-    // "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
-    /* Type Checking */
-    "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-
-    // Additional features
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  //"include": ["src/**/*.ts"]
-  "files": ["./src/index.ts"],
-  "references": [
-    { "path": "./src/core" },
-    { "path": "./src/cli" },
-    { "path": "./src/config" },
-    { "path": "./src/crypto" },
-    { "path": "./src/http_api" },
-    { "path": "./src/network" },
-    { "path": "./src/minter" },
-    { "path": "./src/common" },
-    { "path": "./src/pos" },
-    { "path": "./src/smart-contracts" },
-    { "path": "./src/storage" },
-    { "path": "./src/utils" },
-    { "path": "./src/verification" }
-  ]
+        // Module and Emit options
+        "outDir": "./build/src/",
+    },
+    //"include": ["src/**/*.ts"]
+    "files": ["./src/index.ts"],
+    "references": [
+        { "path": "./src/core" },
+        { "path": "./src/cli" },
+        { "path": "./src/config" },
+        { "path": "./src/crypto" },
+        { "path": "./src/http_api" },
+        { "path": "./src/network" },
+        { "path": "./src/minter" },
+        { "path": "./src/common" },
+        { "path": "./src/pos" },
+        { "path": "./src/smart-contracts" },
+        { "path": "./src/storage" },
+        { "path": "./src/utils" },
+        { "path": "./src/verification" }
+    ]
 }
