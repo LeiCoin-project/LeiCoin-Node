@@ -3,7 +3,7 @@ import { Block } from "@leicoin/common/models/block";
 import { PX } from "@leicoin/common/types/prefix";
 import { Uint, Uint256 } from "low-level";
 import { CB } from "@leicoin/utils/callbacks";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { type Dict } from "@leicoin/utils/dataUtils";
 import { StorageUtils } from "./utils.js";
 import { Blockchain } from "./blockchain.js";
 import { LCrypt } from "@leicoin/crypto";
@@ -129,15 +129,15 @@ export class ChainstateData {
 
 }
 
-export class Chainstate {
+export class ChainstateStore {
 
-    private static instance: Chainstate;
+    private static instance: ChainstateStore;
 
     public static getInstance() {
-        if (!Chainstate.instance) {
-            Chainstate.instance = new Chainstate();
+        if (!ChainstateStore.instance) {
+            ChainstateStore.instance = new ChainstateStore();
         }
-        return Chainstate.instance;
+        return ChainstateStore.instance;
     }
 
     private readonly chainStateData: ChainstateData;
@@ -221,11 +221,17 @@ export class Chainstate {
         let parentChain: ForkChainstateData | null = null;
         let previousBlock: Block | null = null;
 
-        for (const chain of Object.values(this.getAllChainStates())) {
-            const chainPreviousBlock = await Blockchain.chains[chain.id].blocks.get(block.index.sub(1));
+        for (const chainState of Object.values(this.getAllChainStates())) {
+
+            const blocks = Blockchain.chains[chainState.id]?.blocks;
+            if (!blocks) {
+                throw new Error(`Chain ${chainState.id} exists in chainstate but storageapi not accessible`);
+            }
+
+            const chainPreviousBlock = await blocks.get(block.index.sub(1));
 
             if (chainPreviousBlock?.hash.eq(block.previousHash)) {
-                parentChain = chain;
+                parentChain = chainState;
                 previousBlock = chainPreviousBlock;
                 break;
             }
@@ -234,7 +240,12 @@ export class Chainstate {
         if (!parentChain || !previousBlock)
             return { status: 12532 }; // Previous block not found
 
-        const targetBlock = await Blockchain.chains[parentChain.id].blocks.get(block.index);
+        const blocks = Blockchain.chains[parentChain.id]?.blocks;
+        if (!blocks) {
+            throw new Error(`Chain ${parentChain.id} exists in chainstate but storageapi not accessible`);
+        }
+
+        const targetBlock = await blocks.get(block.index);
 
         if (targetBlock) {
             if (targetBlock?.hash.eq(block.hash))

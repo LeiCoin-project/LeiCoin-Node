@@ -1,20 +1,22 @@
 import { StorageUtils } from "./utils.js";
-import { Chainstate } from "./chainstate.js";
+import { ChainstateStore } from "./chainstate.js";
 import { cli } from "@leicoin/cli";
-import { BasicModuleLike } from "@leicoin/utils/dataUtils";
-import { type Block } from "@leicoin/common/models/block";
+import { type BasicModuleLike } from "@leicoin/utils/dataUtils";
 import { Chain } from "./chain.js";
 
 export class Blockchain implements BasicModuleLike<typeof Blockchain> {
     public static initialized = false;
 
-    static chainstate: Chainstate;
-    static readonly chains: {[chain: string]: Chain} = {};
+    static chainstate: ChainstateStore;
+    static readonly chains: {
+        main: Chain;
+        [chain: string]: Chain
+    } = {} as any;
 
-    static get blocks() { return this.chains["main"].blocks }
-    static get wallets() { return this.chains["main"].wallets }
-    static get cstates() { return this.chains["main"].cstates }
-    static get minters() { return this.chains["main"].minters }
+    static get blocks() { return this.chains.main.blocks }
+    static get wallets() { return this.chains.main.wallets }
+    static get cstates() { return this.chains.main.cstates }
+    static get minters() { return this.chains.main.minters }
 
     static async init() {
         if (this.initialized) return;
@@ -23,10 +25,10 @@ export class Blockchain implements BasicModuleLike<typeof Blockchain> {
         this.createStorageIfNotExists();
         this.setupEvents();
 
-        this.chainstate = Chainstate.getInstance();
+        this.chainstate = ChainstateStore.getInstance();
 
-        if (!this.chains["main"]) {
-            this.chains["main"] = new Chain();
+        if (!this.chains.main) {
+            this.chains.main = new Chain();
         }
     }
 

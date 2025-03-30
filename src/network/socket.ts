@@ -2,7 +2,7 @@ import { cli } from "@leicoin/cli";
 import type { Socket, SocketHandler } from "bun";
 import { Uint, Uint256, Uint32 } from "low-level";
 import { LNBroadcastMsg, LNRequestMsg, LNResponseMsg, LNStandartMsg } from "./messaging/networkMessages.js";
-import { LNActiveRequests, LNResponseData } from "./requests.js";
+import { LNActiveRequests, type LNResponseData } from "./requests.js";
 import type { LNMsgRequestHandler, LNBroadcastingMsgHandler, LNMsgDefaultHandler } from "./messaging/abstractMsgHandler.js";
 import { LNMsgID, LNAbstractMsgBody } from "./messaging/abstractMsg.js";
 import { MessageRouter } from "./messaging/index.js";
