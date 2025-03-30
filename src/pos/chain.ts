@@ -25,7 +25,7 @@ export class ChainState {
 
 export class Chain {
 
-    protected readonly updateListenerSubscription: FastEvents.Subscription;
+    protected readonly eventSubscriptions = new FastEvents.SubscriptionsManager();
 
     constructor(
         readonly time: Uint64,

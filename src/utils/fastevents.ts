@@ -1,8 +1,9 @@
-import { ObjectiveArray } from "./dataUtils.js";
+import type { ObjectiveArray } from "./dataUtils.js";
 
 export namespace FastEvents {
 
-    export type Subscription = symbol;
+    export type SubscriptionID = symbol;
+
     export type Listener<Args extends any[]> = (...args: Args) => Promise<void> | void;
 
     type TopicRegistry<I extends readonly FastEvents.Topic<string, any[]>[], T = ObjectiveArray<I>> = {
@@ -15,15 +16,15 @@ export namespace FastEvents {
 
     export class SingleEmitter<Args extends any[] = any[]> {
 
-        protected readonly subscribers: Record<FastEvents.Subscription, FastEvents.Listener<Args>> = {};
+        protected readonly subscribers: Record<FastEvents.SubscriptionID, FastEvents.Listener<Args>> = {};
 
         public on(listener: FastEvents.Listener<Args>) {
             const id = Symbol("subscriber-id");
             this.subscribers[id] = listener;
-            return id as FastEvents.Subscription;
+            return id as FastEvents.SubscriptionID;
         }
 
-        public unsubscribe(id: FastEvents.Subscription) {
+        public unsubscribe(id: FastEvents.SubscriptionID) {
             return delete this.subscribers[id];
         }
 
@@ -31,7 +32,7 @@ export namespace FastEvents {
             const promises: Promise<void>[] = [];
 
             for (const id of Object.getOwnPropertySymbols(this.subscribers)) {
-                promises.push(this.subscribers[id](...args) as Promise<void>);
+                promises.push((this.subscribers[id] as any)(...args) as Promise<void>);
             }
 
             await Promise.all(promises);
@@ -49,7 +50,7 @@ export namespace FastEvents {
 
     export class Emitter<Topics extends readonly FastEvents.Topic<string, any[]>[]> {
 
-         readonly topics: TopicRegistry<Topics>;
+        readonly topics: TopicRegistry<Topics>;
 
         constructor(topics: [...Topics]) {
             this.topics = topics.reduce((acc, topic) => {
@@ -60,10 +61,10 @@ export namespace FastEvents {
         	
         // @ts-ignore
         public on<T extends Topics[number]["name"]>(topic: T, listener: FastEvents.Listener<Parameters<TopicRegistry<Topics>[T]["emit"]>>) {
-            return (this.topics[topic] as any).on(listener) as FastEvents.Subscription;
+            return (this.topics[topic] as any).on(listener) as FastEvents.SubscriptionID;
         }
 
-        public unsubscribe<T extends Topics[number]["name"]>(topic: T, id: FastEvents.Subscription) {
+        public unsubscribe<T extends Topics[number]["name"]>(topic: T, id: FastEvents.SubscriptionID) {
             return (this.topics[topic] as any).unsubscribe(id);
         }
 
@@ -74,5 +75,23 @@ export namespace FastEvents {
 
     }
 
-}
+    export class SubscriberAccount<Emitter extends FastEvents.Emitter<Topics>, Topics extends readonly FastEvents.Topic<string, any[]>[]> {
 
+        protected readonly subscriptions: Record<string, FastEvents.SubscriptionID> = {};
+
+        constructor(
+            readonly emitter: Emitter
+        ) {}
+
+        // @ts-ignore
+        public on<T extends Topics[number]["name"]>(topic: T, listener: FastEvents.Listener<Parameters<TopicRegistry<Topics>[T]["emit"]>>) {
+            this.subscriptions[topic] = this.emitter.on(topic, listener);
+        }
+
+        public unsubscribe<T extends Topics[number]["name"]>(topic: T) {
+            this.emitter.unsubscribe(topic, this.subscriptions[topic] as FastEvents.SubscriptionID);
+        }
+
+    }
+
+}

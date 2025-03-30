@@ -1,13 +1,14 @@
 import type { AddressHex } from "@leicoin/common/models/address";
 import type { Block, BlockHeader } from "@leicoin/common/models/block";
 import type { MinterData } from "@leicoin/common/models/minterData";
+import type { StorageAPI } from "@leicoin/storage/api";
 import type { Uint256, Uint64 } from "low-level";
 
 export class BlockStore {
 
-    constructor() {
-        
-    }
+    constructor(
+        protected readonly storage: StorageAPI
+    ) {}
 
     async add(block: Block) {
 
@@ -15,6 +16,10 @@ export class BlockStore {
 
     async get(index: Uint64): Promise<Block | null> {
         
+    }
+
+    async getHead(): Promise<Block> {
+
     }
 
     async getHeader(index: Uint64): Promise<BlockHeader | null> {
@@ -28,6 +33,10 @@ export class BlockStore {
 }
 
 export class MinterState {
+
+    constructor(
+        protected readonly storage: StorageAPI
+    ) {}
 
     async set(minter: MinterData) {
 
