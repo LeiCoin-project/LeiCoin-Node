@@ -1,95 +1,98 @@
-import type { ObjectiveArray } from "./dataUtils.js";
+import type { ObjectKeys, ObjectiveArray } from "./dataUtils.js";
 
 export namespace FastEvents {
 
     export type SubscriptionID = symbol;
+    export type Subscriptions<T> = Record<keyof T, Set<SubscriptionID>>;
 
     export type Listener<Args extends any[]> = (...args: Args) => Promise<void> | void;
+    export type Listeners = Map<SubscriptionID, Listener<any[]>>;
 
-    type TopicRegistry<I extends readonly FastEvents.Topic<string, any[]>[], T = ObjectiveArray<I>> = {
-        // @ts-ignore
-        [K in T[keyof T]["name"]]: Extract<
-            T[keyof T],
-            { name: K }
-        >;
-    };
 
     export class SingleEmitter<Args extends any[] = any[]> {
 
-        protected readonly subscribers: Record<FastEvents.SubscriptionID, FastEvents.Listener<Args>> = {};
+        protected readonly listeners: Listeners = new Map();
 
-        public on(listener: FastEvents.Listener<Args>) {
-            const id = Symbol("subscriber-id");
-            this.subscribers[id] = listener;
-            return id as FastEvents.SubscriptionID;
+        public on(listener: Listener<Args>, id: SubscriptionID = Symbol("subscriber-id")) {
+            this.listeners.set(id, listener);
+            return id;
         }
 
-        public unsubscribe(id: FastEvents.SubscriptionID) {
-            return delete this.subscribers[id];
+        public unsubscribe(id: SubscriptionID) {
+            this.listeners.delete(id);
         }
 
         async emit(...args: Args) {
             const promises: Promise<void>[] = [];
 
-            for (const id of Object.getOwnPropertySymbols(this.subscribers)) {
-                promises.push((this.subscribers[id] as any)(...args) as Promise<void>);
+            for (const listener of this.listeners.values()) {
+                promises.push(listener(...args) as Promise<void>);
             }
 
-            await Promise.all(promises);
+            return Promise.all(promises);
         }
 
     }
 
 
-    export class Topic<T extends string, Args extends any[] = any[]> extends FastEvents.SingleEmitter<Args> {
+    export class Emitter<Topics extends Record<string, any[]>> {
+
+        protected readonly subscriptions: Subscriptions<Topics> = {} as any;
+        protected readonly listeners: Listeners = new Map();
+        
+        constructor(topics: ObjectKeys<Topics>) {
+            for (const topic of topics as (keyof Topics)[]) {
+                this.subscriptions[topic] = new Set();
+            }
+        }
+        
+        public on<K extends keyof Topics>(topic: K, listener: Listener<Topics[K]>, id: SubscriptionID = Symbol("subscriber-id")) {
+            this.subscriptions[topic].add(id);
+            this.listeners.set(id, listener);
+            return id;
+        }
+
+        public unsubscribe<K extends keyof Topics>(topic: K, id: SubscriptionID) {
+            this.subscriptions[topic].delete(id);
+            this.listeners.delete(id);
+        }
+
+            // Emit an event with type-safe arguments.
+        async emit<K extends keyof Topics>(topic: K, ...args: Topics[K]) {
+            const promises: Promise<void>[] = [];
+
+            for (const id of this.subscriptions[topic]) {
+                const listener = this.listeners.get(id);
+                if (listener) {
+                    promises.push(listener(...args) as Promise<void>);
+                }
+            }
+
+            return Promise.all(promises);
+        }
+
+        public createAccount() {
+            return new SubscriberAccount<Topics>(this, Symbol("subscription-id"));
+        }
+    }
+
+    export class SubscriberAccount<Topics extends Record<string, any[]>> {
+
+        protected readonly subscriptedTopics: Set<keyof Topics> = new Set();
+
         constructor(
-            readonly name: T
-        ) {super()};
-    }
-
-
-    export class Emitter<Topics extends readonly FastEvents.Topic<string, any[]>[]> {
-
-        readonly topics: TopicRegistry<Topics>;
-
-        constructor(topics: [...Topics]) {
-            this.topics = topics.reduce((acc, topic) => {
-                (acc as any)[topic.name] = topic;
-                return acc;
-            }, {} as TopicRegistry<Topics>);
-        }
-        	
-        // @ts-ignore
-        public on<T extends Topics[number]["name"]>(topic: T, listener: FastEvents.Listener<Parameters<TopicRegistry<Topics>[T]["emit"]>>) {
-            return (this.topics[topic] as any).on(listener) as FastEvents.SubscriptionID;
-        }
-
-        public unsubscribe<T extends Topics[number]["name"]>(topic: T, id: FastEvents.SubscriptionID) {
-            return (this.topics[topic] as any).unsubscribe(id);
-        }
-
-        // @ts-ignore
-        async emit<T extends Topics[number]["name"]>(topic: T, ...args: Parameters<TopicRegistry<Topics>[T]["emit"]>) {
-            return (this.topics[topic] as any).emit(...args);
-        }
-
-    }
-
-    export class SubscriberAccount<Emitter extends FastEvents.Emitter<Topics>, Topics extends readonly FastEvents.Topic<string, any[]>[]> {
-
-        protected readonly subscriptions: Record<string, FastEvents.SubscriptionID> = {};
-
-        constructor(
-            readonly emitter: Emitter
+            protected readonly emitter: Emitter<Topics>,
+            protected readonly subscriptionID: FastEvents.SubscriptionID,
         ) {}
 
-        // @ts-ignore
-        public on<T extends Topics[number]["name"]>(topic: T, listener: FastEvents.Listener<Parameters<TopicRegistry<Topics>[T]["emit"]>>) {
-            this.subscriptions[topic] = this.emitter.on(topic, listener);
+        public on<K extends keyof Topics>(topic: K, listener: FastEvents.Listener<Topics[K]>) {
+            this.emitter.on(topic, listener, this.subscriptionID);
+            this.subscriptedTopics.add(topic);
         }
 
-        public unsubscribe<T extends Topics[number]["name"]>(topic: T) {
-            this.emitter.unsubscribe(topic, this.subscriptions[topic] as FastEvents.SubscriptionID);
+        public unsubscribe<K extends keyof Topics>(topic: K) {
+            this.emitter.unsubscribe(topic, this.subscriptionID);
+            this.subscriptedTopics.delete(topic);
         }
 
     }

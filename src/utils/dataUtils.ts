@@ -11,6 +11,20 @@ export type ObjectiveArray<T extends readonly V[], V = unknown> = {
 };
 
 
+type UnionToIntersection<U> =
+  (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+type LastOf<T> =
+  UnionToIntersection<T extends any ? () => T : never> extends () => (infer R) ? R : never
+
+type ArrayPush<T extends any[], V> = [...T, V];
+
+export type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : false> =
+  true extends N ? [] : ArrayPush<TuplifyUnion<Exclude<T, L>>, L>
+
+export type ObjectKeys<T extends Record<any, any>> = TuplifyUnion<keyof T>;
+
+
 export class CStatic {
     protected constructor() {}
 }
@@ -87,7 +101,7 @@ export class DataUtils {
         //const constructor = cls as any;
     
         // Retrieve the parameter names of the constructor
-        //const paramNames = constructor.toString().match(/\(([^)]+)\)/)?.[1].split(',').map((param: string) => param.trim()) || [];
+         //@ts-ignore //const paramNames = constructor.toString().match(/\(([^)]+)\)/)?.[1].split(',').map((param: string) => param.trim()) || [];
         const paramNames = cls.toString().match(/\(([^)]+)\)/)?.[1].split(',').map((param: string) => param.trim()) || [];
     
         // Create an array of arguments for the constructor
