@@ -7,7 +7,7 @@ import type { Uint256, Uint64 } from "low-level";
 export class BlockStore {
 
     constructor(
-        protected readonly storage: StorageAPI
+        protected readonly storage: StorageAPI.Blocks
     ) {}
 
     async add(block: Block) {
@@ -35,7 +35,7 @@ export class BlockStore {
 export class MinterState {
 
     constructor(
-        protected readonly storage: StorageAPI
+        protected readonly storage: StorageAPI.Minters
     ) {}
 
     async set(minter: MinterData) {

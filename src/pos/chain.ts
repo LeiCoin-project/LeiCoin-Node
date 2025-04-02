@@ -3,6 +3,7 @@ import type { AddressHex } from "@leicoin/common/models/address";
 import type { BlockStore, MinterState } from "./store.js";
 import type { Uint64 } from "low-level";
 import type { FastEvents } from "@leicoin/utils/fastevents";
+import type { StorageAPI } from "@leicoin/storage/api";
 import { POSUtils } from "./utils.js";
 
 export class ChainState {
@@ -25,7 +26,7 @@ export class ChainState {
 
 export class Chain {
 
-    protected readonly eventSubscriptions = new FastEvents.SubscriptionsManager();
+    protected readonly eventSubscriptions = new FastEvents.SubscriberAccount();
 
     constructor(
         readonly time: Uint64,
@@ -37,7 +38,7 @@ export class Chain {
 
     static async create(
         time: Uint64,
-        blocks: BlockStore,
+        storageapi: StorageAPI,
         minters: MinterState
     ) {
         //@todo Implement function to get the chain head

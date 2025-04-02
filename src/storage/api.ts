@@ -13,10 +13,15 @@ export class StorageAPI {
         readonly wallets: WalletDB,
         readonly minters: MinterDB,
         readonly scstates: SmartContractStateDB,
-        readonly chainstate: ChainstateStore,
-        readonly events = new FastEvents.Emitter([
-            new FastEvents.Topic<"block", [Block]>("block")
-        ])
+        readonly chainstate: ChainstateStore
     ) {}
 
+}
+
+export namespace StorageAPI {
+    export type Blocks = BlockDB;
+    export type Wallets = WalletDB;
+    export type Minters = MinterDB;
+    export type SmartContractStates = SmartContractStateDB;
+    export type Chainstate = ChainstateStore;
 }
