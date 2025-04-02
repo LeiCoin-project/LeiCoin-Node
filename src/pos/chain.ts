@@ -22,13 +22,18 @@ export class ChainState {
         return await this.minters.getProposer(slotIndex);
     }
 
+    async update(block: Block) {
+        
+    }
+
 }
 
 export class Chain {
 
-    protected readonly eventSubscriptions = new FastEvents.SubscriberAccount();
+    protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
 
     constructor(
+        public isMain: boolean,
         readonly time: Uint64,
         protected readonly blocks: BlockStore,
         readonly state: ChainState
@@ -37,14 +42,15 @@ export class Chain {
     }
 
     static async create(
+        isMain: boolean,
         time: Uint64,
-        storageapi: StorageAPI,
+        blocks: BlockStore,
         minters: MinterState
     ) {
         //@todo Implement function to get the chain head
         const latestBlockHeader: BlockHeader = await blocks.getHead();
         const state = new ChainState(time, latestBlockHeader, minters);
-        return new Chain(time, blocks, state);
+        return new Chain(isMain, time, blocks, state);
     }
 
     async getBlock(index: Uint64) {
@@ -55,8 +61,14 @@ export class Chain {
     }
 
     async update(block: Block) {
-        
+        await this.blocks.add(block);
+        await this.state.update(block);
     }
 
+    protected async revertMainChainBlock(block: Block) {
+        if (this.isMain) return;
+
+
+    }
 
 }
