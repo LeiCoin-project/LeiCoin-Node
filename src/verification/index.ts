@@ -9,46 +9,46 @@ import { SlotExecutionManager } from "@leicoin/pos";
 
 export class Verification {
 
-    public static verifyAddress(address: AddressHex, expectedPrefix: PX = PX.A_00): boolean {
+    static verifyAddress(address: AddressHex, expectedPrefix: PX = PX.A_00): boolean {
         return address.slice(0, 1).eq(expectedPrefix);
     }
 
-    public static async verifyTransaction(tx: Transaction, chain = "main"): Promise<Verification.Code> {
+    // static async verifyTransaction(tx: Transaction, chain = "main"): Promise<Verification.Code> {
         
-        if (!tx) return 12501;
-        if (!tx.txid.eq(tx.calculateHash())) return 12504;
+    //     if (!tx) return 12501;
+    //     if (!tx.txid.eq(tx.calculateHash())) return 12504;
 
-        const senderWallet = await Blockchain.chains[chain].wallets.getWallet(tx.senderAddress);
+    //     //const senderWallet = await Blockchain.chains[chain].wallets.get(tx.senderAddress);
 
-        if (!senderWallet.getNonce().eq(tx.nonce)) return 12508;
-        if (!senderWallet.isSubtractMoneyPossible(tx.amount)) return 12524;
+    //     //if (!senderWallet.getNonce().eq(tx.nonce)) return 12508;
+    //     //if (!senderWallet.isSubtractMoneyPossible(tx.amount)) return 12524;
         
-        return 12000;
-    }
+    //     return 12000;
+    // }
 
-    public static async verifyBlock(block: Block): Promise<Verification.Result.Block> {
+    // static async verifyBlock(block: Block): Promise<Verification.Result.Block> {
 
-        if (!block) return { status: 12501 };
+    //     if (!block) return { status: 12501 };
 
-        const chainstateMatch = await Blockchain.chainstate.isBlockChainStateMatching(block);
-        if (chainstateMatch.status !== 12000) return chainstateMatch;
+    //     const chainstateMatch = await Blockchain.chainstate.isBlockChainStateMatching(block);
+    //     if (chainstateMatch.status !== 12000) return chainstateMatch;
 
-        let { targetChain, parentChain } = chainstateMatch;
+    //     let { targetChain, parentChain } = chainstateMatch;
         
-        if (!block.calculateHash().eq(block.hash)) {
-            return { status: 12504 };
-        }
+    //     if (!block.calculateHash().eq(block.hash)) {
+    //         return { status: 12504 };
+    //     }
         
-        for (const transactionData of block.body.transactions) {
-            const transactionsValid = await this.verifyTransaction(transactionData);
-            if (transactionsValid !== 12000) return { status: 12520 };
-        }
+    //     // for (const transactionData of block.body.transactions) {
+    //     //     const transactionsValid = await this.verifyTransaction(transactionData);
+    //     //     if (transactionsValid !== 12000) return { status: 12520 };
+    //     // }
         
-        // Ensure that the block contains valid transactions
-        return { status: 12000, targetChain: targetChain, parentChain: parentChain };
-    }
+    //     // Ensure that the block contains valid transactions
+    //     return { status: 12000, targetChain: targetChain, parentChain: parentChain };
+    // }
 
-    public static async verifyBlockProposal(block: Block | null): Promise<Verification.Code> {
+    static async verifyBlockProposal(block: Block | null): Promise<Verification.Code> {
         if (!block) return 12501;
 
         const currentSlot = await SlotExecutionManager.getCurrentSlot();

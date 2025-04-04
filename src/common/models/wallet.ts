@@ -1,4 +1,4 @@
-import { NumberLike, Uint, Uint256, Uint64 } from "low-level";
+import { type NumberLike, Uint, Uint256, Uint64 } from "low-level";
 import { cli } from "@leicoin/cli";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
@@ -61,9 +61,10 @@ export class Wallet {
     }
 
     public subtractMoneyIFPossible(amount: NumberLike) {
-        if (this.isSubtractMoneyPossible(amount)) {
-            this.balance.isub(amount);
-        }
+        if (!this.isSubtractMoneyPossible(amount)) return false;
+        
+        this.balance.isub(amount);
+        return true;
     }
 
     public getNonce() {

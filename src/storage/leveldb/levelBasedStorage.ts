@@ -2,28 +2,26 @@ import { LevelDB } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
-import { LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
+import { type LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
+import type { StorageAPI } from "../api.js";
 
-export abstract class LevelBasedStorage<K extends Uint = Uint, V extends Uint = Uint> {
+export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> implements StorageAPI.IChainStore<K, V> {
 
-    protected abstract path: string;
+    protected readonly level: LevelDB<LevelK, LevelV>;
 
-    protected level: LevelDB<K, V> = null as any;
-
-    protected readonly levelKeyEncoder = LevelDBEncoders.Uint;
-    protected readonly levelValueEncoder = LevelDBEncoders.Uint;
-
-    private initialized = false;
+    constructor(
+        protected readonly path: string,
+        levelKeyEncoder = LevelDBEncoders.Uint as LevelDBEncoderLike<LevelK>,
+        levelValueEncoder = LevelDBEncoders.Uint as LevelDBEncoderLike<LevelV>
+    ) {
+        StorageUtils.ensureDirectoryExists(this.path);
+        this.level = new LevelDB<LevelK, LevelV>(StorageUtils.getBlockchainDataFilePath(this.path), {
+            keyEncoding: levelKeyEncoder as LevelDBEncoderLike<LevelK>,
+            valueEncoding: levelValueEncoder as LevelDBEncoderLike<LevelV>
+        });
+    }
 
     async open() {
-        if (this.initialized) return;
-        this.initialized = true;
-        
-        StorageUtils.ensureDirectoryExists(this.path);
-        this.level = new LevelDB<K, V>(StorageUtils.getBlockchainDataFilePath(this.path), {
-            keyEncoding: this.levelKeyEncoder as LevelDBEncoderLike<K>,
-            valueEncoding: this.levelValueEncoder as LevelDBEncoderLike<V>
-        });
         await this.level.open();
     }
 
@@ -31,18 +29,31 @@ export abstract class LevelBasedStorage<K extends Uint = Uint, V extends Uint = 
         await this.level.close();
     }
 
+
+    abstract get(key: K): Promise<V | null>;
+
+    async exists(key: K) {
+        return await this.level.has(key);
+    }
+
+    async del(key: K) {
+        return await this.level.safe_del(key);
+    }
+
 }
 
-export abstract class LevelBasedStorageWithRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> extends LevelBasedStorage<K, V> {
+export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> extends LevelBasedStorage<K, V, LevelK, LevelV> {
 
     protected abstract keyByteLengthWithoutPrefix: number;
     protected keyPrefix: Uint = Uint.alloc(0);
-    protected indexes: LevelRangeIndexes<K, V> = null as any;
+    protected indexes: LevelRangeIndexes<LevelK, LevelV> = null as any;
 
     async open() {
         await super.open();
         this.indexes = new LevelRangeIndexes(this.level, this.keyByteLengthWithoutPrefix, this.keyPrefix);
         await this.indexes.load();
     }
+
+
 
 }

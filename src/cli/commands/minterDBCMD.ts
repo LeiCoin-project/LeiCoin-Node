@@ -52,7 +52,7 @@ class ReadCMD extends CLICMD {
         }
 
         const minterAddress = args[0];
-        const minter = await Blockchain.minters.getMinter(AddressHex.from(minterAddress));
+        const minter = await Blockchain.minters.get(AddressHex.from(minterAddress));
         if (minter) {
             cli.cmd.info(DataUtils.stringify(minter, (key, value) => {
                 if (key === "stake") {
@@ -78,7 +78,7 @@ class InsertCMD extends CLICMD {
         }
 
         const minter = new MinterData(AddressHex.from(args[0]), Uint64.from(parseInt(args[1])), PX.from(args[2]));
-        await Blockchain.minters.setMinter(minter);
+        await Blockchain.minters.set(minter);
         cli.cmd.info("Minter inserted!");
     }
 }
@@ -94,9 +94,9 @@ class RemoveCMD extends CLICMD {
             return;
         }
 
-        const minter = await Blockchain.minters.getMinter(AddressHex.from(args[0]));
+        const minter = await Blockchain.minters.get(AddressHex.from(args[0]));
         if (minter) {
-            await Blockchain.minters.removeMinter(minter);
+            await Blockchain.minters.del(minter);
             cli.cmd.info("Minter removed!");
         } else {
             cli.cmd.info("Minter not found!");

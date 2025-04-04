@@ -1,10 +1,8 @@
-import { FastEvents } from "@leicoin/utils/fastevents";
 import { BlockDB } from "./blocks";
 import { ChainstateStore } from "./chainstate";
-import { type SmartContractStateDB } from "./smart-contract-state";
+import { SmartContractStateDB } from "./smart-contract-state";
 import { MinterDB } from "./state/minters";
 import { WalletDB } from "./state/wallets";
-import type { Block } from "@leicoin/common/models/block";
 
 export class StorageAPI {
 
@@ -19,9 +17,25 @@ export class StorageAPI {
 }
 
 export namespace StorageAPI {
+    export const Blocks = BlockDB;
+    export const Wallets = WalletDB;
+    export const Minters = MinterDB;
+    export const SmartContractStates = SmartContractStateDB;
+    export const ChainState = ChainstateStore;
+
     export type Blocks = BlockDB;
     export type Wallets = WalletDB;
     export type Minters = MinterDB;
     export type SmartContractStates = SmartContractStateDB;
-    export type Chainstate = ChainstateStore;
+    export type ChainState = ChainstateStore;
+
+    export interface IChainStore<K, V> {
+        get(key: K): Promise<V | null>;
+        exists(key: K): Promise<boolean>;
+        del(key: K): Promise<boolean>;
+    }
+
+    export interface IChainStateStore<K, V> extends IChainStore<K, V> {
+        set(value: V): Promise<void>;
+    }
 }

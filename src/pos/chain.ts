@@ -1,17 +1,17 @@
 import type { Block, BlockHeader } from "@leicoin/common/models/block";
 import type { AddressHex } from "@leicoin/common/models/address";
-import type { BlockStore, MinterState } from "./store.js";
+import type { BlockStore, MinterStateStore } from "./store.js";
 import type { Uint64 } from "low-level";
 import type { FastEvents } from "@leicoin/utils/fastevents";
-import type { StorageAPI } from "@leicoin/storage/api";
 import { POSUtils } from "./utils.js";
+import type { Transaction } from "@leicoin/common/models/transaction";
 
 export class ChainState {
 
     constructor(
         readonly time: Uint64,
-        readonly latestBlockHeader: BlockHeader,
-        protected readonly minters: MinterState,
+        latestBlockHeader: BlockHeader,
+        protected readonly minters: MinterStateStore,
     ) {}
 
     async getMinter(address: AddressHex) {
@@ -23,6 +23,10 @@ export class ChainState {
     }
 
     async update(block: Block) {
+        
+    }
+
+    protected async verifyAndExecuteTransaction(tx: Transaction) {
         
     }
 
@@ -45,7 +49,7 @@ export class Chain {
         isMain: boolean,
         time: Uint64,
         blocks: BlockStore,
-        minters: MinterState
+        minters: MinterStateStore
     ) {
         //@todo Implement function to get the chain head
         const latestBlockHeader: BlockHeader = await blocks.getHead();
@@ -62,7 +66,8 @@ export class Chain {
 
     async update(block: Block) {
         await this.blocks.add(block);
-        await this.state.update(block);
+        
+
     }
 
     protected async revertMainChainBlock(block: Block) {

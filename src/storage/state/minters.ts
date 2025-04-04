@@ -5,25 +5,30 @@ import { Uint, Uint64 } from "low-level";
 import { LevelBasedStorageWithRangeIndexes } from "../leveldb/levelBasedStorage.js";
 import { PX } from "@leicoin/common/types/prefix";
 import { LCrypt } from "@leicoin/crypto";
+import type { StorageAPI } from "../api.js";
 
-export class MinterDB extends LevelBasedStorageWithRangeIndexes {
-    protected path = "/validators";
+interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> {
+    exists(address: AddressHex): Promise<boolean>;
+    del(address: AddressHex): Promise<boolean>;
+}
+
+export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, MinterData> implements IMinterDB {
 
     protected keyByteLengthWithoutPrefix = 20;
     protected keyPrefix = PX.A_0e;
 
-    public async getMinter(address: AddressHex) {
+    constructor() {
+        super("/minters");
+    }
+
+    async get(address: AddressHex) {
         const raw_minter_data = await this.level.safe_get(address);
         if (!raw_minter_data) return null;
         return MinterData.fromDecodedHex(address, raw_minter_data);
     }
 
-    public async setMinter(minter: MinterData) {
+    async set(minter: MinterData) {
         return this.level.put(minter.address, minter.encodeToHex());
-    }
-
-    public async removeMinter(minter: MinterData) {
-        return this.level.safe_del(minter.address);
     }
 
     private async adjustStakeByBlock(block: Block) {
@@ -32,7 +37,7 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes {
 
     }
 
-    public async selectNextMinter(slot: Uint64) {
+    async selectNextMinter(slot: Uint64) {
         const dbSize = await this.indexes.getTotalSize();
         const randomIndex = LCrypt.sha256(slot).mod(dbSize);
 

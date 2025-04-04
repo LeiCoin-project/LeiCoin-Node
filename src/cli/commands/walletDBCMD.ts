@@ -51,8 +51,8 @@ class ReadCMD extends CLICMD {
         }
 
         const address = AddressHex.from(args[0]);
-        const wallet = await Blockchain.wallets.getWallet(address);
-        if (await Blockchain.wallets.existsWallet(address)) {
+        const wallet = await Blockchain.wallets.get(address);
+        if (await Blockchain.wallets.exists(address)) {
             cli.cmd.info(DataUtils.stringify(wallet, (key, value) => {
                 if (key === "balance") {
                     return (value.toInt() / 100).toFixed(2);
@@ -82,7 +82,7 @@ class InsertCMD extends CLICMD {
             Uint64.from(parseInt(args[2])),
             PX.from(args[3])
         );
-        await Blockchain.wallets.setWallet(wallet);
+        await Blockchain.wallets.set(wallet);
         cli.cmd.info("Wallet inserted!");
     }
 }
@@ -99,8 +99,8 @@ class RemoveCMD extends CLICMD {
         }
 
         const address = AddressHex.from(args[0]);
-        if (await Blockchain.wallets.existsWallet(address)) {
-            await Blockchain.wallets.deleteWallet(address);
+        if (await Blockchain.wallets.exists(address)) {
+            await Blockchain.wallets.del(address);
             cli.cmd.info("Wallet removed!");
         } else {
             cli.cmd.info("Wallet not found!");

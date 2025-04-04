@@ -4,13 +4,21 @@ import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 import { LevelDBEncoders } from "./leveldb/encoders.js";
 import { FastEvents } from "@leicoin/utils/fastevents";
 
-export class BlockDB extends LevelBasedStorage<Uint64> {
+interface IBlockDB {
+    exists(index: Uint64): Promise<boolean>;
+    /**
+     * WARNING: Deleting Blocks from a chain is risky and should be done with caution. Dont use this method unless you know what you are doing.
+     */
+    del(index: Uint64): Promise<boolean>;
+}
 
-    protected readonly path = "/blocks";
-
-    protected readonly levelKeyEncoder = LevelDBEncoders.Uint64;
+export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements IBlockDB {
 
     protected readonly events = new FastEvents.SingleEmitter<[Block]>();
+    
+    constructor() {
+        super("/blocks", LevelDBEncoders.Uint64);
+    }
 
     async add(block: Block, overwrite = false) {
         if (!overwrite) {
@@ -27,14 +35,6 @@ export class BlockDB extends LevelBasedStorage<Uint64> {
         if (!raw) return null;
         return Block.fromDecodedHex(raw);
     }
-
-    /**
-     * WARNING: Deleting Blocks from a chain is risky and should be done with caution. Dont use this method unless you know what you are doing.
-     */
-    public delete(index: Uint64) {
-        return this.level.safe_del(index);
-    }
-
     
     public on_update(callback: (block: Block) => Promise<void> | void) {
         return this.events.on(callback) as FastEvents.SubscriptionID;
@@ -45,4 +45,3 @@ export class BlockDB extends LevelBasedStorage<Uint64> {
     }
 
 }
-

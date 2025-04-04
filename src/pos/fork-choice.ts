@@ -6,6 +6,8 @@ export class ForkChoice {
 
     static async on_Block(block: BlockHeader, chain: Chain) {
 
+        if (!block.validateHash(block.hash)) return false;
+
         const state = chain.state;
 
         const currentSlotIndex = POSUtils.calulateCurrentSlotIndex(chain.time);

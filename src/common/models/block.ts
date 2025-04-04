@@ -34,8 +34,6 @@ export class BlockHeader extends HashableContainer {
             obj.version
         );
 
-        if (!block_header.calculateHash().eq(block_header.hash)) return null;
-
         return block_header;
     }
 
@@ -113,8 +111,6 @@ export class Block extends BlockHeader {
             Uint64.from(POSUtils.calculateSlotExecutionTime(obj.slotIndex)),
             obj.version
         );
-
-        if (!block.calculateHash().eq(block.hash)) return null;
 
         return block;
     }

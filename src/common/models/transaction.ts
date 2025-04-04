@@ -19,7 +19,7 @@ export class Transaction extends HashableContainer {
         readonly version = PX.V_00
     ) {super()}
 
-    public static createCoinbaseTransaction(mc: MinterCredentials) {
+    static createCoinbaseTransaction(mc: MinterCredentials) {
 
         const coinbase_tx = new Transaction(
             Uint256.alloc(),
@@ -51,8 +51,6 @@ export class Transaction extends HashableContainer {
             obj.signature,
             obj.version
         );
-
-        if (!tx.calculateHash().eq(tx.txid)) return null;
 
         return tx;
     }
