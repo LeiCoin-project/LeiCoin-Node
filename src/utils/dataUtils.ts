@@ -25,14 +25,13 @@ export type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : fals
 export type ObjectKeys<T extends Record<any, any>> = TuplifyUnion<keyof T>;
 
 
+export type Immutable<T> = {
+    readonly [P in keyof T]: T[P] extends object ? Immutable<T[P]> : T[P];
+};
+
+
 export class CStatic {
     protected constructor() {}
-}
-
-
-// Define a generic interface representing the class structure
-interface Constructable<T> {
-    new (...args: any[]): T;
 }
 
 
@@ -94,7 +93,7 @@ export class DataUtils {
      * Define a function to create an instance of a class from a JSON object
      * @deprecated This function is unsafe to use in production code
      */
-    static createInstanceFromJSON<T>(cls: Constructable<T>, json: any): T {
+    static createInstanceFromJSON<T>(cls: New<T>, json: any): T {
         throw new Error("This function is unsafe to use in production code");
 
         // Retrieve the constructor of the class
