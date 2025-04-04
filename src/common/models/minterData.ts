@@ -1,9 +1,10 @@
-import { NumberLike, Uint, Uint64 } from "low-level";
+import { type NumberLike, type Uint, Uint64 } from "low-level";
 import { cli } from "@leicoin/cli";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
 import { BE, DataEncoder, ObjectEncoding } from "flexbuf";
 import { PrivateKey } from "@leicoin/crypto";
+import { Constants } from "@leicoin/utils/constants";
 
 export class MinterData {
 
@@ -21,9 +22,32 @@ export class MinterData {
         return this.stake;
     }
 
+    /** Adds the deposited amount to the minter's stake. */
+    public deposit(amount: NumberLike) {
+        this.stake.iadd(amount);
+    }
+
+    public withdrawIFPossible(amount: NumberLike) {
+
+        if (!this.stake.gte(amount)) return false;
+
+        const leftOver = this.stake.sub(amount);
+        // If the left over amount is less than the minimum deposit, the minter has to withdraw the whole amount or stay.
+        if (leftOver.lt(Constants.MIN_MINTER_DEPOSIT)) return false;
+
+        this.stake.set(leftOver);
+        return true;
+    }
+    
     public addRewardStake(amount: NumberLike) {
         this.stake.iadd(amount);
     }
+
+
+    static createNewMinter(address: AddressHex, stake = Uint64.from(0), version = PX.V_00) {
+        return new MinterData(address, stake, version);	
+    }
+
 
     public encodeToHex() {
         return ObjectEncoding.encode(this, MinterData.encodingSettings, false).data;

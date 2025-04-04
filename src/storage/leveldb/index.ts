@@ -34,8 +34,11 @@ export class LevelDB<KDefault = Uint, VDefault = Uint> extends ClassicLevel<KDef
     async safe_get(key: any, options?: any): Promise<any> {
         try {
             return await this.get(key, options);
-        } catch {
-            return null;
+        } catch (error: any) {
+            if (error && error.code === "LEVEL_NOT_FOUND") {
+                return null;
+            }
+            throw new Error(error);
         }
 
     }
@@ -46,8 +49,11 @@ export class LevelDB<KDefault = Uint, VDefault = Uint> extends ClassicLevel<KDef
         try {
             await this.del(key, options);
             return true;
-        } catch {
-            return false;
+        } catch (error: any) {
+            if (error && error.code === "LEVEL_NOT_FOUND") {
+                return false;
+            }
+            throw new Error(error);
         }
     }
 

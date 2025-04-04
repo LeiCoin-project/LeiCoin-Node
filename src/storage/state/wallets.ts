@@ -21,8 +21,16 @@ export class WalletDB extends LevelBasedStorage<AddressHex, Wallet> implements I
 
     async get(address: AddressHex) {
         const raw_wallet = await this.level.safe_get(address);
+
+        // Wallet not found, create an empty wallet
         if (!raw_wallet) return Wallet.createEmptyWallet(address);
-        return Wallet.fromDecodedHex(address, raw_wallet);
+
+        const wallet = Wallet.fromDecodedHex(address, raw_wallet);
+        
+        if (!wallet) {
+            throw new Error(`Wallet Data could not be decoded for address ${address.toHex()}. Please check for corrupted or outdated data.`);
+        }
+        return wallet;
     }
 
     async getAllAddresses() {

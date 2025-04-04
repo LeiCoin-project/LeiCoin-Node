@@ -43,18 +43,18 @@ export class AddressHex extends FixedUint {
         return this.slice(1);
     }
 
-    public static fromTypeAndBody(addressType: PX, addressBody: Uint) {
+    public static fromTypeAndBody(addressType: PX.AddressType, addressBody: Uint) {
         return new this(Uint.concat([
             addressType,
             addressBody
         ]));
     }
 
-    public static fromPublicKey(addressType: PX, publicKey: PublicKey) {
+    public static fromPublicKey(addressType: PX.AddressType, publicKey: PublicKey) {
         return this.concat([addressType, LCrypt.sha256(publicKey).slice(0, 20)]);
     }
 
-    public static fromPrivateKey(addressType: PX, privateKey: Uint256) {
+    public static fromPrivateKey(addressType: PX.AddressType, privateKey: Uint256) {
         return this.fromPublicKey(addressType, LCrypt.getPublicKeyFromPrivateKey(privateKey));
     }
 
@@ -79,7 +79,7 @@ export class Address32 {
         const address32Data = "2" + address32.slice(4).toLowerCase();
         let decimalValue = 0n;
         for (let i = 0; i < address32Data.length; i++) {
-            decimalValue = (decimalValue * 32n) + BigInt(this.address32Chars.indexOf(address32Data[i]));
+            decimalValue = (decimalValue * 32n) + BigInt(this.address32Chars.indexOf(address32Data[i] as string));
         }
 
         return this.getType(address32).replace("x", "0") + decimalValue.toString(16).slice(1);
@@ -97,11 +97,11 @@ export class Address32 {
         return "lc" + DataUtils.replaceAtIndex(addressHex.getType().toHex(), "0", "x", 1) + address32.slice(1);
     }
 
-    public static fromPublicKey(addressType: PX, publicKey: PublicKey) {
+    public static fromPublicKey(addressType: PX.AddressType, publicKey: PublicKey) {
         return this.fromAddressHex(AddressHex.fromPublicKey(addressType, publicKey));
     }
 
-    public static fromPrivateKey(addressType: PX, privateKey: PrivateKey) {
+    public static fromPrivateKey(addressType: PX.AddressType, privateKey: PrivateKey) {
         return this.fromPublicKey(addressType, LCrypt.getPublicKeyFromPrivateKey(privateKey));
     }
 

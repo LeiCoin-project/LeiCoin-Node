@@ -1,11 +1,13 @@
 import { AddressHex } from "@leicoin/common/models/address";
 import type { Block, BlockHeader } from "@leicoin/common/models/block";
-import type { MinterData } from "@leicoin/common/models/minterData";
+import { MinterData } from "@leicoin/common/models/minterData";
 import type { Transaction } from "@leicoin/common/models/transaction";
 import type { Wallet } from "@leicoin/common/models/wallet";
 import type { StorageAPI } from "@leicoin/storage/api";
 import { Uint64, BasicBinaryMap, Uint, type BasicUintConstructable } from "low-level";
 import { DepositContract } from "@leicoin/smart-contracts";
+import { PX } from "@leicoin/common/types/prefix";
+import { Constants } from "@leicoin/utils/constants";
 
 abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI.IChainStore<K, V>> {
 
@@ -19,12 +21,13 @@ abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI.IChain
         this.tempStorage = new BasicBinaryMap<K, V>(keyCLS);
     }
 
-    async get(key: K): Promise<V | null> {
+    // @ts-ignore
+    async get(key: K): ReturnType<S["get"]> {
         const value = this.tempStorage.get(key);
         if (value) {
-            return value;
+            return value as any;
         }
-        return await this.storage.get(key);
+        return await this.storage.get(key) as any;
     }
 
     async exists(key: K) {
@@ -86,16 +89,13 @@ class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet, Stora
 
     async addMoney(address: AddressHex, amount: Uint64) {
         const wallet = await this.get(address);
-        if (!wallet) return false;
 
         wallet.addMoney(amount);
         await this.set(wallet);
-        return true;
     }
 
     async subtractMoney(address: AddressHex, amount: Uint64) {
         const wallet = await this.get(address);
-        if (!wallet) return false;
 
         const result = wallet.subtractMoneyIFPossible(amount);
         if (!result) return false;
@@ -129,30 +129,63 @@ class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, S
         throw new Error("Error in getProposer: Minter not found.");
     }
 
-    async executeDepositContractTransaction(tx: Transaction) {
+    async executeDepositContractTransaction(tx: Transaction, wallets: WalletStateStore) {
 
         const fn = "" as string;
 
+        // this may change in the future
+        const minterAddress = AddressHex.fromTypeAndBody(PX.A_0e, tx.recipientAddress.getBody());
+        let minter = await this.get(minterAddress);
+
         switch (fn) {
             case "deposit": {
-                // @todo Implement deposit function
 
-                if (!minterAlreadyActive) {
-                    handleMinterJoin()
+                // minter is not already active
+                if (!minter) {
+
+                    if (tx.amount.lt(Constants.MIN_MINTER_DEPOSIT)) {
+                        return false;
+                    }
+
+                    minter = MinterData.createNewMinter(minterAddress);
+                    /**
+                     * @todo Implement join validation.
+                     * for now all minters join immediately. this have to be changed in the future.
+                     */
                 }
 
-                // add deposit to the minters stake
-                minter.addDeposit(tx.amount); 
+                minter.deposit(tx.amount);
 
-                break;
-            }
-            case "exit": {
-                // @todo Implement exit function
-                break;
+                await this.set(minter);
+
+                return true;
             }
             case "withdraw": {
                 // @todo Implement withdraw function
-                break;
+
+                // minter is not in the db
+                if (!minter) return false;
+
+                if (tx.amount.eq(minter.getStake())) {
+                    // minter want to exit
+                    this.del(minterAddress);
+
+                    
+                    wallets.addMoney(tx.recipientAddress, tx.amount);
+                    return true;
+                } else {
+                    const result = minter.withdrawIFPossible(tx.amount);
+                    if (!result) return false;
+                }
+
+                // add delay in the future to make sure slashing can be done before minter gets his money
+                wallets.addMoney(tx.recipientAddress, tx.amount);
+
+                return true;
+            }
+            default: {
+                // undefined function
+                return false;
             }
         }
 
@@ -183,7 +216,6 @@ class ChainStateStore {
         if (!tx.validateHash(tx.txid)) return false;
 
         const senderWallet = await this.wallets.get(tx.senderAddress);
-        if (!senderWallet) return false;
 
         if (!senderWallet.getNonce().eq(tx.nonce)) return false;
 
@@ -192,11 +224,12 @@ class ChainStateStore {
 
         /** @todo Make proper handling for smart contracts in the future. */
         if (tx.recipientAddress.eq(DepositContract.address)) {
-            const result = this.minters.executeDepositContractTransaction(tx);
+
+            const result = this.minters.executeDepositContractTransaction(tx, this.wallets);
             if (!result) return false;
+
         } else {
-            const result = await this.wallets.addMoney(tx.recipientAddress, tx.amount);
-            if (!result) return false;
+            await this.wallets.addMoney(tx.recipientAddress, tx.amount);
         }
 
         senderWallet.adjustNonce(1);

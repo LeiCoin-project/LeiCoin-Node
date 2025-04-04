@@ -74,24 +74,28 @@ export abstract class LockedUint extends Uint {
 class Prefix extends LockedUint {
     public static readonly byteLength = 1;
 
-    // Prefix vor version 00
+    /** Prefix vor version 00 */
     static readonly V_00 = Prefix.from("00");
 
-    // Meta Data Prefix
+    /** Meta Data Prefix */
     static readonly META = Prefix.from("ff");
 
-    // Standard Address Prefix: 00
+    /** Standard Address Prefix: 00 */
     static readonly A_00 = Prefix.from("00");
 
-    // Smart Contract Address Prefix: 0c
+    /** Smart Contract Address Prefix: 0c */
     static readonly A_0c = Prefix.from("0c");
 
-    // Node Address Prefix: 0d
+    /** Node Address Prefix: 0d */
     static readonly A_0d = Prefix.from("0d");
 
-    // Minter Address Prefix: 0e
+    /** Minter Address Prefix: 0e */
     static readonly A_0e = Prefix.from("0e");
     
+}
+
+namespace Prefix {
+    export type AddressType = typeof Prefix.A_00 | typeof Prefix.A_0c | typeof Prefix.A_0d | typeof Prefix.A_0e;
 }
 
 export { Prefix as PX };
