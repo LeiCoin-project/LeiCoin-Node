@@ -4,7 +4,7 @@ export class DepositContract {
 
     private static loaded = false;
 
-    private static readonly address = AddressHex.from("0c0000000000000000000000000000000000000001");
+    static readonly address = AddressHex.from("0c0000000000000000000000000000000000000001");
 
     private static rawDataLength = 29;
 

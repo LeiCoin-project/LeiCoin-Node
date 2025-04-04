@@ -5,6 +5,7 @@ import type { Transaction } from "@leicoin/common/models/transaction";
 import type { Wallet } from "@leicoin/common/models/wallet";
 import type { StorageAPI } from "@leicoin/storage/api";
 import { Uint64, BasicBinaryMap, Uint, type BasicUintConstructable } from "low-level";
+import { DepositContract } from "@leicoin/smart-contracts";
 
 abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI.IChainStore<K, V>> {
 
@@ -128,6 +129,35 @@ class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, S
         throw new Error("Error in getProposer: Minter not found.");
     }
 
+    async executeDepositContractTransaction(tx: Transaction) {
+
+        const fn = "" as string;
+
+        switch (fn) {
+            case "deposit": {
+                // @todo Implement deposit function
+
+                if (!minterAlreadyActive) {
+                    handleMinterJoin()
+                }
+
+                // add deposit to the minters stake
+                minter.addDeposit(tx.amount); 
+
+                break;
+            }
+            case "exit": {
+                // @todo Implement exit function
+                break;
+            }
+            case "withdraw": {
+                // @todo Implement withdraw function
+                break;
+            }
+        }
+
+    }
+
 }
 
 
@@ -160,10 +190,17 @@ class ChainStateStore {
         const moneySubtractionResult = senderWallet.subtractMoneyIFPossible(tx.amount);
         if (!moneySubtractionResult) return false;
 
+        /** @todo Make proper handling for smart contracts in the future. */
+        if (tx.recipientAddress.eq(DepositContract.address)) {
+            const result = this.minters.executeDepositContractTransaction(tx);
+            if (!result) return false;
+        } else {
+            const result = await this.wallets.addMoney(tx.recipientAddress, tx.amount);
+            if (!result) return false;
+        }
+
         senderWallet.adjustNonce(1);
         await this.wallets.set(senderWallet);
-
-        await this.wallets.addMoney(tx.recipientAddress, tx.amount);
     }
 
 }
