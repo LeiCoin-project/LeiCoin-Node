@@ -10,7 +10,7 @@ import { Uint64, Uint256 } from "low-level";
 describe("encoding", () => {
     test("block_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2");
+        const address = AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
 
         const block = new Block(
             Uint64.from(0),
@@ -34,7 +34,7 @@ describe("encoding", () => {
     });
     test("transaction_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2");
+        const address = AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
         const mc = new MinterCredentials(PrivateKey.empty(), address);
 
         const tx = Transaction.createCoinbaseTransaction(mc);
@@ -46,7 +46,7 @@ describe("encoding", () => {
     });
     test("minter_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("0e7f9c9e31ac8256ca2f258583df262dbc7d6f68f2");
+        const address = AddressHex.from("0edc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
 
         const minter = new MinterData(
             address,
@@ -61,7 +61,7 @@ describe("encoding", () => {
     });
     test("wallet_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2");
+        const address = AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
         
         const wallet = new Wallet(
             address,

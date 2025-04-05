@@ -11,7 +11,7 @@ export class LCrypt {
 
     static sha256(input: Uint | Buffer) {
         return new Uint256(
-            crypto.createHash('sha256').update(
+            crypto.createHash('sha3-256').update(
                 input instanceof Uint ? input.getRaw() : input
             ).digest()
         );

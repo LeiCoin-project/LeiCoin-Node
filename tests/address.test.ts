@@ -15,7 +15,7 @@ describe("address", () => {
         const signature = LCrypt.sign(hashData, PX.A_00, privateKeyHex);
         const recoveredAddress = Address32.fromSignature(hashData, signature);
 
-        expect((address === recoveredAddress) ? address : null).toBe("lc0x91s7cb3gengt3fjud8f8zcev35f4jy23");
+        expect((address === recoveredAddress) ? address : null).toBe("lc0x174k3e4s7enw4ss8hu2dnj6kzspks3hm");
     });
     test("addresshex_enoding_and_decoding", () => {
 
@@ -27,13 +27,13 @@ describe("address", () => {
         const signature = LCrypt.sign(hashData, PX.A_00, privateKeyHex);
         const recoveredAddress = AddressHex.fromSignature(hashData, signature);
 
-        expect((address.toHex() === recoveredAddress.toHex()) ? address.toHex() : null).toBe("00403265a84f6d5fa13a3b61dc7fadbc111c38f822");
+        expect((address.toHex() === recoveredAddress.toHex()) ? address.toHex() : null).toBe("000187213479336bd1e72786c2cac4b2fe6d2c8a14");
     });
     test("coinbase_address_gettting", () => {
 
         const privateKeyHex = PrivateKey.empty();
         const address = AddressHex.fromPrivateKey(PX.A_00, privateKeyHex);
 
-        expect(address.toHex()).toBe("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2");
+        expect(address.toHex()).toBe("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
     });
 });

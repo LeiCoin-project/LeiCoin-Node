@@ -23,7 +23,7 @@ export class Transaction extends HashableContainer {
 
         const coinbase_tx = new Transaction(
             Uint256.alloc(),
-            AddressHex.from("007f9c9e31ac8256ca2f258583df262dbc7d6f68f2"),
+            AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a"),
             mc.address,
             Uint64.from(10),
             Uint64.from(0),

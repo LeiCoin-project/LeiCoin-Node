@@ -131,7 +131,7 @@ class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, S
 
     async executeDepositContractTransaction(tx: Transaction, wallets: WalletStateStore) {
 
-        const fn = "" as string;
+        const fn = ""
 
         // this may change in the future
         const minterAddress = AddressHex.fromTypeAndBody(PX.A_0e, tx.recipientAddress.getBody());
