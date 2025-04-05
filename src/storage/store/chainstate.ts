@@ -3,17 +3,18 @@ import type { StorageAPI } from "../api";
 import { MinterStateStore } from "./minters";
 import { WalletStateStore } from "./wallets";
 import { DepositContract } from "@leicoin/smart-contracts";
+import type { Ref } from "ptr.js";
 
 export class ChainStateStore {
 
     constructor(
-        readonly isMainChain: boolean,
+        readonly isMainChain: Ref<boolean>,
         protected readonly storage: StorageAPI.ChainState,
         readonly wallets: WalletStateStore,
         readonly minters: MinterStateStore,
     ) {}
 
-    static create(isMainChain: boolean, chainstateAPI: StorageAPI.ChainState, walletAPI: StorageAPI.Wallets, minterAPI: StorageAPI.Minters) {
+    static create(isMainChain: Ref<boolean>, chainstateAPI: StorageAPI.ChainState, walletAPI: StorageAPI.Wallets, minterAPI: StorageAPI.Minters) {
         return new ChainStateStore(
             isMainChain,
             chainstateAPI,

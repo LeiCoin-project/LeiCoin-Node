@@ -5,6 +5,7 @@ import type { Uint64 } from "low-level";
 import type { FastEvents } from "@leicoin/utils/fastevents";
 import { POSUtils } from "./utils.js";
 import type { Transaction } from "@leicoin/common/models/transaction";
+import type { Ref } from "ptr.js";
 
 export class ChainState {
 
@@ -37,7 +38,7 @@ export class Chain {
     protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
 
     constructor(
-        public isMain: boolean,
+        public isMain: Ref<boolean>,
         readonly time: Uint64,
         protected readonly blocks: Stores.Blocks,
         readonly state: ChainState
@@ -46,7 +47,7 @@ export class Chain {
     }
 
     static async create(
-        isMain: boolean,
+        isMain: Ref<boolean>,
         time: Uint64,
         blocks: Stores.Blocks,
         minters: Stores.MinterState

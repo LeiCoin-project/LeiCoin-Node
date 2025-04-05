@@ -2,10 +2,11 @@ import type { Block } from "@leicoin/common/models/block";
 import { Uint64 } from "low-level";
 import type { StorageAPI } from "../api";
 import { AbstractChainStore } from "./abstractStore";
+import type { Ref } from "ptr.js";
 
 export class BlockStore extends AbstractChainStore<Uint64, Block, StorageAPI.Blocks> {
 
-    constructor(isMainChain: boolean, storage: StorageAPI.Blocks) {
+    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Blocks) {
         super(isMainChain, storage, Uint64);
     }
 

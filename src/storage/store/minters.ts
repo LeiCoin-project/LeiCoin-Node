@@ -8,10 +8,11 @@ import { Uint64 } from "low-level";
 import type { StorageAPI } from "../api";
 import { AbstractChainStateStore } from "./abstractStore";
 import type { WalletStateStore } from "./wallets";
+import type { Ref } from "ptr.js";
 
 export class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, StorageAPI.Minters> {
 
-    constructor(isMainChain: boolean, storage: StorageAPI.Minters) {
+    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Minters) {
         super(isMainChain, storage, AddressHex);
     }    
 

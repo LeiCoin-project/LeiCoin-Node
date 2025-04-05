@@ -1,12 +1,13 @@
 import { BasicBinaryMap, type BasicUintConstructable, type Uint } from "low-level";
 import type { StorageAPI } from "../api";
+import type { Ref } from "ptr.js";
 
 export abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI.IChainStore<K, V>> {
 
     protected readonly tempStorage: BasicBinaryMap<K, V>;
 
     constructor(
-        public isMainChain: boolean,
+        public isMainChain: Ref<boolean>,
         protected readonly storage: S,
         keyCLS: BasicUintConstructable<K>,
     ) {
