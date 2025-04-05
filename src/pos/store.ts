@@ -131,14 +131,14 @@ class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, S
 
     async executeDepositContractTransaction(tx: Transaction, wallets: WalletStateStore) {
 
-        const fn = ""
+        const fnID = tx.input.slice(0, 4).toString("hex");
 
         // this may change in the future
         const minterAddress = AddressHex.fromTypeAndBody(PX.A_0e, tx.recipientAddress.getBody());
         let minter = await this.get(minterAddress);
 
-        switch (fn) {
-            case "deposit": {
+        switch (fnID) {
+            case DepositContract.depositFNID: {
 
                 // minter is not already active
                 if (!minter) {
@@ -166,20 +166,23 @@ class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, S
                 // minter is not in the db
                 if (!minter) return false;
 
-                if (tx.amount.eq(minter.getStake())) {
+                if (tx.input.getLen() !== 12) return false;
+                const amount = new Uint64(tx.input.slice(4, 12));
+
+                if (amount.eq(minter.getStake())) {
                     // minter want to exit
                     this.del(minterAddress);
 
                     
-                    wallets.addMoney(tx.recipientAddress, tx.amount);
+                    wallets.addMoney(tx.recipientAddress, amount);
                     return true;
                 } else {
-                    const result = minter.withdrawIFPossible(tx.amount);
+                    const result = minter.withdrawIFPossible(amount);
                     if (!result) return false;
                 }
 
                 // add delay in the future to make sure slashing can be done before minter gets his money
-                wallets.addMoney(tx.recipientAddress, tx.amount);
+                wallets.addMoney(tx.recipientAddress, amount);
 
                 return true;
             }
