@@ -1,6 +1,6 @@
 import { BlockDB } from "./blocks";
 import { ChainstateStore } from "./chainstate";
-import { SmartContractStateDB } from "./smart-contract-state";
+import { SmartContractStateDB } from "./state/smart-contract";
 import { MinterDB } from "./state/minters";
 import { WalletDB } from "./state/wallets";
 

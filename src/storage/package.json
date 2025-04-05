@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "type": "module",
     "exports": {
-      "./*": "./*.ts"
+      "./*": "./*.ts",
+      "./store": "./store/index.ts",
+      "./store/*": "./store/index.ts"
     },
     "dependencies": {
       "@leicoin/core": "^1.0.0",

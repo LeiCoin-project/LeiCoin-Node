@@ -1,20 +1,25 @@
 import { Uint256, Uint64 } from "low-level";
 import { IndexDB } from "../leveldb/indexDB";
+import { LevelDBEncoders } from "../leveldb/encoders";
+import type { StorageAPI } from "../api";
 
-export class BlockIndexDB extends IndexDB {
+interface IBlockIndexDB extends StorageAPI.IChainStore<Uint64, Uint256> {
+    exists(index: Uint64): Promise<boolean>;
+    del(index: Uint64): Promise<boolean>;
+}
 
-    protected readonly path = "/indexes/block";
+export class BlockIndexDB extends IndexDB<Uint64, Uint256, Uint64, Uint256> implements IBlockIndexDB {
 
-    async getBlockHash(index: Uint64) {
+    constructor() {
+        super("/indexes/block", LevelDBEncoders.Uint64, LevelDBEncoders.Uint256);
+    }
+
+    async set(index: Uint64, blockHash: Uint256) {
+        return await this.level.put(index, blockHash);
+    }
+
+    async get(index: Uint64) {
         return await this.level.safe_get(index);
-    }
-
-    async setBlockHash(index: Uint64, hash: Uint256) {
-        return this.level.put(index, hash);
-    }
-
-    async removeIndex(index: Uint64) {
-        return this.level.safe_del(index);
     }
 
 }
