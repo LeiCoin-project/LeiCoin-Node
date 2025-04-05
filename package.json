@@ -63,7 +63,7 @@
 		"flexbuf": "^1.3.1",
 		"level-read-stream": "^1.1.1",
 		"low-level": "^1.0.16",
-		"ptr.js": "^1.0.1",
+		"ptr.js": "^1.1.0",
 		"reflect-metadata": "^0.2.2"
 	},
 	"devDependencies": {
