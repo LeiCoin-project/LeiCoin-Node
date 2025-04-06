@@ -1,7 +1,7 @@
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { DataUtils } from "@leicoin/utils/dataUtils";
 import { cli } from "../cli.js";
-import { CLICMD, CLICMDExecMeta, CLISubCMD, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
+import { CLICMD, type CLICMDExecMeta, CLISubCMD, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
 import { CommonCLIMessages } from "../commandHandler.js";
 import { Uint, Uint64 } from "low-level";
 import { Block, BlockHeader } from "@leicoin/common/models/block";

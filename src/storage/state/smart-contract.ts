@@ -9,7 +9,7 @@ export class SmartContractStateDB extends LevelBasedStorage<AddressHex, Uint> {
     }
 
     public async get(address: AddressHex) {
-        return this.level.safe_get(address.getBody());
+        return this.level.get(address.getBody());
     }
 
     public async set(address: AddressHex, state: Uint) {

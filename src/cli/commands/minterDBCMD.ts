@@ -5,7 +5,7 @@ import { Blockchain } from "@leicoin/storage/blockchain";
 import { Uint64 } from "low-level";
 import { DataUtils } from "@leicoin/utils/dataUtils";
 import { cli } from "../cli.js";
-import { CLICMD, CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
+import { CLICMD, type CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
 import { CommonCLIMessages } from "../commandHandler.js";
 
 export class MinterDBCMD extends CLISubCMD {
@@ -35,7 +35,7 @@ class ReadCMD extends CLICMD {
     readonly description = "Read the Minter database";
     readonly usage = "read (<minter_address> | all)";
 
-    public async run(args: string[]): Promise<void> {
+    public async run(args: [string]): Promise<void> {
         if (args.length !== 1) {
             CommonCLIMessages.invalidNumberOfArguments();
             return;
@@ -71,7 +71,7 @@ class InsertCMD extends CLICMD {
     readonly description = "Insert Data into the Minter database";
     readonly usage = "insert <minter_address> <stake> <version>";
 
-    public async run(args: string[]): Promise<void> {
+    public async run(args: [string, string, string]): Promise<void> {
         if (args.length !== 3) {
             CommonCLIMessages.invalidNumberOfArguments();
             return;
@@ -88,7 +88,7 @@ class RemoveCMD extends CLICMD {
     readonly description = "Remove Data from the Minter database";
     readonly usage = "remove <minter_address>";
 
-    public async run(args: string[]): Promise<void> {
+    public async run(args: [string]): Promise<void> {
         if (args.length !== 1) {
             CommonCLIMessages.invalidNumberOfArguments();
             return;
@@ -96,7 +96,7 @@ class RemoveCMD extends CLICMD {
 
         const minter = await Blockchain.minters.get(AddressHex.from(args[0]));
         if (minter) {
-            await Blockchain.minters.del(minter);
+            await Blockchain.minters.del(minter.address);
             cli.cmd.info("Minter removed!");
         } else {
             cli.cmd.info("Minter not found!");
@@ -110,7 +110,7 @@ class GetNextMinterCMD extends CLICMD {
     readonly description = "Get the next minter for a slot";
     readonly usage = "getnext <slot>";
 
-    public async run(args: string[]): Promise<void> {
+    public async run(args: [string]): Promise<void> {
         if (args.length !== 1) {
             CommonCLIMessages.invalidNumberOfArguments();
             return;

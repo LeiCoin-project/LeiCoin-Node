@@ -9,7 +9,7 @@ import type { StorageAPI } from "../api.js";
 
 interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> {
     exists(address: AddressHex): Promise<boolean>;
-    del(address: AddressHex): Promise<boolean>;
+    del(address: AddressHex): Promise<void>;
 }
 
 export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, MinterData> implements IMinterDB {
@@ -22,7 +22,7 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
     }
 
     async get(address: AddressHex) {
-        const raw_minter_data = await this.level.safe_get(address);
+        const raw_minter_data = await this.level.get(address);
         if (!raw_minter_data) return null;
         return MinterData.fromDecodedHex(address, raw_minter_data);
     }

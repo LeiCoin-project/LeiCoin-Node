@@ -9,7 +9,7 @@ interface IBlockDB {
     /**
      * WARNING: Deleting Blocks from a chain is risky and should be done with caution. Dont use this method unless you know what you are doing.
      */
-    del(index: Uint64): Promise<boolean>;
+    del(index: Uint64): Promise<void>;
 }
 
 export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements IBlockDB {
@@ -31,7 +31,7 @@ export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements
     }
 
     async get(index: Uint64) {
-        const raw = await this.level.safe_get(index);
+        const raw = await this.level.get(index);
         if (!raw) return null;
         return Block.fromDecodedHex(raw);
     }

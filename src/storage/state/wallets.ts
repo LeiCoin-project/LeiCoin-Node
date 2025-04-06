@@ -10,7 +10,7 @@ import type { StorageAPI } from "../api.js";
 
 interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
     exists(address: AddressHex): Promise<boolean>;
-    del(address: AddressHex): Promise<boolean>;
+    del(address: AddressHex): Promise<void>;
 }
 
 export class WalletDB extends LevelBasedStorage<AddressHex, Wallet> implements IWalletDB {
@@ -20,7 +20,7 @@ export class WalletDB extends LevelBasedStorage<AddressHex, Wallet> implements I
     }
 
     async get(address: AddressHex) {
-        const raw_wallet = await this.level.safe_get(address);
+        const raw_wallet = await this.level.get(address);
 
         // Wallet not found, create an empty wallet
         if (!raw_wallet) return Wallet.createEmptyWallet(address);

@@ -5,7 +5,7 @@ import type { StorageAPI } from "../api";
 
 interface IBlockIndexDB extends StorageAPI.IChainStore<Uint64, Uint256> {
     exists(index: Uint64): Promise<boolean>;
-    del(index: Uint64): Promise<boolean>;
+    del(index: Uint64): Promise<void>;
 }
 
 export class BlockIndexDB extends IndexDB<Uint64, Uint256, Uint64, Uint256> implements IBlockIndexDB {
@@ -19,7 +19,7 @@ export class BlockIndexDB extends IndexDB<Uint64, Uint256, Uint64, Uint256> impl
     }
 
     async get(index: Uint64) {
-        return await this.level.safe_get(index);
+        return await this.level.get(index);
     }
 
 }

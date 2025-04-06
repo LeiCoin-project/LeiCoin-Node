@@ -32,7 +32,7 @@ export namespace StorageAPI {
     export interface IChainStore<K, V> {
         get(key: K): Promise<V | null>;
         exists(key: K): Promise<boolean>;
-        del(key: K): Promise<boolean>;
+        del(key: K): Promise<void>;
     }
 
     export interface IChainStateStore<K, V> extends IChainStore<K, V> {

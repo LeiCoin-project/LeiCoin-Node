@@ -5,7 +5,7 @@ import type { StorageAPI } from "../api";
 
 interface ITransactionsIndexDB extends StorageAPI.IChainStore<Uint256, any> {
     exists(txHash: Uint256): Promise<boolean>;
-    del(txHash: Uint256): Promise<boolean>;
+    del(txHash: Uint256): Promise<void>;
 }
 
 export class TransactionsIndexDB extends IndexDB<Uint256, any, Uint256> implements ITransactionsIndexDB {
@@ -19,7 +19,7 @@ export class TransactionsIndexDB extends IndexDB<Uint256, any, Uint256> implemen
     }
 
     async get(txHash: Uint256) {
-        return await this.level.safe_get(txHash);
+        return await this.level.get(txHash);
     }
     
 }

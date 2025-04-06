@@ -5,7 +5,7 @@ import { Blockchain } from "@leicoin/storage/blockchain";
 import { Uint64 } from "low-level";
 import { DataUtils } from "@leicoin/utils/dataUtils";
 import { cli } from "../cli.js";
-import { CLICMD, CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
+import { CLICMD, type CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
 import { CommonCLIMessages } from "../commandHandler.js";
 
 export class WalletDBCMD extends CLISubCMD {
@@ -78,9 +78,9 @@ class InsertCMD extends CLICMD {
 
         const wallet = new Wallet(
             AddressHex.from(args[0]),
-            Uint64.from(parseInt(args[1])),
-            Uint64.from(parseInt(args[2])),
-            PX.from(args[3])
+            Uint64.from(parseInt(args[1] as string)),
+            Uint64.from(parseInt(args[2] as string)),
+            PX.from(args[3] as string)
         );
         await Blockchain.wallets.set(wallet);
         cli.cmd.info("Wallet inserted!");

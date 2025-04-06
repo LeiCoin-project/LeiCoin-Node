@@ -31,11 +31,10 @@ export abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI
     }
     
     async del(key: K) {
-        const result = await this.storage.del(key);
+        await this.storage.del(key);
         if (this.isMainChain) {
-            return result || this.tempStorage.delete(key);
+            this.tempStorage.delete(key);
         }
-        return result;
     }
 
 }

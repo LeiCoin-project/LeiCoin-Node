@@ -37,7 +37,7 @@ export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint
     }
 
     async del(key: K) {
-        return await this.level.safe_del(key);
+        return await this.level.del(key);
     }
 
 }
