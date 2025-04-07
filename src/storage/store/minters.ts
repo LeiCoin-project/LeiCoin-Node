@@ -17,7 +17,7 @@ export class MinterStateStore extends AbstractChainStateStore<AddressHex, Minter
     }    
 
     async set(minter: MinterData) {
-        if (this.isMainChain) {
+        if (this.isMainChain == true) {
             await this.storage.set(minter);
         } else {
             this.tempStorage.set(minter.address, minter);

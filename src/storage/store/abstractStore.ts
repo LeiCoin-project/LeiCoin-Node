@@ -32,7 +32,7 @@ export abstract class AbstractChainStore<K extends Uint, V, S extends StorageAPI
     
     async del(key: K) {
         await this.storage.del(key);
-        if (this.isMainChain) {
+        if (this.isMainChain == true) {
             this.tempStorage.delete(key);
         }
     }

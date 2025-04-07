@@ -11,7 +11,7 @@ export class BlockStore extends AbstractChainStore<Uint64, Block, StorageAPI.Blo
     }
 
     async add(block: Block, overwrite: boolean = false) {
-        if (this.isMainChain) {
+        if (this.isMainChain == true) {
             await this.storage.add(block, overwrite);
         } else {
             if (!overwrite && this.tempStorage.has(block.index)) {

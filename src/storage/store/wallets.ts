@@ -12,7 +12,7 @@ export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet
     }
 
     async set(wallet: Wallet) {
-        if (this.isMainChain) {
+        if (this.isMainChain == true) {
             await this.storage.set(wallet);
         } else {
             this.tempStorage.set(wallet.owner, wallet);

@@ -5,7 +5,7 @@ import type { Uint64 } from "low-level";
 import type { FastEvents } from "@leicoin/utils/fastevents";
 import { POSUtils } from "./utils.js";
 import type { Transaction } from "@leicoin/common/models/transaction";
-import type { Ref } from "ptr.js";
+import { Ref } from "ptr.js";
 
 export class ChainState {
 
@@ -35,19 +35,22 @@ export class ChainState {
 
 export class Chain {
 
+    public readonly isMain: Ref<boolean>;
+
     protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
 
     constructor(
-        public isMain: Ref<boolean>,
+        isMain: boolean | Ref<boolean>,
         readonly time: Uint64,
         protected readonly blocks: Stores.Blocks,
         readonly state: ChainState
     ) {
+        this.isMain = new Ref(isMain);
         //this.updateListenerSubscription = this.blocks.
     }
 
     static async create(
-        isMain: Ref<boolean>,
+        isMain: boolean | Ref<boolean>,
         time: Uint64,
         blocks: Stores.Blocks,
         minters: Stores.MinterState
@@ -72,7 +75,7 @@ export class Chain {
     }
 
     protected async revertMainChainBlock(block: Block) {
-        if (this.isMain) return;
+        if (this.isMain == true) return;
 
 
     }
