@@ -21,23 +21,23 @@ index ffd938652efb873a7b3beb4054bb22bae2cfd7bd..e51120b1f66f574f85477b4d3890ae09
 +const armv = process.env.ARM_VERSION || (arch === 'arm64' ? '8' : vars.arm_version) || ''
 +
 +const bindings = {
-+    "android-arm": () => require("./prebuilds/android-arm/node.napi.armv7.node"),
-+    "android-arm64": () => require("./prebuilds/android-arm64/node.napi.armv8.node"),
++    "android-arm": () => require("./prebuilds/android-arm/classic-level.armv7.node"),
++    "android-arm64": () => require("./prebuilds/android-arm64/classic-level.armv8.node"),
 +
-+    //"darwin-arm64": () => require("./prebuilds/darwin-x64arm64/node.napi.node"),
-+    //"darwin-x64": () => require("./prebuilds/darwin-x64arm64/node.napi.node"),
-+    "darwin-arm64": () => require("./prebuilds/darwin-x64+arm64/node.napi.node"),
-+    "darwin-x64": () => require("./prebuilds/darwin-x64+arm64/node.napi.node"),
++    //"darwin-arm64": () => require("./prebuilds/darwin-x64arm64/classic-level.node"),
++    //"darwin-x64": () => require("./prebuilds/darwin-x64arm64/classic-level.node"),
++    "darwin-arm64": () => require("./prebuilds/darwin-x64+arm64/classic-level.node"),
++    "darwin-x64": () => require("./prebuilds/darwin-x64+arm64/classic-level.node"),
 +    
-+    "linux-arm-v6": () => require("./prebuilds/linux-arm/node.napi.armv6.node"),
-+    "linux-arm-v7": () => require("./prebuilds/linux-arm/node.napi.armv7.node"),
-+    "linux-arm64": () => require("./prebuilds/linux-arm64/node.napi.armv8.node"),
++    "linux-arm-v6": () => require("./prebuilds/linux-arm/classic-level.armv6.node"),
++    "linux-arm-v7": () => require("./prebuilds/linux-arm/classic-level.armv7.node"),
++    "linux-arm64": () => require("./prebuilds/linux-arm64/classic-level.armv8.node"),
 +
-+    "linux-x64-glibc": () => require("./prebuilds/linux-x64/node.napi.glibc.node"),
-+    "linux-x64-musl": () => require("./prebuilds/linux-x64/node.napi.musl.node"),
++    "linux-x64-glibc": () => require("./prebuilds/linux-x64/classic-level.glibc.node"),
++    "linux-x64-musl": () => require("./prebuilds/linux-x64/classic-level.musl.node"),
 +
-+    "win32-ia32": () => require("./prebuilds/win32-ia32/node.napi.node"),
-+    "win32-x64": () => require("./prebuilds/win32-x64/node.napi.node"),
++    "win32-ia32": () => require("./prebuilds/win32-ia32/classic-level.node"),
++    "win32-x64": () => require("./prebuilds/win32-x64/classic-level.node"),
 +}
 +
 +function getBindingName() {
