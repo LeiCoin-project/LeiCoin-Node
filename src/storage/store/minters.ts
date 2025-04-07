@@ -13,7 +13,7 @@ import type { Ref } from "ptr.js";
 export class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, StorageAPI.Minters> {
 
     constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Minters) {
-        super(isMainChain, storage, AddressHex);
+        super(isMainChain, storage, AddressHex, MinterData as any);
     }    
 
     async set(minter: MinterData) {

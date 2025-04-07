@@ -1,6 +1,6 @@
 import { AddressHex } from "@leicoin/common/models/address";
 import type { StorageAPI } from "../api";
-import type { Wallet } from "@leicoin/common/models/wallet";
+import { Wallet } from "@leicoin/common/models/wallet";
 import type { Uint64 } from "low-level";
 import { AbstractChainStateStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
@@ -8,7 +8,7 @@ import type { Ref } from "ptr.js";
 export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet, StorageAPI.Wallets> {
 
     constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Wallets) {
-        super(isMainChain, storage, AddressHex);
+        super(isMainChain, storage, AddressHex, Wallet as any);
     }
 
     async set(wallet: Wallet) {
