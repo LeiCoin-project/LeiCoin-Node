@@ -42,11 +42,13 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
 
     }
 
-    async selectNextMinter(slot: Uint64) {
-        const dbSize = await this.indexes.getTotalSize();
-        const randomIndex = LCrypt.sha256(slot).mod(dbSize);
-
-        const { range, offset } = await this.indexes.getRangeByIndex(Uint64.from(randomIndex));
+    /**
+     * get a minter address by an index in all minters
+     * @param index - the index of the minter to get
+     * @returns the address of the minter at the given index or null if the index is out of range
+     */
+    async getAddressByIndex(index: Uint64) {
+        const { range, offset } = await this.indexes.getRangeByIndex(index);
 
         const count = Uint64.from(0);
         const minterAddressesStream = this.level.createKeyStream({gte: range.firstPossibleKey, lte: range.lastPossibleKey});
@@ -59,7 +61,21 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
             count.iadd(1);
         }
 
-        throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
+        return null;
+    }
+
+    async selectNextMinter(slot: Uint64) {
+        
+        const dbSize = await this.indexes.getTotalSize();
+
+        // get a random index from the database size and the hash of the slot index
+        const randomIndex = LCrypt.sha256(slot).mod(dbSize);
+        const result = await this.getAddressByIndex(Uint64.from(randomIndex));
+
+        if (!result) {
+            throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
+        }
+        return result;        
     }
 
     async getAllAddresses() {

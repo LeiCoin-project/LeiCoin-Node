@@ -10,17 +10,21 @@ import { AbstractChainStateStore } from "./abstractStore";
 import type { WalletStateStore } from "./wallets";
 import type { Ref } from "ptr.js";
 
+/**
+ * This class is used to store and manage the current state of active minters and keep track of their deposits.
+ */
 export class MinterStateStore extends AbstractChainStateStore<AddressHex, MinterData, StorageAPI.Minters> {
 
     constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Minters) {
         super(isMainChain, storage, AddressHex, MinterData as any);
-    }    
+    }
 
     async set(minter: MinterData) {
         if (this.isMainChain == true) {
             await this.storage.set(minter);
         } else {
-            this.tempStorage.set(minter.address, minter);
+            const type = await this.storage.exists(minter.address) ? "modified" : "added";
+            this.tempStorage.set(minter.address, minter, type);
         }
     }
 

@@ -68,12 +68,14 @@ export class Chain {
         return await this.blocks.getHeader(index);
     }
 
+    /** @todo move this metheod outside in a separate class to make stateless design. */
     async update(block: Block) {
         await this.blocks.add(block);
         
 
     }
 
+    /** @todo move this metheod outside in a separate class to make stateless design. */
     protected async revertMainChainBlock(block: Block) {
         if (this.isMain == true) return;
 

@@ -84,6 +84,11 @@ export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> {
         throw new Error("No range found for key. Are the ranges initialized?");
     }
 
+    /**
+     * 
+     * @param index - The index to get the range for.
+     * @returns object containing the range and the relative offset of the index in the range.
+     */
     async getRangeByIndex(index: Uint64) {
         const totalOffset = Uint64.from(0);
 

@@ -17,7 +17,7 @@ export class BlockStore extends AbstractChainStore<Uint64, Block, StorageAPI.Blo
             if (!overwrite && this.tempStorage.has(block.index)) {
                 return;
             }
-            this.tempStorage.set(block.index, block);
+            this.tempStorage.set(block.index, block, "added");
         }
     }
     

@@ -15,7 +15,8 @@ export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet
         if (this.isMainChain == true) {
             await this.storage.set(wallet);
         } else {
-            this.tempStorage.set(wallet.owner, wallet);
+            const type = await this.storage.exists(wallet.owner) ? "modified" : "added";
+            this.tempStorage.set(wallet.owner, wallet, type);
         }
     }
 
