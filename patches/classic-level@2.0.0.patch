@@ -33,7 +33,7 @@ index ffd938652efb873a7b3beb4054bb22bae2cfd7bd..e51120b1f66f574f85477b4d3890ae09
 +    "linux-arm-v7": () => require("./prebuilds/linux-arm/classic-level.armv7.node"),
 +    "linux-arm64": () => require("./prebuilds/linux-arm64/classic-level.armv8.node"),
 +
-+    "linux-x64-glibc": () => require("./prebuilds/linux-x64/classic-level.glibc.node"),
++    "linux-x64-glibc": () => require("./prebuilds/linux-x64/classic-level.node"),
 +    "linux-x64-musl": () => require("./prebuilds/linux-x64/classic-level.musl.node"),
 +
 +    "win32-ia32": () => require("./prebuilds/win32-ia32/classic-level.node"),
