@@ -1,7 +1,7 @@
 import { createInterface, Interface as ReadlineInterface } from "readline";
-import { type Chalk } from "chalk";
+import { type ChalkInstance } from "chalk";
 import { dirname as path_dirname } from "path";
-import { Dict, DataUtils } from "@leicoin/utils/dataUtils";
+import { type Dict, DataUtils } from "@leicoin/utils/dataUtils";
 import { StorageUtils } from "@leicoin/storage/utils";
 import { CLICMDHandler } from "./commandHandler.js";
 import fs from "fs";
@@ -136,8 +136,8 @@ class CLI {
     readonly cmd = new Logger("CLI", "#ffffff", this.log);
     readonly leicoin_net = new Logger("LeiCoinNet", "#f47fff", this.log);
 
-    private ctx?: Chalk;
-    private messageStyles: Dict<Chalk> = {};
+    private ctx?: ChalkInstance;
+    private messageStyles: Dict<ChalkInstance> = {};
     private ansiEscapes: any;
     private rl?: ReadlineInterface;
     private logStream?: fs.WriteStream;
@@ -230,7 +230,7 @@ class CLI {
             ?.hex(prefixColor)
             .visible(`[${prefix}]`);
         const styleFunction =
-            this.messageStyles[type] || this.messageStyles.reset;
+            this.messageStyles[type] || this.messageStyles.reset as ChalkInstance;
         const styledMessage = `${colorizedPrefix} ${styleFunction(message)}`;
         return styledMessage;
     }
@@ -244,7 +244,7 @@ class CLI {
 
     private async setupCTX() {
         if (!this.ctx) {
-            this.ctx = new (await import("chalk")).default.Instance({
+            this.ctx = new (await import("chalk")).Chalk({
                 level: 3,
             });
             this.messageStyles.reset = this.ctx.reset;
