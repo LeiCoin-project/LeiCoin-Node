@@ -1,8 +1,8 @@
-import { BlockDB } from "./blocks";
+import { BlockDB, type IBlockDB } from "./blocks";
 import { ChainstateStore } from "./chainstate";
 import { SmartContractStateDB } from "./state/smart-contract";
-import { MinterDB } from "./state/minters";
-import { WalletDB } from "./state/wallets";
+import { MinterDB, type IMinterDB } from "./state/minters";
+import { WalletDB, type IWalletDB } from "./state/wallets";
 
 export class StorageAPI {
 
@@ -23,9 +23,9 @@ export namespace StorageAPI {
     export const SmartContractStates = SmartContractStateDB;
     export const ChainState = ChainstateStore;
 
-    export type Blocks = BlockDB;
-    export type Wallets = WalletDB;
-    export type Minters = MinterDB;
+    export type Blocks = IBlockDB;
+    export type Wallets = IWalletDB;
+    export type Minters = IMinterDB;
     export type SmartContractStates = SmartContractStateDB;
     export type ChainState = ChainstateStore;
 

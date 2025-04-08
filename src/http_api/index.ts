@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { ModuleLike } from "@leicoin/utils/dataUtils";
+import { type ModuleLike } from "@leicoin/utils/dataUtils";
 import Elysia from "elysia";
 import { cli } from "@leicoin/cli";
 import { NetworkUtils } from "@leicoin/utils/network-utils";

@@ -104,6 +104,7 @@ describe("ip_tests", () => {
         expect(NetworkUtils.splitHostAndPort("192.168.1.1:12200")).toEqual(["192.168.1.1", 12200]);
         expect(NetworkUtils.splitHostAndPort("[2001:db8::1]:12200")).toEqual(["2001:db8:0:0:0:0:0:1", 12200]);
         expect(NetworkUtils.splitHostAndPort(":::12200")).toEqual(["0:0:0:0:0:0:0:0", 12200]);
+        expect(NetworkUtils.splitHostAndPort("leicraftmc.de:12200")).toEqual(["leicraftmc.de", 12200]);
 
         expect(NetworkUtils.splitHostAndPort("192.168.1.1")).toEqual(["192.168.1.1", null]);
 

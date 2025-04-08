@@ -1,15 +1,20 @@
 import { MinterData } from "@leicoin/common/models/minterData";
-import { Block } from "@leicoin/common/models/block";
+import { type Block } from "@leicoin/common/models/block";
 import { AddressHex } from "@leicoin/common/models/address";
-import { Uint, Uint64 } from "low-level";
+import { type Uint, Uint64 } from "low-level";
 import { LevelBasedStorageWithRangeIndexes } from "../leveldb/levelBasedStorage.js";
 import { PX } from "@leicoin/common/types/prefix";
 import { LCrypt } from "@leicoin/crypto";
 import type { StorageAPI } from "../api.js";
 
-interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> {
+export interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> {
+    get(address: AddressHex): Promise<MinterData | null>;
+    set(minter: MinterData): Promise<void>;
     exists(address: AddressHex): Promise<boolean>;
     del(address: AddressHex): Promise<void>;
+
+    getAllAddresses(): Promise<Uint[]>;
+    selectNextMinter(slot: Uint64): Promise<AddressHex>;
 }
 
 export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, MinterData> implements IMinterDB {

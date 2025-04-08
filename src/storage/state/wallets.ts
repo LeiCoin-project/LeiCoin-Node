@@ -8,7 +8,9 @@ import { Uint, Uint64 } from "low-level";
 import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
 import type { StorageAPI } from "../api.js";
 
-interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
+export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
+    set(wallet: Wallet): Promise<void>;
+    get(address: AddressHex): Promise<Wallet>;
     exists(address: AddressHex): Promise<boolean>;
     del(address: AddressHex): Promise<void>;
 }

@@ -1,23 +1,75 @@
+import {
+    isIP as net_isIP,
+    isIPv4 as net_isIPv4,
+    isIPv6 as net_isIPv6,
+    SocketAddress
+} from "node:net";
+
+export class NetworkAddress {
+
+    protected readonly sa: SocketAddress;
+
+    constructor(address: string, family?: "ipv4" | "ipv6", port?: number, flowlabel?: number);
+    constructor(address: SocketAddress);
+    constructor(address: string | SocketAddress, family: "ipv4" | "ipv6" = "ipv4", port?: number, flowlabel?: number) {
+
+        this.sa = typeof address === "string" ?
+            new SocketAddress({ address, family, port, flowlabel }) :
+            address;
+    }
+
+    static parse(input: string) {
+
+        const parsed = SocketAddress.parse(input);
+        if (!parsed) return null;
+
+        const address = NetworkUtils.normalizeIP(parsed.address);
+        if (!address || !net_isIP(address)) return null;
+
+
+
+        return new NetworkAddress(address, parsed.family, parsed.port, parsed.flowlabel);
+    }
+
+
+    public get address() {
+        return this.sa.address;
+    }
+
+    public get port(): number | undefined {
+        return this.sa.port;
+    }
+
+    public isIPv4() {
+        return net_isIPv4(this.sa.address);
+    }
+
+    public isIPv6() {
+        return net_isIPv6(this.sa.address);
+    }
+
+    public normalize() {}
+
+}
+
 
 export class NetworkUtils {
 
     static splitHostAndPort(uri: string): [string | null, number | null] {
 
         const dataArray = uri.split(/:(?=[^:]*$)/);
-        const host = NetworkUtils.normalizeIP(this.getIPv6WithoutBrackets(dataArray[0])) || dataArray[0];
+        const host = NetworkUtils.normalizeIP(this.getIPv6WithoutBrackets(dataArray[0] as string)) || dataArray[0];
         const port = dataArray[1] ? parseInt(dataArray[1]) : null;
 
-        return [host, port];
+        return [host as string, port];
     }
 
     static isIPv4(address: string): boolean {
-        const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
-        return ipv4Regex.test(address);
+        return net_isIPv4(address);
     }
     
     static isIPv6(address: string): boolean {
-        const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6}))|(:((:[0-9a-fA-F]{1,4}){1,7}|:))|(::ffff:(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}))$/;
-        return ipv6Regex.test(address);
+        return net_isIPv6(address);
     }
 
     static normalizeIP(address: string): string | null {
@@ -31,7 +83,7 @@ export class NetworkUtils {
             const ipv6Mapped = /^::ffff:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)$/;
             const match = address.match(ipv6Mapped);
             if (match) {
-                return match[1]; // Return the mapped IPv4
+                return match[1] as string; // Return the mapped IPv4
             }
     
             // Expand compressed IPv6 (e.g., "2001:db8::1")

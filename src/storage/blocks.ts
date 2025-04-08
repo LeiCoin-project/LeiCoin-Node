@@ -4,7 +4,9 @@ import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 import { LevelDBEncoders } from "./leveldb/encoders.js";
 import { FastEvents } from "@leicoin/utils/fastevents";
 
-interface IBlockDB {
+export interface IBlockDB {
+    add(block: Block, overwrite?: boolean): Promise<boolean>;
+    get(index: Uint64): Promise<Block | null>;
     exists(index: Uint64): Promise<boolean>;
     /**
      * WARNING: Deleting Blocks from a chain is risky and should be done with caution. Dont use this method unless you know what you are doing.
