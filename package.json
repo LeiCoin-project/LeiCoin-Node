@@ -36,7 +36,7 @@
 	"homepage": "https://github.com/LeiCraft/LeiCoin-Node#readme",
 	"dependencies": {
 		"@cleverjs/cli": "latest",
-		"@date-fns/utc": "^1.2.0",
+		"@date-fns/utc": "^2.1.0",
 		"@elysiajs/cors": "^1.2.0",
 		"@leicoin/cli": "^1.0.0",
 		"@leicoin/common": "^1.0.0",
@@ -56,7 +56,7 @@
 		"chalk": "^4.1.2",
 		"classic-level": "^2.0.0",
 		"cron": "^4.1.4",
-		"date-fns": "^3.6.0",
+		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.7",
 		"elliptic": "^6.6.1",
 		"elysia": "^1.2.25",
