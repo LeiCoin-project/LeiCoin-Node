@@ -1,5 +1,5 @@
 import { Uint, type BasicUintConstructable } from "low-level";
-import type { StorageAPI } from "../api";
+import type { StorageAPI } from "../index.js";
 import type { Ref } from "ptr.js";
 import { type EncodeableObj, type EncodeableObjInstance } from "flexbuf";
 import { TempStorage } from "./tempStore";

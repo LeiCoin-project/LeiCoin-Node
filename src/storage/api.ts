@@ -1,10 +1,16 @@
-import { BlockDB, type IBlockDB } from "./blocks";
+import { BlockDB } from "./blocks";
 import { ChainstateStore } from "./chainstate";
 import { SmartContractStateDB } from "./state/smart-contract";
-import { MinterDB, type IMinterDB } from "./state/minters";
-import { WalletDB, type IWalletDB } from "./state/wallets";
+import { MinterDB } from "./state/minters";
+import { WalletDB } from "./state/wallets";
 
-export class StorageAPI {
+export { BlockDB as Blocks }
+export { WalletDB as Wallets }
+export { MinterDB as Minters }
+export { SmartContractStateDB as SmartContractStates }
+export { ChainstateStore as ChainState }
+
+export default class StorageAPI {
 
     constructor(
         readonly blocks: BlockDB,
@@ -16,26 +22,13 @@ export class StorageAPI {
 
 }
 
-export namespace StorageAPI {
-    export const Blocks = BlockDB;
-    export const Wallets = WalletDB;
-    export const Minters = MinterDB;
-    export const SmartContractStates = SmartContractStateDB;
-    export const ChainState = ChainstateStore;
-
-    export type Blocks = IBlockDB;
-    export type Wallets = IWalletDB;
-    export type Minters = IMinterDB;
-    export type SmartContractStates = SmartContractStateDB;
-    export type ChainState = ChainstateStore;
-
-    export interface IChainStore<K, V> {
-        get(key: K): Promise<V | null>;
-        exists(key: K): Promise<boolean>;
-        del(key: K): Promise<void>;
-    }
-
-    export interface IChainStateStore<K, V> extends IChainStore<K, V> {
-        set(value: V): Promise<void>;
-    }
+export interface IChainStore<K, V> {
+    get(key: K): Promise<V | null>;
+    exists(key: K): Promise<boolean>;
+    del(key: K): Promise<void>;
 }
+
+export interface IChainStateStore<K, V> extends IChainStore<K, V> {
+    set(value: V): Promise<void>;
+}
+

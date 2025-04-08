@@ -4,8 +4,8 @@ import type { Transaction } from "@leicoin/common/models/transaction";
 import { PX } from "@leicoin/common/types/prefix";
 import { DepositContract } from "@leicoin/smart-contracts";
 import { Constants } from "@leicoin/utils/constants";
-import { Uint64 } from "low-level";
-import type { StorageAPI } from "../api";
+import { Uint, Uint64 } from "low-level";
+import type { StorageAPI } from "../index.js";
 import { AbstractChainStateStore } from "./abstractStore";
 import type { WalletStateStore } from "./wallets";
 import type { Ref } from "ptr.js";
@@ -28,78 +28,48 @@ export class MinterStateStore extends AbstractChainStateStore<AddressHex, Minter
         }
     }
 
-    /** @todo selectNextMinter should be moved to this class. */
-    async getProposer(slotIndex: Uint64) {
-        const minter = await this.storage.selectNextMinter(slotIndex);
-        if (minter) {
-            return await this.get(minter);
+    async getAddressByIndex(index: Uint64) {
+
+        const { range, offset } = await this.storage.getIndexes().getRangeByIndex(index);
+
+        const count = Uint64.from(0);
+        const minterAddressesBaseStream = this.storage.getLevel().createKeyStream({ gte: range.firstPossibleKey, lte: range.lastPossibleKey });
+
+            const iterator = minterAddressesBaseStream[Symbol.asyncIterator]();
+            let arrayIndex = 0;
+            let streamItem = await iterator.next();
+
+            while (!streamItem.done) {
+                const streamVal = streamItem.value;
+                const arrayVal = arrayIndex < array.length ? array[arrayIndex] : null;
+
+                if (arrayVal) {
+                    if (streamVal.lte(arrayVal)) {
+                        yield streamVal;
+                        streamItem = await iterator.next();
+                    } else {
+                        yield arrayVal;
+                        arrayIndex++;
+                    }
+                } else {
+                    yield streamVal;
+                    streamItem = await iterator.next();
+                }
+            }
+
+            while (arrayIndex < array.length) {
+                yield array[arrayIndex++];
+            }
+
         }
-        throw new Error("Error in getProposer: Minter not found.");
+
     }
 
-    async executeDepositContractTransaction(tx: Transaction, wallets: WalletStateStore) {
+    async getSize() {
+        const baseSize = await this.storage.getSize();
+        const { added, deleted } = this.tempStorage.size;
 
-        const fnID = tx.input.slice(0, 4).toString("hex");
-
-        // this may change in the future
-        const minterAddress = AddressHex.fromTypeAndBody(PX.A_0e, tx.recipientAddress.getBody());
-        let minter = await this.get(minterAddress);
-
-        switch (fnID) {
-            case DepositContract.depositFNID: {
-
-                // minter is not already active
-                if (!minter) {
-
-                    if (tx.amount.lt(Constants.MIN_MINTER_DEPOSIT)) {
-                        return false;
-                    }
-
-                    minter = MinterData.createNewMinter(minterAddress);
-                    /**
-                     * @todo Implement join validation.
-                     * for now all minters join immediately. this have to be changed in the future.
-                     */
-                }
-
-                minter.deposit(tx.amount);
-
-                await this.set(minter);
-
-                return true;
-            }
-            case "withdraw": {
-                // @todo Implement withdraw function
-
-                // minter is not in the db
-                if (!minter) return false;
-
-                if (tx.input.getLen() !== 12) return false;
-                const amount = new Uint64(tx.input.slice(4, 12));
-
-                if (amount.eq(minter.getStake())) {
-                    // minter want to exit
-                    this.del(minterAddress);
-
-                    
-                    wallets.addMoney(tx.recipientAddress, amount);
-                    return true;
-                } else {
-                    const result = minter.withdrawIFPossible(amount);
-                    if (!result) return false;
-                }
-
-                // add delay in the future to make sure slashing can be done before minter gets his money
-                wallets.addMoney(tx.recipientAddress, amount);
-
-                return true;
-            }
-            default: {
-                // undefined function
-                return false;
-            }
-        }
-
+        return baseSize.add(added).sub(deleted);
     }
 
 }

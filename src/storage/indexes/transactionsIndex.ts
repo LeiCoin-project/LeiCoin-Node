@@ -1,7 +1,7 @@
 import type { Uint256 } from "low-level";
 import { IndexDB } from "../leveldb/indexDB";
 import { LevelDBEncoders } from "../leveldb/encoders";
-import type { StorageAPI } from "../api";
+import type { StorageAPI } from "../index.js";
 
 interface ITransactionsIndexDB extends StorageAPI.IChainStore<Uint256, any> {
     exists(txHash: Uint256): Promise<boolean>;

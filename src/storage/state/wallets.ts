@@ -6,9 +6,9 @@ import { Blockchain } from "../blockchain.js";
 import { AddressHex } from "@leicoin/common/models/address";
 import { Uint, Uint64 } from "low-level";
 import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
-import type { StorageAPI } from "../api.js";
+import type { StorageAPI } from "../index.js";
 
-export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
+interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
     set(wallet: Wallet): Promise<void>;
     get(address: AddressHex): Promise<Wallet>;
     exists(address: AddressHex): Promise<boolean>;

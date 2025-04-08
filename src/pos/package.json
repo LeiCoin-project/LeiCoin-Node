@@ -5,7 +5,8 @@
     "exports": {
       ".": "./index.ts",
       "./slot": "./slot.ts",
-      "./utils": "./utils.ts"
+      "./utils": "./utils.ts",
+      "./minter-handler": "./minter-handler.ts"
     },
     "dependencies": {
       "@leicoin/core": "^1.0.0",

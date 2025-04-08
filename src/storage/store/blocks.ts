@@ -1,6 +1,6 @@
 import { Block } from "@leicoin/common/models/block";
 import { Uint64 } from "low-level";
-import type { StorageAPI } from "../api";
+import type { StorageAPI } from "../index.js";
 import { AbstractChainStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
 

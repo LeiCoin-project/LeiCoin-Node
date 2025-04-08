@@ -3,7 +3,7 @@ import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
 import { type LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
-import type { StorageAPI } from "../api.js";
+import type { StorageAPI } from "../index.js";
 
 export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> implements StorageAPI.IChainStore<K, V> {
 
@@ -40,6 +40,14 @@ export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint
         return await this.level.del(key);
     }
 
+    /**
+     * Be careful! this allow manual manipulation of the leveldb data which could be unsafe.
+     * @returns the leveldb instance
+     */
+    public getLevel() {
+        return this.level;
+    }
+
 }
 
 export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> extends LevelBasedStorage<K, V, LevelK, LevelV> {
@@ -54,6 +62,16 @@ export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, Lev
         await this.indexes.load();
     }
 
-
+    async getSize() {
+        return await this.indexes.getTotalSize();
+    }
+    
+    /**
+     * Be careful! this allow manual manipulation of the indexes which could be unsafe.
+     * @returns the indexes of the storage
+     */
+    public getIndexes() {
+        return this.indexes;
+    }
 
 }

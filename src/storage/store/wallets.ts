@@ -1,5 +1,5 @@
 import { AddressHex } from "@leicoin/common/models/address";
-import type { StorageAPI } from "../api";
+import type { StorageAPI } from "../index.js";
 import { Wallet } from "@leicoin/common/models/wallet";
 import type { Uint64 } from "low-level";
 import { AbstractChainStateStore } from "./abstractStore";
