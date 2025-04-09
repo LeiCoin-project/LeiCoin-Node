@@ -1,4 +1,10 @@
 
+/*export abstract class Deferrable<T> implements Promise<T> {
+    
+
+
+}*/
+
 export class Deferred<T = void> implements Promise<T> {
 
     protected _resolve: ((value: any) => void) | null = null;
@@ -69,4 +75,9 @@ export class Deferred<T = void> implements Promise<T> {
         return this.resolved;
     }
 
+    public get [Symbol.toStringTag]() {
+        return this.constructor.name;
+    }
+
 }
+
