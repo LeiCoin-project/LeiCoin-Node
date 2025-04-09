@@ -1,7 +1,8 @@
 import { describe, test, expect } from "bun:test";
 import { Deferred } from "@leicoin/utils/deferred";
-import { Readable, PassThrough } from 'stream';
-import { Uint } from "low-level";
+import { QuickSort } from "@leicoin/utils/quick-sort";
+import { Readable } from 'stream';
+import { Uint, Uint64 } from "low-level";
 
 describe("utility", () => {
 
@@ -41,48 +42,72 @@ describe("utility", () => {
                 const streamVal = streamItem.value;
                 const arrayVal = arrayIndex < array.length ? array[arrayIndex] : null;
 
-                if (arrayVal) {
-                    if (streamVal.lte(arrayVal)) {
-                        yield streamVal;
-                        streamItem = await iterator.next();
-                    } else {
-                        yield arrayVal;
-                        arrayIndex++;
-                    }
-                } else {
+                if (!arrayVal || streamVal.lt(arrayVal)) {
                     yield streamVal;
                     streamItem = await iterator.next();
+                    continue;
                 }
+                yield arrayVal;
+                arrayIndex++;
             }
-
             while (arrayIndex < array.length) {
                 yield array[arrayIndex++];
             }
-            
+
         }
 
-
+        const values = [
+            Uint.from('aaa000000000000000000'),
+            Uint.from('bbb000000000000000000'),
+            Uint.from('ccc000000000000000000'),
+            Uint.from('ddd000000000000000000'),
+            Uint.from('eee000000000000000000'),
+            Uint.from('fff000000000000000000')
+        ]
 
         // Example stream emitting sorted 21-byte buffers
         const inputStream = Readable.from([
-            Uint.from('aaa000000000000000000'),
-            Uint.from('ccc000000000000000000'),
-            Uint.from('eee000000000000000000'),
+            values[0],
+            values[2],
+            values[4],
         ]);
 
         // Array also sorted
         const array = [
-            Uint.from('bbb000000000000000000'),
-            Uint.from('ddd000000000000000000'),
-            Uint.from('fff000000000000000000'),
+            values[1],
+            values[3],
+            values[5],
         ];
 
         const mergedStream = mergeSortedStreamAndArray(inputStream, array);
 
+        let count = 0;
         for await (const chunk of mergedStream) {
-            console.log(chunk.toHex());
+            expect(chunk).toEqual(values[count]);
+            count++;
         }
 
+    });
+
+    test("quick_sort", async () => {
+
+        const randomNumArr: number[] = [];
+        const randomUintArr: Uint64[] = [];
+
+        for (let i = 0; i < 10_000; i++) {
+            const randomNum = Math.floor(Math.random() * 10_000);
+            randomNumArr.push(randomNum);
+            randomUintArr.push(Uint64.from(randomNum));
+        }
+
+        const sortedNumArr = QuickSort.NumArray.sort(randomNumArr, true);
+        const sortedUintArr = QuickSort.UintArray.sort(randomUintArr, true) as Uint64[];
+
+        expect(QuickSort.NumArray.isSorted(randomNumArr)).toBe(false);
+        expect(QuickSort.NumArray.isSorted(sortedNumArr)).toBe(true);
+
+        expect(QuickSort.UintArray.isSorted(randomUintArr)).toBe(false);
+        expect(QuickSort.UintArray.isSorted(sortedUintArr)).toBe(true);
     });
 
 });
