@@ -9,7 +9,7 @@ import type { StorageAPI } from "../index.js";
 import type { MinterHandler } from "@leicoin/pos/minter-handler";
 import type { LevelRangeIndexes } from "../leveldb/rangeIndexes.js";
 
-interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> {
+interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<AddressHex, MinterData> {
     get(address: AddressHex): Promise<MinterData | null>;
     set(minter: MinterData): Promise<void>;
     exists(address: AddressHex): Promise<boolean>;
@@ -18,7 +18,7 @@ interface IMinterDB extends StorageAPI.IChainStateStore<AddressHex, MinterData> 
     getAllAddresses(): Promise<Uint[]>;
     selectNextMinter(slot: Uint64): Promise<AddressHex>;
 
-    getIndexes(): LevelRangeIndexes<Uint, Uint>
+    getIndexes(): LevelRangeIndexes;
 }
 
 export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, MinterData> implements IMinterDB {
@@ -37,7 +37,18 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
     }
 
     async set(minter: MinterData) {
+        if (!await this.exists(minter.address)) {
+            await this.indexes.addKey(minter.address.getBody());
+        }
         return this.level.put(minter.address, minter.encodeToHex());
+    }
+
+    async del(key: AddressHex): Promise<void> {
+        const exists = await this.exists(key);
+        if (exists) {
+            await this.indexes.removeKey(key.getBody());
+            return super.del(key);
+        }
     }
 
     private async adjustStakeByBlock(block: Block) {
@@ -52,7 +63,7 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
      * @returns the address of the minter at the given index or null if the index is out of range
      */
     async getAddressByIndex(index: Uint64) {
-
+        
         const { range, offset } = await this.indexes.getRangeByIndex(index);
 
         const count = Uint64.from(0);

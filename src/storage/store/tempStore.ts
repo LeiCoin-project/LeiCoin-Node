@@ -1,5 +1,6 @@
 import type { EncodeableObjInstance, EncodeableObj } from "flexbuf";
-import { BasicBinaryMap, BasicBinarySet, Uint, Uint8, type BasicUintConstructable } from "low-level";
+import { BasicBinaryMap, BasicBinarySet, Uint, type BasicUintConstructable } from "low-level";
+import type { BasicRangeIndexes } from "../leveldb/rangeIndexes";
 
 
 type TempStorageBackend<K extends Uint> = (BasicBinaryMap<K, Uint> | BasicBinarySet<K>) & {
@@ -185,9 +186,9 @@ type TempStorageValueType = "added" | "modified" | "deleted";
  */
 export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
 
-    protected readonly added: BasicBinaryMap<K, Uint>;
-    protected readonly modified: BasicBinaryMap<K, Uint>;
-    protected readonly deleted: BasicBinarySet<K>;
+    readonly added: BasicBinaryMap<K, Uint>;
+    readonly modified: BasicBinaryMap<K, Uint>;
+    readonly deleted: BasicBinarySet<K>;
 
     constructor(
         protected readonly keyCLS: BasicUintConstructable<K>,
@@ -304,6 +305,35 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
 
     public get [Symbol.toStringTag]() {
         return this.constructor.name;
+    }
+
+}
+
+export class TempStorageWithIndexes<K extends Uint, V extends EncodeableObjInstance> extends TempStorage<K, V> {
+
+    constructor(
+        keyCLS: BasicUintConstructable<K>,
+        valueCLS: EncodeableObj<V>,
+        readonly indexes: BasicRangeIndexes<K>
+    ) {
+        super(keyCLS, valueCLS);
+    }
+
+
+    public set(key: K, value: V | Uint, type: "added" | "modified"): void;
+    public set(key: K, value: null, type?: "deleted"): void;
+    public set(key: K, value: any, type: any = "deleted") {
+
+        if (type === "deleted" && !this.isDeleted(key)) {
+
+            this.indexes.removeKey(key);
+
+        } else if (type === "added" && !this.isAdded(key)) {
+
+            this.indexes.addKey(key);
+        }
+
+        return super.set(key, value, type);
     }
 
 }

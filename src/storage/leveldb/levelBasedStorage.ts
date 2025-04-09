@@ -58,8 +58,8 @@ export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, Lev
 
     async open() {
         await super.open();
-        this.indexes = new LevelRangeIndexes(this.level, this.keyByteLengthWithoutPrefix, this.keyPrefix);
-        await this.indexes.load();
+        this.indexes = new LevelRangeIndexes(this.keyByteLengthWithoutPrefix, this.keyPrefix);
+        await this.indexes.load(this.level);
     }
 
     async getSize() {

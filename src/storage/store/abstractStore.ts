@@ -2,7 +2,8 @@ import { Uint, type BasicUintConstructable } from "low-level";
 import type { StorageAPI } from "../index.js";
 import type { Ref } from "ptr.js";
 import { type EncodeableObj, type EncodeableObjInstance } from "flexbuf";
-import { TempStorage } from "./tempStore";
+import { TempStorage, TempStorageWithIndexes } from "./tempStore";
+import { BasicRangeIndexes } from "../leveldb/rangeIndexes.js";
 
 export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStore<K, V>> {
 
@@ -48,5 +49,28 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
 
 export abstract class AbstractChainStateStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStore<K, V>> extends AbstractChainStore<K, V, S> {
     abstract set(value: V): Promise<void>;
+}
+
+export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStore<K, V>> extends AbstractChainStateStore<K, V, S> {
+
+    protected readonly tempStorage: TempStorageWithIndexes<K, V>;
+
+    constructor(
+        isMainChain: Ref<boolean>,
+        storage: S,
+        keyCLS: BasicUintConstructable<K>,
+        valueCLS: EncodeableObj<V>,
+        indexesSettings: {
+            readonly byteLength: number,
+            readonly prefix: Uint
+        }
+    ) {
+        super(isMainChain, storage, keyCLS, valueCLS);
+        this.tempStorage = new TempStorageWithIndexes<K, V>(
+            keyCLS, valueCLS,
+            new BasicRangeIndexes(indexesSettings.byteLength, indexesSettings.prefix),
+        );
+    }
+
 }
 

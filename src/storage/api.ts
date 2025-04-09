@@ -3,6 +3,8 @@ import { ChainstateStore } from "./chainstate";
 import { SmartContractStateDB } from "./state/smart-contract";
 import { MinterDB } from "./state/minters";
 import { WalletDB } from "./state/wallets";
+import type { LevelRangeIndexes } from "./leveldb/rangeIndexes";
+import type { Uint } from "low-level";
 
 export { BlockDB as Blocks }
 export { WalletDB as Wallets }
@@ -30,5 +32,9 @@ export interface IChainStore<K, V> {
 
 export interface IChainStateStore<K, V> extends IChainStore<K, V> {
     set(value: V): Promise<void>;
+}
+
+export interface IChainStateStoreWithIndexes<K, V> extends IChainStateStore<K, V> {
+    getIndexes(): LevelRangeIndexes;
 }
 

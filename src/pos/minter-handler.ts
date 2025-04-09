@@ -6,7 +6,7 @@ import { LCrypt } from "@leicoin/crypto";
 import { DepositContract } from "@leicoin/smart-contracts";
 import type { Stores } from "@leicoin/storage/store/index";
 import { Constants } from "@leicoin/utils/constants";
-import type { Uint64 } from "low-level";
+import { Uint64 } from "low-level";
 
 
 // @todo Maybe move this code somewhere else?
@@ -21,19 +21,25 @@ export class MinterHandler {
     static async getProposer(slotIndex: Uint64, minters: Stores.MinterState) {
 
         const dbSize = await minters.getSize();
+
+        // get a random index from the database size and the hash of the slot index
         const randomIndex = LCrypt.sha256(slotIndex).mod(dbSize);
 
-        
-        
+        const result = await minters.getAddressByIndex(Uint64.from(randomIndex));
+
+        if (!result) {
+            throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
+        }
+        return result;   
     }
 
-    static async executeDepositContractTransaction(tx: Transaction, wallets: Stores.WalletState) {
+    static async executeDepositContractTransaction(tx: Transaction, minters: Stores.MinterState, wallets: Stores.WalletState) {
 
         const fnID = tx.input.slice(0, 4).toString("hex");
 
         // this may change in the future
         const minterAddress = AddressHex.fromTypeAndBody(PX.A_0e, tx.recipientAddress.getBody());
-        let minter = await this.get(minterAddress);
+        let minter = await minters.get(minterAddress);
 
         switch (fnID) {
             case DepositContract.depositFNID: {
@@ -54,7 +60,7 @@ export class MinterHandler {
 
                 minter.deposit(tx.amount);
 
-                await this.set(minter);
+                await minters.set(minter);
 
                 return true;
             }
@@ -69,7 +75,7 @@ export class MinterHandler {
 
                 if (amount.eq(minter.getStake())) {
                     // minter want to exit
-                    this.del(minterAddress);
+                    minters.del(minterAddress);
 
                     
                     wallets.addMoney(tx.recipientAddress, amount);

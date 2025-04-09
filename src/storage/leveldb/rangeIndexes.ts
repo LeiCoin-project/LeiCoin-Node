@@ -1,7 +1,14 @@
+import { QuickSort } from "@leicoin/utils/quick-sort";
 import { LevelDB } from "./index.js";
 import { Uint, Uint64 } from "low-level";
 
-export class LevelKeyIndexRange {
+export interface IKeyIndexRange {
+    readonly firstPossibleKey: Uint;
+    readonly lastPossibleKey: Uint;
+    size: Uint64;
+}
+
+export class KeyIndexRange {
 
     constructor(
         protected rangeStartingPoint: Uint,
@@ -10,8 +17,8 @@ export class LevelKeyIndexRange {
         public size: Uint64
     ) {}
 
-    static fromStep(step: number, byteLength: number, prefix: Uint): LevelKeyIndexRange {
-        return new LevelKeyIndexRange(
+    static fromStep(step: number, byteLength: number, prefix: Uint) {
+        return new KeyIndexRange(
             Uint.concat([
                 Uint.from(step),
                 Uint.alloc(byteLength -1)
@@ -38,43 +45,47 @@ export class LevelKeyIndexRange {
     }
 }
 
-export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> {
+type RangeIndexConstructor<K extends Uint> = {
+    new (...args: any[]): AbstractRangeIndexes<K>;
+    readonly rangeSize: number;
+    readonly prototype: AbstractRangeIndexes<K>;
+}
+
+export abstract class AbstractRangeIndexes<K extends Uint = Uint> {
 
     static readonly rangeSize = 256;
 
-    protected initialized = false;
-
     /**
      * Constructs a new instance of the class.
-     * @param level - An instance of LevelDB used for database operations.
      * @param byteLength - The length in bytes without the prefix for keys.
      * @param prefix - A Uint representing the prefix for keys (default is an empty Uint).
-     * @param ranges - An array of LevelKeyIndexRange defining the ranges for indexing (default is an empty array).
-     */
+     * @param ranges - An array of KeyIndexRange defining the ranges for indexing (default is an empty array).
+     */    
     constructor(
-        protected readonly level: LevelDB<K, V>,
         protected readonly byteLength: number,
         protected readonly prefix: Uint = Uint.alloc(0),
-        protected readonly ranges: LevelKeyIndexRange[] = []
-    ) {}
-
-    async load() {
-        if (this.initialized) return;
-
-        for (let i = 0; i < LevelRangeIndexes.rangeSize; i++) {
-            const currentRange = LevelKeyIndexRange.fromStep(i, this.byteLength, this.prefix);
-
-            const keyStream = this.level.createKeyStream({gte: currentRange.firstPossibleKey as K, lte: currentRange.lastPossibleKey as K});
-
-            for await (const address of keyStream) {
-                currentRange.size.iadd(1);
+        protected readonly ranges: KeyIndexRange[] = []
+    ) {
+        if (ranges.length !== this.getRangesAmount()) {
+            this.ranges = [];
+            for (let n = 0; n < this.getRangesAmount(); n++) {
+                this.ranges.push(KeyIndexRange.fromStep(n, this.byteLength, this.prefix));
             }
-
-            this.ranges.push(currentRange);
         }
     }
 
-    async getRange(key: Uint) {
+    abstract load(...args: any[]): Promise<void>;
+
+
+    public getRange(n: number) {
+        return this.ranges[n];
+    }
+
+    public getRanges() {
+        return this.ranges as readonly KeyIndexRange[];
+    }
+
+    async getRangeByKey(key: K) {
         for (const range of this.ranges) {
             if (key.gte(range.firstPossibleKey) && key.lte(range.lastPossibleKey)) {
                 return range;
@@ -106,12 +117,17 @@ export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> {
         throw new Error("Index is not part of any range. Are the ranges initialized?");
     }
 
-    async addKey(key: Uint) {
-        (await this.getRange(key)).size.iadd(1);
+    public isInRange(key: K, range: KeyIndexRange) {
+        return key.gte(range.firstPossibleKey) && key.lte(range.lastPossibleKey);
     }
 
-    async removeKey(key: Uint) {
-        (await this.getRange(key)).size.isub(1);
+
+    async addKey(key: K) {
+        (await this.getRangeByKey(key)).size.iadd(1);
+    }
+
+    async removeKey(key: K) {
+        (await this.getRangeByKey(key)).size.isub(1);
     }
 
     async getTotalSize() {
@@ -121,6 +137,51 @@ export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> {
             totalSize.iadd(range.size);
         }
         return totalSize;
+    }
+
+
+    public getRangesAmount() {
+        return (this.constructor as RangeIndexConstructor<K>).rangeSize;
+    }
+}
+
+
+export class BasicRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndexes<K> {
+
+    /**
+     * Initializes the ranges based on the provided keys.
+     * @param keys - Array of unique keys to be used for range initialization.
+     */
+    async load(keys: K[]) {
+        
+        const sorted = QuickSort.UintArray.sort(keys, true);
+        let totalCount = 0;
+
+        for (const range of this.ranges) {
+            while (totalCount < sorted.length && this.isInRange(sorted[totalCount] as K, range)) {
+                range.size.iadd(1);
+                totalCount++;
+            }
+        }
+    }
+}
+
+export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> extends AbstractRangeIndexes<K> {
+
+    /**
+     * Initializes the ranges based on the provided keys in the LevelDB.
+     * @param level - The LevelDB instance to be used for range initialization.
+     */
+    async load(level: LevelDB<K, V>) {
+
+        for (const range of this.ranges) {
+
+            const keyStream = level.createKeyStream({gte: range.firstPossibleKey as K, lte: range.lastPossibleKey as K});
+
+            for await (const address of keyStream) {
+                range.size.iadd(1);
+            }
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-import type { ObjectKeys, ObjectiveArray } from "./dataUtils.js";
+import type { ObjectKeys } from "./dataUtils.js";
 
 export namespace FastEvents {
 
@@ -39,13 +39,13 @@ export namespace FastEvents {
 
         protected readonly subscriptions: Subscriptions<Topics> = {} as any;
         protected readonly listeners: Listeners = new Map();
-        
+
         constructor(topics: ObjectKeys<Topics>) {
             for (const topic of topics as (keyof Topics)[]) {
                 this.subscriptions[topic] = new Set();
             }
         }
-        
+
         public on<K extends keyof Topics>(topic: K, listener: Listener<Topics[K]>, id: SubscriptionID = Symbol("subscriber-id")) {
             this.subscriptions[topic].add(id);
             this.listeners.set(id, listener);
@@ -57,7 +57,7 @@ export namespace FastEvents {
             this.listeners.delete(id);
         }
 
-            // Emit an event with type-safe arguments.
+        // Emit an event with type-safe arguments.
         async emit<K extends keyof Topics>(topic: K, ...args: Topics[K]) {
             const promises: Promise<void>[] = [];
 
