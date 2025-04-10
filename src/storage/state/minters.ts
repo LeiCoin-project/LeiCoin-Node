@@ -1,33 +1,30 @@
 import { MinterData } from "@leicoin/common/models/minterData";
-import { type Block } from "@leicoin/common/models/block";
 import { AddressHex } from "@leicoin/common/models/address";
 import { type Uint, Uint64 } from "low-level";
-import { LevelBasedStorageWithRangeIndexes } from "../leveldb/levelBasedStorage.js";
+import { LevelBasedStateStorageWithIndexes } from "../leveldb/levelBasedStorage.js";
 import { PX } from "@leicoin/common/types/prefix";
 import { LCrypt } from "@leicoin/crypto";
 import type { StorageAPI } from "../index.js";
 import type { MinterHandler } from "@leicoin/pos/minter-handler";
 import type { LevelRangeIndexes } from "../leveldb/rangeIndexes.js";
 
-interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<AddressHex, MinterData> {
+
+export interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<AddressHex, MinterData> {
     get(address: AddressHex): Promise<MinterData | null>;
     set(minter: MinterData): Promise<void>;
     exists(address: AddressHex): Promise<boolean>;
     del(address: AddressHex): Promise<void>;
 
-    getAllAddresses(): Promise<Uint[]>;
-    selectNextMinter(slot: Uint64): Promise<AddressHex>;
-
-    getIndexes(): LevelRangeIndexes;
+    //getAllAddresses(): Promise<Uint[]>;
 }
 
-export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, MinterData> implements IMinterDB {
-
-    protected keyByteLengthWithoutPrefix = 20;
-    protected keyPrefix = PX.A_0e;
+export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, MinterData> implements IMinterDB {
 
     constructor() {
-        super("/minters");
+        super("/minters", undefined, {
+            keyByteLengthWithoutPrefix: 20,
+            keyPrefix: PX.A_0e,
+        });
     }
 
     async get(address: AddressHex) {
@@ -51,11 +48,11 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
         }
     }
 
-    private async adjustStakeByBlock(block: Block) {
+    // private async adjustStakeByBlock(block: Block) {
         
-        //const inActive = this.getMinterInLevel(address, "active");
+    //     //const inActive = this.getMinterInLevel(address, "active");
 
-    }
+    // }
 
     /**
      * get a minter address by an index in all minters
@@ -101,10 +98,6 @@ export class MinterDB extends LevelBasedStorageWithRangeIndexes<AddressHex, Mint
 
     async getAllAddresses() {
         return this.level.keys().all();
-    }
-
-    public getIndexes() {
-        return this.indexes;
     }
 
 }

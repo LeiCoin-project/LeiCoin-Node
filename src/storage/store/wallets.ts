@@ -5,9 +5,9 @@ import type { Uint64 } from "low-level";
 import { AbstractChainStateStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
 
-export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet, StorageAPI.Wallets> {
+export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet, StorageAPI.IWallets> {
 
-    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Wallets) {
+    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IWallets) {
         super(isMainChain, storage, AddressHex, Wallet as any);
     }
 

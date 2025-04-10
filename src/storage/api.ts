@@ -1,23 +1,24 @@
-import { BlockDB } from "./blocks";
+import { type IBlockDB, BlockDB } from "./blocks";
+import { type IMinterDB, MinterDB } from "./state/minters";
+import { type IWalletDB, WalletDB } from "./state/wallets";
 import { ChainstateStore } from "./chainstate";
 import { SmartContractStateDB } from "./state/smart-contract";
-import { MinterDB } from "./state/minters";
-import { WalletDB } from "./state/wallets";
-import type { LevelRangeIndexes } from "./leveldb/rangeIndexes";
-import type { Uint } from "low-level";
+import type { AbstractRangeIndexes, LevelRangeIndexes } from "./leveldb/rangeIndexes";
+import type { Uint, Uint64 } from "low-level";
 
-export { BlockDB as Blocks }
-export { WalletDB as Wallets }
-export { MinterDB as Minters }
+export { BlockDB as Blocks, type IBlockDB as IBlocks };
+export { WalletDB as Wallets, type IWalletDB as IWallets };
+export { MinterDB as Minters, type IMinterDB as IMinters };
+
 export { SmartContractStateDB as SmartContractStates }
 export { ChainstateStore as ChainState }
 
 export default class StorageAPI {
 
     constructor(
-        readonly blocks: BlockDB,
-        readonly wallets: WalletDB,
-        readonly minters: MinterDB,
+        readonly blocks: IBlockDB,
+        readonly wallets: IWalletDB,
+        readonly minters: IMinterDB,
         readonly scstates: SmartContractStateDB,
         readonly chainstate: ChainstateStore
     ) {}
@@ -32,9 +33,24 @@ export interface IChainStore<K, V> {
 
 export interface IChainStateStore<K, V> extends IChainStore<K, V> {
     set(value: V): Promise<void>;
+    createKeyStream(options?: Types.Stream.CreateOptions<Uint>): Types.Stream<Uint>;
 }
 
 export interface IChainStateStoreWithIndexes<K, V> extends IChainStateStore<K, V> {
-    getIndexes(): LevelRangeIndexes;
+    getIndexes(): AbstractRangeIndexes<Uint>;
+    getDBSize(): Uint64;
 }
 
+export namespace Types {
+
+    export namespace Stream {
+        export type CreateOptions<T> = {
+            gte?: T | undefined;
+            lte?: T | undefined;
+        };
+    }
+    export type Stream<T> = AsyncIterable<T> & {
+        destroy(): void;
+    };
+    
+}

@@ -20,7 +20,7 @@ export class MinterHandler {
      */
     static async getProposer(slotIndex: Uint64, minters: Stores.MinterState) {
 
-        const dbSize = await minters.getSize();
+        const dbSize = minters.getDBSize();
 
         // get a random index from the database size and the hash of the slot index
         const randomIndex = LCrypt.sha256(slotIndex).mod(dbSize);

@@ -40,4 +40,4 @@ export class LevelDB<KDefault = Uint, VDefault = Uint> extends ClassicLevel<KDef
 
 }
 
-
+export type { DatabaseOptions as LevelDBOptions };

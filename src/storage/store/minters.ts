@@ -13,10 +13,10 @@ import type { IKeyIndexRange } from "../leveldb/rangeIndexes.js";
 export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 	AddressHex,
 	MinterData,
-	StorageAPI.Minters
+	StorageAPI.IMinters
 > {
 
-	constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Minters) {
+	constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IMinters) {
 		super(isMainChain, storage, AddressHex, MinterData as any, {
 			byteLength: 20,
 			prefix: PX.A_0e,
@@ -38,18 +38,16 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 		const { range, offset } = await this.getRangeByIndexFromMergedIndexes(index);
 
 		const count = Uint64.from(0);
-		const minterAddressesBaseStream = this.storage
-			.getLevel()
-			.createKeyStream({
-				gte: range.firstPossibleKey,
-				lte: range.lastPossibleKey,
-			});
+		const minterAddressesBaseStream = this.storage.createKeyStream({
+			gte: range.firstPossibleKey,
+			lte: range.lastPossibleKey
+		});
 
 		const minterAddressesStream = MinterStateStore.mergeSortedStreamAndArray(
 			minterAddressesBaseStream,
 			this.tempStorage.added.keys().all(),
 			this.tempStorage.deleted
-		)
+		);
 
         for await (const addr of minterAddressesStream) {
             if (count.eq(offset)) {
@@ -62,8 +60,8 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
         return null;		
 	}
 
-	async getSize() {
-		const baseSize = await this.storage.getSize();
+	public getDBSize() {
+		const baseSize = this.storage.getDBSize();
 		const { added, deleted } = this.tempStorage.size;
 
 		return baseSize.add(added).sub(deleted);

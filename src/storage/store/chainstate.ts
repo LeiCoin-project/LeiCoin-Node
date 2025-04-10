@@ -15,7 +15,7 @@ export class ChainStateStore {
         readonly minters: MinterStateStore,
     ) {}
 
-    static create(isMainChain: Ref<boolean>, chainstateAPI: StorageAPI.ChainState, walletAPI: StorageAPI.Wallets, minterAPI: StorageAPI.Minters) {
+    static create(isMainChain: Ref<boolean>, chainstateAPI: StorageAPI.ChainState, walletAPI: StorageAPI.IWallets, minterAPI: StorageAPI.IMinters) {
         return new ChainStateStore(
             isMainChain,
             chainstateAPI,

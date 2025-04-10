@@ -130,8 +130,8 @@ export abstract class AbstractRangeIndexes<K extends Uint = Uint> {
         (await this.getRangeByKey(key)).size.isub(1);
     }
 
-    async getTotalSize() {
-        let totalSize = Uint64.from(0);
+    public getTotalSize() {
+        const totalSize = Uint64.from(0);
 
         for (const range of this.ranges) {
             totalSize.iadd(range.size);
@@ -166,13 +166,13 @@ export class BasicRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndex
     }
 }
 
-export class LevelRangeIndexes<K extends Uint = Uint, V extends Uint = Uint> extends AbstractRangeIndexes<K> {
+export class LevelRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndexes<K> {
 
     /**
      * Initializes the ranges based on the provided keys in the LevelDB.
      * @param level - The LevelDB instance to be used for range initialization.
      */
-    async load(level: LevelDB<K, V>) {
+    async load(level: LevelDB<K, any>) {
 
         for (const range of this.ranges) {
 

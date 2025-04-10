@@ -4,9 +4,9 @@ import type { StorageAPI } from "../index.js";
 import { AbstractChainStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
 
-export class BlockStore extends AbstractChainStore<Uint64, Block, StorageAPI.Blocks> {
+export class BlockStore extends AbstractChainStore<Uint64, Block, StorageAPI.IBlocks> {
 
-    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.Blocks) {
+    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IBlocks) {
         super(isMainChain, storage, Uint64, Block);
     }
 

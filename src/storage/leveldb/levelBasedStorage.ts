@@ -1,24 +1,25 @@
-import { LevelDB } from "./index.js";
+import { LevelDB, type LevelDBOptions } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
-import { type LevelDBEncoderLike, LevelDBEncoders } from "./encoders.js";
 import type { StorageAPI } from "../index.js";
 
-export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> implements StorageAPI.IChainStore<K, V> {
+export abstract class LevelBasedStorage<K extends LevelK, V,
+    LevelK extends Uint = Uint,
+    LevelV extends Uint = Uint
+> implements StorageAPI.IChainStore<K, V> {
 
     protected readonly level: LevelDB<LevelK, LevelV>;
 
     constructor(
         protected readonly path: string,
-        levelKeyEncoder = LevelDBEncoders.Uint as LevelDBEncoderLike<LevelK>,
-        levelValueEncoder = LevelDBEncoders.Uint as LevelDBEncoderLike<LevelV>
+        levelOptions?: LevelDBOptions<LevelK, LevelV>
     ) {
         StorageUtils.ensureDirectoryExists(this.path);
-        this.level = new LevelDB<LevelK, LevelV>(StorageUtils.getBlockchainDataFilePath(this.path), {
-            keyEncoding: levelKeyEncoder as LevelDBEncoderLike<LevelK>,
-            valueEncoding: levelValueEncoder as LevelDBEncoderLike<LevelV>
-        });
+        this.level = new LevelDB(
+            StorageUtils.getBlockchainDataFilePath(this.path),
+            levelOptions
+        );
     }
 
     async open() {
@@ -28,7 +29,6 @@ export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint
     async close() {
         await this.level.close();
     }
-
 
     abstract get(key: K): Promise<V | null>;
 
@@ -47,25 +47,52 @@ export abstract class LevelBasedStorage<K extends LevelK, V, LevelK extends Uint
     public getLevel() {
         return this.level;
     }
+}
+
+export abstract class LevelBasedStateStorage<K extends LevelK, V,
+    LevelK extends Uint = Uint,
+    LevelV extends Uint = Uint
+> extends LevelBasedStorage<K, V, LevelK, LevelV> implements StorageAPI.IChainStateStore<K, V> {
+
+    abstract set(value: V): Promise<void>;
+
+    public createKeyStream(options?: StorageAPI.Types.Stream.CreateOptions<LevelK>): StorageAPI.Types.Stream<LevelK> {
+        return this.level.createKeyStream(options);
+    }
 
 }
 
-export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, LevelK extends Uint = Uint, LevelV extends Uint = Uint> extends LevelBasedStorage<K, V, LevelK, LevelV> {
+export abstract class LevelBasedStateStorageWithIndexes<K extends LevelK, V,
+    LevelK extends Uint = Uint,
+    LevelV extends Uint = Uint
+> extends LevelBasedStateStorage<K, V, LevelK, LevelV> implements StorageAPI.IChainStateStoreWithIndexes<K, V> {
 
-    protected abstract keyByteLengthWithoutPrefix: number;
-    protected keyPrefix: Uint = Uint.alloc(0);
-    protected indexes: LevelRangeIndexes<LevelK, LevelV> = null as any;
+    protected readonly indexes: LevelRangeIndexes<LevelK>;
+
+    constructor(
+        path: string,
+        levelOptions: LevelDBOptions<LevelK, LevelV> | undefined,
+        indexesOptions: {
+            keyByteLengthWithoutPrefix: number;
+            keyPrefix?: Uint;
+        }
+    ) {
+        super(path, levelOptions);
+        this.indexes = new LevelRangeIndexes(
+            indexesOptions.keyByteLengthWithoutPrefix,
+            indexesOptions.keyPrefix
+        );
+    }
 
     async open() {
         await super.open();
-        this.indexes = new LevelRangeIndexes(this.keyByteLengthWithoutPrefix, this.keyPrefix);
         await this.indexes.load(this.level);
     }
 
-    async getSize() {
-        return await this.indexes.getTotalSize();
+    public getDBSize() {
+        return this.indexes.getTotalSize();
     }
-    
+
     /**
      * Be careful! this allow manual manipulation of the indexes which could be unsafe.
      * @returns the indexes of the storage
@@ -73,5 +100,4 @@ export abstract class LevelBasedStorageWithRangeIndexes<K extends LevelK, V, Lev
     public getIndexes() {
         return this.indexes;
     }
-
 }
