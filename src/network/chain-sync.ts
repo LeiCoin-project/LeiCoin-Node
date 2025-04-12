@@ -129,7 +129,7 @@ export class NetworkSyncManager {
             throw new Error("No peers to sync with");
         }
 
-        const sync_stats = await this.syncBlocks(syncPeers[0], latestBlock.index);
+        const sync_stats = await this.syncBlocks(syncPeers[0] as PeerSocket, latestBlock.index);
         
         while (this.blockQueue.size > 0) {
             const block = this.blockQueue.dequeue() as Block;

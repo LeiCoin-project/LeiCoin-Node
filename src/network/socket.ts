@@ -147,7 +147,7 @@ export class PeerSocket {
     }
 
 
-    async request<T extends LNAbstractMsgBody>(data: LNRequestMsg | LNAbstractMsgBody): Promise<LNResponseData<T>> {
+    async request<R extends LNAbstractMsgBody>(data: LNRequestMsg | LNAbstractMsgBody): Promise<LNResponseData<R>> {
         let reqmsg: LNRequestMsg;
         if (data instanceof LNAbstractMsgBody) {
             reqmsg = LNRequestMsg.create(data);
@@ -157,7 +157,7 @@ export class PeerSocket {
 
         this.send(reqmsg.encodeToHex());
 
-        const req = this.activeRequests.add<T>(reqmsg);
+        const req = this.activeRequests.add<R>(reqmsg);
 
         const response = await req.awaitResult();
         this.activeRequests.delete(req.id);
