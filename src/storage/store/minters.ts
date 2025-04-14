@@ -46,7 +46,11 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 		const minterAddressesStream = MinterStateStore.mergeSortedStreamAndArray(
 			minterAddressesBaseStream,
 			this.tempStorage.added.keys().all(),
-			this.tempStorage.deleted
+			this.tempStorage.deleted,
+			{
+				gte: range.firstPossibleKey,
+				lte: range.lastPossibleKey,
+			}
 		);
 
         for await (const addr of minterAddressesStream) {
@@ -104,7 +108,8 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 	protected static async* mergeSortedStreamAndArray(
 		baseStream: AsyncIterable<Uint>,
 		added: Uint[],
-		deleted: BasicBinarySet<Uint>
+		deleted: BasicBinarySet<Uint>,
+		options?: StorageAPI.Types.Stream.CreateOptions<Uint>
 	) {
 		const iterator = baseStream[Symbol.asyncIterator]();
 		let arrayIndex = 0;
@@ -114,21 +119,36 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 			const streamVal = streamItem.value;
 			const arrayVal = arrayIndex < added.length ? added[arrayIndex] : null;
 
-			if (deleted.has(streamVal)) {
-				streamItem = await iterator.next();
-				continue;
-			}
+
 			if (!arrayVal || streamVal.lt(arrayVal)) {
+
+				if (deleted.has(streamVal)) {
+					streamItem = await iterator.next();
+					continue;
+				}
+
 				yield streamVal;
 				streamItem = await iterator.next();
 				continue;
 			}
-			yield arrayVal;
+
 			arrayIndex++;
+
+			if (options?.gte && arrayVal.lt(options.gte)) continue;
+			if (options?.lte && arrayVal.gt(options.lte)) continue;
+
+			yield arrayVal;
 		}
 
 		while (arrayIndex < added.length) {
-			yield added[arrayIndex++] as Uint;
+
+			const currentVal = added[arrayIndex] as Uint;
+			arrayIndex++;
+		
+			if (options?.gte && currentVal.lt(options.gte)) continue;
+			if (options?.lte && currentVal.gt(options.lte)) continue;
+
+			yield currentVal;
 		}
 	}
 

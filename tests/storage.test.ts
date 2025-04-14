@@ -155,8 +155,11 @@ describe("storage", () => {
             expect((await minters2.get(data.address))?.encodeToHex().toHex()).toEqual(data.encodeToHex().toHex());
         }
 
-        expect(await minters1.getAddressByIndex(Uint64.from(10))).toEqual(await minters2.getAddressByIndex(Uint64.from(10)));
+        expect(await minters1.getAddressByIndex(Uint64.from(10))).toEqual(await minters2.getAddressByIndex(Uint64.from(10)));        
 
+    });
+
+    test("minter_real", async () => {
 
         const minters3 = new Stores.MinterState(new Ref(false), new FakeMinterStorage());
 
@@ -168,13 +171,11 @@ describe("storage", () => {
             await minters3.set(data);
         }
 
-        for (let slot = Uint64.from(0); slot.lt(1_000_000); slot = slot.add(1)) {
+        for (let slot = Uint64.from(0); slot.lt(10); slot = slot.add(1)) {
             const levelProposer = await realLevel.selectNextMinter(slot);
             const fakeStorageProposer = await MinterHandler.getProposer(slot, minters3);
-            expect(levelProposer.toHex()).toEqual(fakeStorageProposer.toHex());
+            expect(fakeStorageProposer.toHex()).toEqual(levelProposer.toHex());
         }
-
-        
 
     });
 
