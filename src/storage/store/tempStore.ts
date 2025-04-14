@@ -2,11 +2,19 @@ import type { EncodeableObjInstance, EncodeableObj } from "flexbuf";
 import { BasicBinaryMap, BasicBinarySet, Uint, type BasicUintConstructable } from "low-level";
 import type { BasicRangeIndexes } from "../leveldb/rangeIndexes";
 
-
-type TempStorageBackend<K extends Uint> = (BasicBinaryMap<K, Uint> | BasicBinarySet<K>) & {
-    set(key: K, value: Uint | null): void;
+interface TempStorageBackend<K extends Uint, V = Uint | null> {
+    get size(): number;
+    set(key: K, value: V): void;
+    delete(value: K): boolean;
+    has(value: K): boolean;
 }
 
+
+class DeletedKeysSet<K extends Uint> extends BasicBinarySet<K> implements TempStorageBackend<K, null> {
+    set(key: K, value: null) {
+        return super.add(key);
+    }
+}
 
 // /**
 //  * In Memory Storage for storing chain modifications.
@@ -188,7 +196,7 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
 
     readonly added: BasicBinaryMap<K, Uint>;
     readonly modified: BasicBinaryMap<K, Uint>;
-    readonly deleted: BasicBinarySet<K>;
+    readonly deleted: DeletedKeysSet<K>;
 
     constructor(
         protected readonly keyCLS: BasicUintConstructable<K>,
@@ -196,7 +204,7 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
     ) {
         this.added = new BasicBinaryMap(this.keyCLS);
         this.modified = new BasicBinaryMap(this.keyCLS);
-        this.deleted = new BasicBinarySet(this.keyCLS);
+        this.deleted = new DeletedKeysSet(this.keyCLS);
     }
 
     /**
@@ -229,11 +237,13 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
         this.modified.delete(key);
         this.deleted.delete(key);
         
+        const targetStorage = this[type] as TempStorageBackend<K>;
+
         if (!value || Uint.isUint(value)) {
-            return (this[type] as TempStorageBackend<K>).set(key, value);
+            return targetStorage.set(key, value);
         }
         const raw = value.encodeToHex(false);
-        return (this[type] as TempStorageBackend<K>).set(key, raw);
+        return targetStorage.set(key, raw);
     }
 
     /**
@@ -243,14 +253,22 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
      * @returns true if deleted, false if not found.
      */
     public delete(key: K, fully = false) {
+
+        const wasOnlyAdded = this.added.delete(key);
+
         if (fully) {
             const results = [
-                this.added.delete(key),
+                wasOnlyAdded,
                 this.modified.delete(key),
                 this.deleted.delete(key)
-            ];
-            return results[0] || results[1] || results[2];
+            ]
+            return results[0] || results[1] || results[2] || false;
         }
+
+        if (wasOnlyAdded) {
+            return true;
+        }
+
         this.set(key, null);
         return true;
     }
@@ -334,6 +352,13 @@ export class TempStorageWithIndexes<K extends Uint, V extends EncodeableObjInsta
         }
 
         return super.set(key, value, type);
+    }
+
+    public delete(key: K, fully = false) {
+        if (this.isAdded(key)) {
+            this.indexes.removeKey(key);
+        }
+        return super.delete(key, fully);
     }
 
 }

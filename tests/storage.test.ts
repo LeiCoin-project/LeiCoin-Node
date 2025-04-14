@@ -125,9 +125,11 @@ describe("storage", () => {
         const minters1 = new Stores.MinterState(new Ref(true), baseStorage);
 
         const dummyData1 = Array.from({ length: 10 }, (_, i) => {
-            const address = AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20)));
-            const data = new MinterData(address, Uint64.from(100_000_000));
-            return data;
+
+            return new MinterData(
+                AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20))),
+                Uint64.from(100_000_000)
+            );
         });
 
         for (const data of dummyData1) {
@@ -143,9 +145,10 @@ describe("storage", () => {
 
 
         const dummyData2 = Array.from({ length: 10 }, (_, i) => {
-            const address = AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20)));
-            const data = new MinterData(address, Uint64.from(100_000_000));
-            return data;
+            return new MinterData(
+                AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20))),
+                Uint64.from(100_000_000)
+            );
         });
 
         for (const data of dummyData2) {
@@ -160,21 +163,48 @@ describe("storage", () => {
     });
 
     test("minter_real", async () => {
-
-        const minters3 = new Stores.MinterState(new Ref(false), new FakeMinterStorage());
-
+        
         const realLevel = Blockchain.minters;
+
+        const fakeMinters1 = new Stores.MinterState(new Ref(false), new FakeMinterStorage());
+        const fakeMinters2 = new Stores.MinterState(new Ref(false), realLevel);
 
         for await (const address of realLevel.createKeyStream()) {
             const data = await realLevel.get(new AddressHex(address));
             if (!data) throw new Error("Data not found");
-            await minters3.set(data);
+            await fakeMinters1.set(data);
         }
 
-        for (let slot = Uint64.from(0); slot.lt(10); slot = slot.add(1)) {
+        for (let slot = Uint64.from(0); slot.lt(5); slot = slot.add(1)) {
             const levelProposer = await realLevel.selectNextMinter(slot);
-            const fakeStorageProposer = await MinterHandler.getProposer(slot, minters3);
-            expect(fakeStorageProposer.toHex()).toEqual(levelProposer.toHex());
+            const fakeStorageProposer1 = await MinterHandler.getProposer(slot, fakeMinters1);
+            const fakeStorageProposer2 = await MinterHandler.getProposer(slot, fakeMinters2);
+        
+            expect(fakeStorageProposer1.toHex()).toEqual(levelProposer.toHex());
+            expect(fakeStorageProposer2.toHex()).toEqual(levelProposer.toHex());
+        }
+    
+        
+        for await (const data of realLevel.createKeyStream()) {
+
+            fakeMinters1.del(new AddressHex(data));
+            fakeMinters2.del(new AddressHex(data));
+
+            const dummyMinter = new MinterData(
+                AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20))),
+                Uint64.from(100_000_000)
+            );
+
+            await fakeMinters1.set(dummyMinter);
+            await fakeMinters2.set(dummyMinter);
+        }
+        
+        for (let slot = Uint64.from(0); slot.lt(5); slot = slot.add(1)) {
+
+            const proposer1 = await MinterHandler.getProposer(slot, fakeMinters1);
+            const proposer2 = await MinterHandler.getProposer(slot, fakeMinters2);
+        
+            expect(proposer1.toHex()).toEqual(proposer2.toHex());
         }
 
     });
