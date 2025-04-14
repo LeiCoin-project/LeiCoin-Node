@@ -38,7 +38,7 @@ export interface IChainStateStore<K, V> extends IChainStore<K, V> {
 
 export interface IChainStateStoreWithIndexes<K, V> extends IChainStateStore<K, V> {
     getIndexes(): AbstractRangeIndexes<Uint>;
-    getDBSize(): Uint64;
+    getDBSize(): number;
 }
 
 export namespace Types {

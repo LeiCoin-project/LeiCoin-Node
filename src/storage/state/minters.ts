@@ -82,9 +82,9 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
      */
     async selectNextMinter(slot: Uint64) {
         
-        throw new Error("Deprecated. Use MinterHandler.getProposer instead.");
+        //throw new Error("Deprecated. Use MinterHandler.getProposer instead.");
 
-        const dbSize = await this.indexes.getTotalSize();
+        const dbSize = this.indexes.getTotalSize();
 
         // get a random index from the database size and the hash of the slot index
         const randomIndex = LCrypt.sha256(slot).mod(dbSize);

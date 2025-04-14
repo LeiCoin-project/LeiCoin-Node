@@ -5,7 +5,7 @@ import { Uint, Uint64 } from "low-level";
 export interface IKeyIndexRange {
     readonly firstPossibleKey: Uint;
     readonly lastPossibleKey: Uint;
-    size: Uint64;
+    size: number;
 }
 
 export class KeyIndexRange {
@@ -14,7 +14,7 @@ export class KeyIndexRange {
         protected rangeStartingPoint: Uint,
         protected byteLength: number,
         protected prefix: Uint,
-        public size: Uint64
+        public size: number
     ) {}
 
     static fromStep(step: number, byteLength: number, prefix: Uint) {
@@ -25,7 +25,7 @@ export class KeyIndexRange {
             ]),
             byteLength,
             prefix,
-            Uint64.from(0)
+            0
         );
     }
 
@@ -123,18 +123,18 @@ export abstract class AbstractRangeIndexes<K extends Uint = Uint> {
 
 
     async addKey(key: K) {
-        (await this.getRangeByKey(key)).size.iadd(1);
+        (await this.getRangeByKey(key)).size++;
     }
 
     async removeKey(key: K) {
-        (await this.getRangeByKey(key)).size.isub(1);
+        (await this.getRangeByKey(key)).size--;
     }
 
     public getTotalSize() {
-        const totalSize = Uint64.from(0);
+        let totalSize = 0;
 
         for (const range of this.ranges) {
-            totalSize.iadd(range.size);
+            totalSize += range.size;
         }
         return totalSize;
     }
@@ -159,7 +159,7 @@ export class BasicRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndex
 
         for (const range of this.ranges) {
             while (totalCount < sorted.length && this.isInRange(sorted[totalCount] as K, range)) {
-                range.size.iadd(1);
+                range.size++;
                 totalCount++;
             }
         }
@@ -179,7 +179,7 @@ export class LevelRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndex
             const keyStream = level.createKeyStream({gte: range.firstPossibleKey as K, lte: range.lastPossibleKey as K});
 
             for await (const address of keyStream) {
-                range.size.iadd(1);
+                range.size++;
             }
         }
     }

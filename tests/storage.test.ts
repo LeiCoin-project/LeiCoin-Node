@@ -2,13 +2,16 @@ import { describe, test, expect } from "bun:test";
 import { StorageAPI } from "@leicoin/storage/index";
 import { AddressHex } from "@leicoin/common/models/address";
 import { MinterData } from "@leicoin/common/models/minterData";
-import { AbstractRangeIndexes, BasicRangeIndexes, LevelRangeIndexes } from "@leicoin/storage/leveldb/rangeIndexes";
+import { AbstractRangeIndexes, BasicRangeIndexes } from "@leicoin/storage/leveldb/rangeIndexes";
 import { Uint64, Uint, BasicBinaryMap, BasicUintConstructable } from "low-level";
 import { PX } from "@leicoin/common/types/prefix";
 import { Stores } from "@leicoin/storage/store/index";
 import { Ref } from "ptr.js";
 import { LCrypt } from "@leicoin/crypto";
 import { QuickSort } from "@leicoin/utils/quick-sort";
+import { MinterDB } from "@leicoin/storage/state/minters";
+import { MinterHandler } from "@leicoin/pos/minter-handler";
+import { Blockchain } from "@leicoin/storage/blockchain";
 
 abstract class FakeStorage<K extends Uint, V> implements StorageAPI.IChainStore<K, V> {
 
@@ -83,7 +86,7 @@ class FakeMinterStorage extends FakeStateStorage<AddressHex, MinterData> impleme
         return this.indexes;
     }
 
-    getDBSize(): Uint64 {
+    getDBSize() {
         return this.indexes.getTotalSize();
     }
 
@@ -153,6 +156,25 @@ describe("storage", () => {
         }
 
         expect(await minters1.getAddressByIndex(Uint64.from(10))).toEqual(await minters2.getAddressByIndex(Uint64.from(10)));
+
+
+        const minters3 = new Stores.MinterState(new Ref(false), new FakeMinterStorage());
+
+        const realLevel = Blockchain.minters;
+
+        for await (const address of realLevel.createKeyStream()) {
+            const data = await realLevel.get(new AddressHex(address));
+            if (!data) throw new Error("Data not found");
+            await minters3.set(data);
+        }
+
+        for (let slot = Uint64.from(0); slot.lt(1_000_000); slot = slot.add(1)) {
+            const levelProposer = await realLevel.selectNextMinter(slot);
+            const fakeStorageProposer = await MinterHandler.getProposer(slot, minters3);
+            expect(levelProposer.toHex()).toEqual(fakeStorageProposer.toHex());
+        }
+
+        
 
     });
 

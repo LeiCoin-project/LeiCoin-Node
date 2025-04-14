@@ -1,8 +1,9 @@
 import { beforeAll } from "bun:test";
 import { Blockchain } from "../../src/storage/blockchain";
 
-beforeAll(() => {
+beforeAll(async () => {
     //process.env.NO_CLI = "true";
-    Blockchain.init();
+    await Blockchain.init();
+    await Blockchain.waitAllChainsInit();
 });
 

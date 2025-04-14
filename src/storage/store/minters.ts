@@ -64,7 +64,7 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 		const baseSize = this.storage.getDBSize();
 		const { added, deleted } = this.tempStorage.size;
 
-		return baseSize.add(added).sub(deleted);
+		return baseSize + added - deleted;
 	}
 
 	
@@ -82,7 +82,7 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 			const baseRange = baseStorageRanges[i] as IKeyIndexRange;
 			const tempStorageRangeSize = (tempStorageRanges[i] as IKeyIndexRange).size;
 
-			const rangeSize = baseRange.size.add(tempStorageRangeSize);
+			const rangeSize = baseRange.size + tempStorageRangeSize;
 
             if (totalOffset.add(rangeSize).gt(index)) {
                 return {
@@ -94,7 +94,7 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
                     offset: index.sub(totalOffset)
                 };
             }
-            totalOffset.iadd(baseRange.size);
+            totalOffset.iadd(rangeSize);
         }
 
 		/** @todo Better Error Handling: Error shoudl not run when there are no Minter in the DB */
