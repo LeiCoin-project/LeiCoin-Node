@@ -22,13 +22,17 @@ export class MinterHandler {
 
         const dbSize = minters.getDBSize();
 
+        if (dbSize < 1) {
+            throw new Error("Minter DB is empty. Is the Database initialized and indexed?");
+        }
+
         // get a random index from the database size and the hash of the slot index
         const randomIndex = LCrypt.sha256(slotIndex).mod(dbSize);
 
         const result = await minters.getAddressByIndex(Uint64.from(randomIndex));
 
         if (!result) {
-            throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
+            throw new Error("Index is not part of any range. Is the Database initialized and indexed?");
         }
         return result;   
     }
