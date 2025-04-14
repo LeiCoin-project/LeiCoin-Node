@@ -35,7 +35,7 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
 
     async set(minter: MinterData) {
         if (!await this.exists(minter.address)) {
-            await this.indexes.addKey(minter.address.getBody());
+            await this.indexes.addKey(minter.address);
         }
         return this.level.put(minter.address, minter.encodeToHex());
     }
@@ -43,7 +43,7 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
     async del(key: AddressHex): Promise<void> {
         const exists = await this.exists(key);
         if (exists) {
-            await this.indexes.removeKey(key.getBody());
+            await this.indexes.removeKey(key);
             return super.del(key);
         }
     }
