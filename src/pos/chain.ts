@@ -6,13 +6,15 @@ import type { FastEvents } from "@leicoin/utils/fastevents";
 import { POSUtils } from "./utils.js";
 import type { Transaction } from "@leicoin/common/models/transaction";
 import { Ref } from "ptr.js";
+import { Execution } from "./execution.js";
 
 export class ChainState {
 
     constructor(
         readonly time: Uint64,
         latestBlockHeader: BlockHeader,
-        protected readonly minters: Stores.MinterState,
+        readonly wallets: Stores.WalletState,
+        readonly minters: Stores.MinterState,
     ) {}
 
     async getMinter(address: AddressHex) {
@@ -42,7 +44,7 @@ export class Chain {
     constructor(
         isMain: boolean | Ref<boolean>,
         readonly time: Uint64,
-        protected readonly blocks: Stores.Blocks,
+        readonly blocks: Stores.Blocks,
         readonly state: ChainState
     ) {
         this.isMain = new Ref(isMain);
@@ -53,11 +55,19 @@ export class Chain {
         isMain: boolean | Ref<boolean>,
         time: Uint64,
         blocks: Stores.Blocks,
+        wallets: Stores.WalletState,
         minters: Stores.MinterState
     ) {
         //@todo Implement function to get the chain head
         const latestBlockHeader: BlockHeader = await blocks.getHead();
-        const state = new ChainState(time, latestBlockHeader, minters);
+
+        const state = new ChainState(
+            time,
+            latestBlockHeader,
+            wallets,
+            minters
+        );
+
         return new Chain(isMain, time, blocks, state);
     }
 
@@ -68,15 +78,16 @@ export class Chain {
         return await this.blocks.getHeader(index);
     }
 
-    /** @todo move this metheod outside in a separate class to make stateless design. */
-    async update(block: Block) {
+    async processBlock(block: Block) {
         await this.blocks.add(block);
         
+        for (const tx of block.body.transactions) {
+            await Execution.processTransaction(tx, this.state.wallets, this.state.minters);
+        }
 
     }
 
-    /** @todo move this metheod outside in a separate class to make stateless design. */
-    protected async revertMainChainBlock(block: Block) {
+    protected async revertBlock(block: Block) {
         if (this.isMain == true) return;
 
 
