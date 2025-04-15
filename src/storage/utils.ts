@@ -2,8 +2,9 @@ import path from "path";
 import fs from "fs";
 import { cli } from "@leicoin/cli";
 import { Utils } from "@leicoin/utils";
-import { Uint } from "low-level";
+import { type BasicBinarySet, Uint } from "low-level";
 import readline from "readline";
+import type { StorageAPI } from ".";
 
 export class StorageUtils {
 
@@ -149,6 +150,53 @@ export class StorageUtils {
             throw new Error(`Error reading the last ${n} lines of the file at ${filePath}`);
         }
     }
+
+    static async* mergeSortedKeyStream<T extends Uint>(
+		baseStream: AsyncIterable<T>,
+		added: T[],
+		deleted: BasicBinarySet<T>,
+		options?: StorageAPI.Types.Stream.CreateOptions<T>
+	) {
+		const iterator = baseStream[Symbol.asyncIterator]();
+		let arrayIndex = 0;
+		let streamItem = await iterator.next();
+
+		while (!streamItem.done) {
+			const streamVal = streamItem.value;
+			const arrayVal = arrayIndex < added.length ? added[arrayIndex] : null;
+
+
+			if (!arrayVal || streamVal.lt(arrayVal)) {
+
+				if (deleted.has(streamVal)) {
+					streamItem = await iterator.next();
+					continue;
+				}
+
+				yield streamVal;
+				streamItem = await iterator.next();
+				continue;
+			}
+
+			arrayIndex++;
+
+			if (options?.gte && arrayVal.lt(options.gte)) continue;
+			if (options?.lte && arrayVal.gt(options.lte)) continue;
+
+			yield arrayVal;
+		}
+
+		while (arrayIndex < added.length) {
+
+			const currentVal = added[arrayIndex] as T;
+			arrayIndex++;
+		
+			if (options?.gte && currentVal.lt(options.gte)) continue;
+			if (options?.lte && currentVal.gt(options.lte)) continue;
+
+			yield currentVal;
+		}
+	}
     
 }
 

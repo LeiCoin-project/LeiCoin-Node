@@ -1,9 +1,10 @@
-import { Uint, type BasicUintConstructable } from "low-level";
+import { Uint, Uint64, type BasicUintConstructable } from "low-level";
 import type { StorageAPI } from "../index.js";
 import type { Ref } from "ptr.js";
 import { type EncodeableObj, type EncodeableObjInstance } from "flexbuf";
 import { TempStorage, TempStorageWithIndexes } from "./tempStore";
-import { BasicRangeIndexes } from "../leveldb/rangeIndexes.js";
+import { BasicRangeIndexes, type IKeyIndexRange } from "../leveldb/rangeIndexes.js";
+import { StorageUtils } from "../utils.js";
 
 export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStore<K, V>> {
 
@@ -12,8 +13,8 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
     constructor(
         public isMainChain: Ref<boolean>,
         protected readonly storage: S,
-        keyCLS: BasicUintConstructable<K>,
-        valueCLS: EncodeableObj<V>,
+        protected readonly keyCLS: BasicUintConstructable<K>,
+        protected readonly valueCLS: EncodeableObj<V>,
     ) {
         this.tempStorage = new TempStorage(keyCLS, valueCLS);
     }
@@ -51,7 +52,7 @@ export abstract class AbstractChainStateStore<K extends Uint, V extends Encodeab
     abstract set(value: V): Promise<void>;
 }
 
-export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStore<K, V>> extends AbstractChainStateStore<K, V, S> {
+export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStoreWithIndexes<K, V>> extends AbstractChainStateStore<K, V, S> {
 
     protected readonly tempStorage: TempStorageWithIndexes<K, V>;
 
@@ -71,6 +72,78 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
             new BasicRangeIndexes(indexesSettings.byteLength, indexesSettings.prefix),
         );
     }
+
+
+	public getDBSize() {
+		const baseSize = this.storage.getDBSize();
+		const { added, deleted } = this.tempStorage.size;
+
+		return baseSize + added - deleted;
+	}
+
+
+    async getAddressByIndex(index: Uint64) {
+		const { range, offset } = await this.getRangeByIndexFromMergedIndexes(index);
+
+		const count = Uint64.from(0);
+		const baseKeyStream = this.storage.createKeyStream({
+			gte: range.firstPossibleKey,
+			lte: range.lastPossibleKey
+		});
+
+		const keyStream = StorageUtils.mergeSortedKeyStream(
+			baseKeyStream,
+			this.tempStorage.added.keys().all(),
+			this.tempStorage.deleted,
+			{
+				gte: range.firstPossibleKey,
+				lte: range.lastPossibleKey,
+			}
+		);
+
+        for await (const addr of keyStream) {
+            if (count.eq(offset)) {
+                baseKeyStream.destroy();
+                return new this.keyCLS(addr);
+            }
+            count.iadd(1);
+        }
+
+        return null;
+	}
+
+    protected async getRangeByIndexFromMergedIndexes(index: Uint64) {
+
+		const totalOffset = Uint64.from(0);
+		
+		const rangesAmount = this.storage.getIndexes().getRangesAmount();
+
+		const baseStorageRanges = this.storage.getIndexes().getRanges();
+		const tempStorageRanges = this.tempStorage.indexes.getRanges();
+
+        for (let i = 0; i < rangesAmount; i++) {
+
+			const baseRange = baseStorageRanges[i] as IKeyIndexRange;
+			const tempStorageRangeSize = (tempStorageRanges[i] as IKeyIndexRange).size;
+
+			const rangeSize = baseRange.size + tempStorageRangeSize;
+
+            if (totalOffset.add(rangeSize).gt(index)) {
+                return {
+                    range: {
+						firstPossibleKey: baseRange.firstPossibleKey,
+						lastPossibleKey: baseRange.lastPossibleKey,
+						size: rangeSize,
+					} as IKeyIndexRange,
+                    offset: index.sub(totalOffset)
+                };
+            }
+            totalOffset.iadd(rangeSize);
+        }
+
+		/** @todo Better Error Handling: Error shoudl not run when there are no Minter in the DB */
+        throw new Error("Index is not part of any range. Are the ranges initialized?");
+	}
 
 }
 
