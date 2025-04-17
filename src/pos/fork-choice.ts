@@ -24,6 +24,10 @@ export class ForkChoice {
         if (!previousBlock) return false;
         if (previousBlock.hash !== block.previousHash) return false;
 
+        // block is invalid when containing tx with:
+        // - invalid nonce (duplicate nonce or too high nonce)
+        // - Insufficient balance for execution fee 
+
         return true;
     }
 

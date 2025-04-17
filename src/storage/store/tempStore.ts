@@ -242,7 +242,7 @@ export class TempStorage<K extends Uint, V extends EncodeableObjInstance> {
         if (!value || Uint.isUint(value)) {
             return targetStorage.set(key, value);
         }
-        const raw = value.encodeToHex(false);
+        const raw = this.ValueCLS.prototype.encodeToHex.call(value, false);
         return targetStorage.set(key, raw);
     }
 

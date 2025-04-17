@@ -67,11 +67,26 @@ export class Wallet {
         return true;
     }
 
+    public adjustBalance(amount: NumberLike, type: "add" | "sub") {
+        if (type === "add") {
+            this.addMoney(amount);
+            return true;
+        } else if (type === "sub") {
+            return this.subtractMoneyIFPossible(amount);
+        }
+        return false;
+    }
+
+
     public getNonce() {
         return this.nonce;
     }
 
     public adjustNonce(height = 1) {
+
+        if (height < 0 && this.nonce.lt(height)) {
+            throw new Error("Nonce cannot be negative");
+        }
         this.nonce.iadd(height);
     }
 

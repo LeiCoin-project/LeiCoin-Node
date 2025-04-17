@@ -37,7 +37,7 @@ export class MinterHandler {
         return result;   
     }
 
-    static async executeDepositContractTransaction(tx: Transaction, minters: Stores.MinterState, wallets: Stores.WalletState) {
+    static async executeDepositContractTransaction(tx: Transaction, minters: Stores.MinterState, wallets: Stores.WalletState, reverse = false) {
 
         const fnID = tx.input.slice(0, 4).toString("hex");
 
@@ -62,9 +62,17 @@ export class MinterHandler {
                      */
                 }
 
-                minter.deposit(tx.amount);
+                if (!reverse) {
 
-                await minters.set(minter);
+                    minter.deposit(tx.amount);
+
+                    await minters.set(minter);
+
+                    return true;
+
+                }
+
+                minter.withdrawIFPossible
 
                 return true;
             }

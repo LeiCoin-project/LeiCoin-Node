@@ -43,6 +43,16 @@ export class MinterData {
         this.stake.iadd(amount);
     }
 
+    public adjustStake(amount: NumberLike, type: "add" | "sub") {
+        if (type === "add") {
+            this.deposit(amount);
+            return true;
+        } else if (type === "sub") {
+            return this.withdrawIFPossible(amount);
+        }
+        return false;
+    }
+
 
     static createNewMinter(address: AddressHex, stake = Uint64.from(0), version = PX.V_00) {
         return new MinterData(address, stake, version);	

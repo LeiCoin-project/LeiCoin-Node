@@ -39,16 +39,20 @@ export class Execution {
 
 
 
-    static async processTransaction(tx: Transaction, walletState: Stores.WalletState, minterState: Stores.MinterState) {
+    static async processTransaction(tx: Transaction, walletState: Stores.WalletState, minterState: Stores.MinterState, reverse = false) {
+
+        /** @todo On revert check if the transaction was actual succesful and has not failed */
 
         if (!tx.validateHash(tx.txid)) return false;
 
         const senderWallet = await walletState.get(tx.senderAddress);
 
-        if (!senderWallet.getNonce().eq(tx.nonce)) return false;
+        if (!reverse && !senderWallet.getNonce().eq(tx.nonce)) return false;
 
-        const moneySubtractionResult = senderWallet.subtractMoneyIFPossible(tx.amount);
-        if (!moneySubtractionResult) return false;
+        const senderWalletAdjustmentResult = senderWallet.adjustBalance(tx.amount, reverse ? "add" : "sub");
+        if (!senderWalletAdjustmentResult) return false;
+
+        senderWallet.adjustNonce(reverse ? -1 : 1);
 
         /** @todo Make proper handling for smart contracts in the future. */
         if (tx.recipientAddress.eq(DepositContract.address)) {
@@ -57,17 +61,23 @@ export class Execution {
             if (!result) return false;
 
         } else {
-            await walletState.addMoney(tx.recipientAddress, tx.amount);
+
+            const recipientWallet = await walletState.get(tx.recipientAddress);
+
+            const recipientWalletAdjustmentResult = recipientWallet.adjustBalance(tx.amount, reverse ? "sub" : "add");
+            if (!recipientWalletAdjustmentResult) return false;
+
+            await walletState.set(recipientWallet);
+
         }
 
-        senderWallet.adjustNonce(1);
         await walletState.set(senderWallet);
         return true;
     }
 
-    static async processSmartContractTransaction(tx: Transaction, walletState: Stores.WalletState, minterState: Stores.MinterState) {
+    static async processSmartContractTransaction(tx: Transaction, walletState: Stores.WalletState, minterState: Stores.MinterState, reverse = false) {
         if (tx.recipientAddress.eq(DepositContract.address)) {
-            return await MinterHandler.executeDepositContractTransaction(tx, minterState, walletState);
+            return await MinterHandler.executeDepositContractTransaction(tx, minterState, walletState, reverse);
         }
     }
 
