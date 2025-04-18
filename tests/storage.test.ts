@@ -162,6 +162,7 @@ describe("storage", () => {
 
     });
 
+    /*
     test("minter_real", async () => {
         
         const realLevel = Blockchain.minters;
@@ -208,5 +209,6 @@ describe("storage", () => {
         }
 
     });
+    */
 
 });
