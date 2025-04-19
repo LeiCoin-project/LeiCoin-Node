@@ -1,5 +1,5 @@
 import { AddressHex } from "./address.js";
-import { Uint, Uint256, Uint64 } from "low-level";
+import { Uint, Uint256, Uint64, Uint8 } from "low-level";
 import { PX } from "../types/prefix.js";
 import { MinterCredentials } from "./minterData.js";
 import { BE, DataEncoder, HashableContainer } from "flexbuf";
@@ -74,3 +74,55 @@ export class Transaction extends HashableContainer {
 }
 
 
+export class ExecutedTransaction extends Transaction {
+
+    constructor(
+        txid: Uint256,
+        senderAddress: AddressHex,
+        recipientAddress: AddressHex,
+        amount: Uint64,
+        nonce: Uint64,
+        timestamp: Uint64,
+        input: Uint,
+        signature: Signature,
+        readonly executionResult: Uint8,
+        version = PX.V_00
+    ) {
+        super(
+            txid,
+            senderAddress,
+            recipientAddress,
+            amount,
+            nonce,
+            timestamp,
+            input,
+            signature,
+            version
+        );
+    }
+
+    protected static fromDict(obj: any) {
+        if (!obj.version.eq(0)) return null;
+
+        const tx = new ExecutedTransaction(
+            obj.txid,
+            AddressHex.fromSignature(obj.txid, obj.signature),
+            obj.recipientAddress,
+            obj.amount,
+            obj.nonce,
+            obj.timestamp,
+            obj.input,
+            obj.signature,
+            obj.executionResult,
+            obj.version
+        );
+
+        return tx;
+    }
+
+    protected static encodingSettings: DataEncoder[] = [
+        ...Transaction.encodingSettings,
+        BE(Uint8, "executionResult")
+    ]
+
+}
