@@ -42,8 +42,10 @@ export class PeerSocket {
     ) {
         this.host = NetworkUtils.normalizeIP(tcpSocket.remoteAddress) as string;
         this.formattedHost = NetworkUtils.formatIP(this.host) as string;
+
         /** @todo Change this to `this.port = tcpSocket.remotePort;` when Bun has implemented scoket.remotePort */
-        this.port = 0;
+        //this.port = 0;
+        this.port = (tcpSocket as any).remotePort;
 
         tcpSocket.data = this;
     }
