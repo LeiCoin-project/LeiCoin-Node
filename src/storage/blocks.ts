@@ -19,7 +19,9 @@ export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements
     protected readonly events = new FastEvents.SingleEmitter<[Block]>();
     
     constructor() {
-        super("/blocks", LevelDBEncoders.Uint64);
+        super("/blocks", {
+            keyEncoding: LevelDBEncoders.Uint64
+        });
     }
 
     async add(block: Block, overwrite = false) {
