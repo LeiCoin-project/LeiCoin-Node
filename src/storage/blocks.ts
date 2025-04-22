@@ -1,12 +1,12 @@
 import { type Uint64 } from "low-level";
-import { Block } from "@leicoin/common/models/block";
+import { ExecutedBlock } from "@leicoin/common/models/block";
 import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 import { LevelDBEncoders } from "./leveldb/encoders.js";
 import { FastEvents } from "@leicoin/utils/fastevents";
 
 export interface IBlockDB {
-    add(block: Block, overwrite?: boolean): Promise<boolean>;
-    get(index: Uint64): Promise<Block | null>;
+    add(block: ExecutedBlock, overwrite?: boolean): Promise<boolean>;
+    get(index: Uint64): Promise<ExecutedBlock | null>;
     exists(index: Uint64): Promise<boolean>;
     /**
      * WARNING: Deleting Blocks from a chain is risky and should be done with caution. Dont use this method unless you know what you are doing.
@@ -14,9 +14,9 @@ export interface IBlockDB {
     del(index: Uint64): Promise<void>;
 }
 
-export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements IBlockDB {
+export class BlockDB extends LevelBasedStorage<Uint64, ExecutedBlock, Uint64> implements IBlockDB {
 
-    protected readonly events = new FastEvents.SingleEmitter<[Block]>();
+    protected readonly events = new FastEvents.SingleEmitter<[ExecutedBlock]>();
     
     constructor() {
         super("/blocks", {
@@ -24,7 +24,7 @@ export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements
         });
     }
 
-    async add(block: Block, overwrite = false) {
+    async add(block: ExecutedBlock, overwrite = false) {
         if (!overwrite) {
             if (await this.level.has(block.index)) {
                 return false;
@@ -37,10 +37,10 @@ export class BlockDB extends LevelBasedStorage<Uint64, Block, Uint64> implements
     async get(index: Uint64) {
         const raw = await this.level.get(index);
         if (!raw) return null;
-        return Block.fromDecodedHex(raw);
+        return ExecutedBlock.fromDecodedHex(raw);
     }
     
-    public on_update(callback: (block: Block) => Promise<void> | void) {
+    public on_update(callback: (block: ExecutedBlock) => Promise<void> | void) {
         return this.events.on(callback) as FastEvents.SubscriptionID;
     }
 
