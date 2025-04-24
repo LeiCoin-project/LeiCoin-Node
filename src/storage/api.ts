@@ -3,8 +3,8 @@ import { type IMinterDB, MinterDB } from "./state/minters";
 import { type IWalletDB, WalletDB } from "./state/wallets";
 import { ChainstateStore } from "./chainstate";
 import { SmartContractStateDB } from "./state/smart-contract";
-import type { AbstractRangeIndexes, LevelRangeIndexes } from "./leveldb/rangeIndexes";
-import type { Uint, Uint64 } from "low-level";
+import type { AbstractRangeIndexes } from "./leveldb/rangeIndexes";
+import type { Uint } from "low-level";
 
 export { BlockDB as Blocks, type IBlockDB as IBlocks };
 export { WalletDB as Wallets, type IWalletDB as IWallets };

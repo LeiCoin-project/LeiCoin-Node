@@ -10,7 +10,7 @@ import { ExecutionCheckpoint } from "@leicoin/utils/executionCheckpoint";
 import { Schedule } from "@leicoin/utils/schedule";
 import { Blockchain } from "@leicoin/storage/blockchain";
 import { Verification } from "@leicoin/verification";
-import { FallbackIncomingBlockQueue } from "@leicoin/net/types";
+import type { FallbackIncomingBlockQueue } from "@leicoin/net/types";
 import { POSUtils } from "./utils.js";
 
 export class SlotExecution {
