@@ -27,7 +27,7 @@ export class LCrypt {
         }
     }
 
-     static getPublicKeyFromPrivateKey(privateKey: PrivateKey) {
+    static getPublicKeyFromPrivateKey(privateKey: PrivateKey) {
         try {
             return KeyPair.fromPrivate(privateKey).getPublic();
         } catch (error: any) {
