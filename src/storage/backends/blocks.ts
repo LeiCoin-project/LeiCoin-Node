@@ -1,7 +1,7 @@
 import { type Uint64 } from "low-level";
 import { ExecutedBlock } from "@advena/common/models/block";
-import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
-import { LevelDBEncoders } from "./leveldb/encoders.js";
+import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
+import { LevelDBEncoders } from "../leveldb/encoders.js";
 import { FastEvents } from "@advena/utils/fastevents";
 
 export interface IBlockDB {
@@ -14,7 +14,7 @@ export interface IBlockDB {
     del(index: Uint64): Promise<void>;
 }
 
-export class BlockDB extends LevelBasedStorage<Uint64, ExecutedBlock, Uint64> implements IBlockDB {
+export class BlockLevelBackend extends LevelBasedStorage<Uint64, ExecutedBlock, Uint64> implements IBlockDB {
 
     protected readonly events = new FastEvents.SingleEmitter<[ExecutedBlock]>();
     

@@ -2,11 +2,11 @@ import { CB } from "@advena/utils/callbacks";
 import { cli } from "@advena/cli";
 import { Wallet } from "@advena/common/models/wallet";
 import { Block } from "@advena/common/models/block";
-import { Blockchain } from "../blockchain.js";
+import { Blockchain } from "../../blockchain.js";
 import { AddressHex } from "@advena/common/models/address";
 import { Uint, Uint64 } from "low-level";
-import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
-import type { StorageAPI } from "../index.js";
+import { LevelBasedStateStorage } from "../../leveldb/levelBasedStorage.js";
+import type { StorageAPI } from "../../index.js";
 
 export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
     set(wallet: Wallet): Promise<void>;
@@ -15,7 +15,7 @@ export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Walle
     del(address: AddressHex): Promise<void>;
 }
 
-export class WalletDB extends LevelBasedStorage<AddressHex, Wallet> implements IWalletDB {
+export class WalletLevelBackend extends LevelBasedStateStorage<AddressHex, Wallet> implements IWalletDB {
 
     constructor() {
         super("/wallets");

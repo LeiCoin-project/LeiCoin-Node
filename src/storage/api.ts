@@ -1,16 +1,16 @@
-import { type IBlockDB, BlockDB } from "./blocks";
-import { type IMinterDB, MinterDB } from "./state/minters";
-import { type IWalletDB, WalletDB } from "./state/wallets";
+import { type IBlockDB, BlockLevelBackend } from "./backends/blocks";
+import { type IMinterDB, MinterLevelBackend } from "./backends/state/minters";
+import { type IWalletDB, WalletLevelBackend } from "./backends/state/wallets";
 import { ChainstateStore } from "./chainstate";
-import { SmartContractStateDB } from "./state/smart-contract";
+import { SmartContractStateLevelBackend } from "./backends/state/smart-contract";
 import type { AbstractRangeIndexes } from "./leveldb/rangeIndexes";
 import type { Uint } from "low-level";
 
-export { BlockDB as Blocks, type IBlockDB as IBlocks };
-export { WalletDB as Wallets, type IWalletDB as IWallets };
-export { MinterDB as Minters, type IMinterDB as IMinters };
+export { BlockLevelBackend as Blocks, type IBlockDB as IBlocks };
+export { WalletLevelBackend as Wallets, type IWalletDB as IWallets };
+export { MinterLevelBackend as Minters, type IMinterDB as IMinters };
 
-export { SmartContractStateDB as SmartContractStates }
+export { SmartContractStateLevelBackend as SmartContractStates }
 export { ChainstateStore as ChainState }
 
 export default class StorageAPI {
@@ -19,7 +19,7 @@ export default class StorageAPI {
         readonly blocks: IBlockDB,
         readonly wallets: IWalletDB,
         readonly minters: IMinterDB,
-        readonly scstates: SmartContractStateDB,
+        readonly scstates: SmartContractStateLevelBackend,
         readonly chainstate: ChainstateStore
     ) {}
 

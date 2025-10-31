@@ -1,20 +1,20 @@
-import { BlockDB } from "./blocks.js";
-import { MinterDB } from "./state/minters.js";
-import { SmartContractStateDB } from "./state/smart-contract.js";
-import { WalletDB } from "./state/wallets.js";
+import { BlockLevelBackend } from "./backends/blocks.js";
+import { MinterLevelBackend } from "./backends/state/minters.js";
+import { SmartContractStateLevelBackend } from "./backends/state/smart-contract.js";
+import { WalletLevelBackend } from "./backends/state/wallets.js";
 
 export class Chain {
 
-    readonly blocks: BlockDB;
-    readonly wallets: WalletDB;
-    readonly cstates: SmartContractStateDB;
-    readonly minters: MinterDB;
+    readonly blocks: BlockLevelBackend;
+    readonly wallets: WalletLevelBackend;
+    readonly cstates: SmartContractStateLevelBackend;
+    readonly minters: MinterLevelBackend;
 
     constructor() {
-        this.blocks = new BlockDB();
-        this.wallets = new WalletDB();
-        this.cstates = new SmartContractStateDB();
-        this.minters = new MinterDB();
+        this.blocks = new BlockLevelBackend();
+        this.wallets = new WalletLevelBackend();
+        this.cstates = new SmartContractStateLevelBackend();
+        this.minters = new MinterLevelBackend();
     }
 
     public async waitAllinit() {

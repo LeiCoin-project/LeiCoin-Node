@@ -3,8 +3,19 @@ import { Uint64 } from "low-level";
 import type { StorageAPI } from "../index.js";
 import { AbstractChainStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
+import { FastEvents } from "@advena/utils/fastevents";
+
+class BlockHeaderStore extends AbstractChainStore<Uint64, BlockHeader, StorageAPI.IBlockHeaders> {
+
+}
+
+class BlockBodyStore extends AbstractChainStore<Uint64, any, StorageAPI.IBlockBodies> {
+
+}
 
 export class BlockStore extends AbstractChainStore<Uint64, ExecutedBlock, StorageAPI.IBlocks> {
+
+    protected readonly events = new FastEvents.SingleEmitter<[ExecutedBlock]>();
 
     constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IBlocks) {
         super(isMainChain, storage, Uint64, ExecutedBlock);
@@ -20,6 +31,16 @@ export class BlockStore extends AbstractChainStore<Uint64, ExecutedBlock, Storag
             this.tempStorage.set(block.index, block, "added");
         }
     }
+
+    public on_update(callback: (block: ExecutedBlock) => Promise<void> | void) {
+        return this.events.on(callback) as FastEvents.SubscriptionID;
+    }
+
+    public unsubscribe_update(id: FastEvents.SubscriptionID) {
+        return this.events.unsubscribe(id);
+    }
     
 }
+
+
 

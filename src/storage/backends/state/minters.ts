@@ -1,12 +1,9 @@
 import { MinterData } from "@advena/common/models/minterData";
 import { AddressHex } from "@advena/common/models/address";
 import { type Uint, Uint64 } from "low-level";
-import { LevelBasedStateStorageWithIndexes } from "../leveldb/levelBasedStorage.js";
+import { LevelBasedStateStorageWithIndexes } from "../../leveldb/levelBasedStorage.js";
 import { PX } from "@advena/common/types/prefix";
-import { LCrypt } from "@advena/crypto";
-import type { StorageAPI } from "../index.js";
-import type { MinterHandler } from "@advena/pos/minter-handler";
-import type { LevelRangeIndexes } from "../leveldb/rangeIndexes.js";
+import type { StorageAPI } from "../../index.js";
 
 
 export interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<AddressHex, MinterData> {
@@ -18,7 +15,7 @@ export interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<Addres
     //getAllAddresses(): Promise<Uint[]>;
 }
 
-export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, MinterData> implements IMinterDB {
+export class MinterLevelBackend extends LevelBasedStateStorageWithIndexes<AddressHex, MinterData> implements IMinterDB {
 
     constructor() {
         super("/minters", undefined, {
@@ -48,18 +45,13 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
         }
     }
 
-    // private async adjustStakeByBlock(block: Block) {
-        
-    //     //const inActive = this.getMinterInLevel(address, "active");
 
-    // }
-
-    /**
-     * get a minter address by an index in all minters
-     * @param index - the index of the minter to get
-     * @returns the address of the minter at the given index or null if the index is out of range
-     */
-    async getAddressByIndex(index: Uint64) {
+    // /**
+    //  * get a minter address by an index in all minters
+    //  * @param index - the index of the minter to get
+    //  * @returns the address of the minter at the given index or null if the index is out of range
+    //  */
+    /*async getAddressByIndex(index: Uint64) {
         
         const { range, offset } = await this.indexes.getRangeByIndex(index);
 
@@ -75,12 +67,12 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
         }
 
         return null;
-    }
+    }*/
 
-    /**
-     * @deprecated Use {@link MinterHandler.getProposer} instead.
-     */
-    async selectNextMinter(slot: Uint64) {
+    // /**
+    //  * @deprecated Use {@link MinterHandler.getProposer} instead.
+    //  */
+    /*async selectNextMinter(slot: Uint64) {
         
         //throw new Error("Deprecated. Use MinterHandler.getProposer instead.");
 
@@ -94,7 +86,7 @@ export class MinterDB extends LevelBasedStateStorageWithIndexes<AddressHex, Mint
             throw new Error("Error in selectNextMinter: Index is not part of any range. Is the Database initialized and indexed?");
         }
         return result as AddressHex;        
-    }
+    }*/
 
     async getAllAddresses() {
         return this.level.keys().all();

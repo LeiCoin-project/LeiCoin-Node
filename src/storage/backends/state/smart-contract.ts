@@ -1,8 +1,8 @@
 import { AddressHex } from "@advena/common/models/address";
 import { Uint } from "low-level";
-import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
+import { LevelBasedStorage } from "../../leveldb/levelBasedStorage.js";
 
-export class SmartContractStateDB extends LevelBasedStorage<AddressHex, Uint> {
+export class SmartContractStateLevelBackend extends LevelBasedStorage<AddressHex, Uint> {
 
     constructor() {
         super("/smart-contracts/state");

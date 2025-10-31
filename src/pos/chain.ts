@@ -6,7 +6,7 @@ import type { FastEvents } from "@advena/utils/fastevents";
 import { POSUtils } from "./utils.js";
 import type { Transaction } from "@advena/common/models/transaction";
 import { Ref } from "ptr.js";
-import { Execution } from "../avm/execution.js";
+import { AVM } from "@advena/avm";
 
 export class ChainState {
 
@@ -75,15 +75,18 @@ export class Chain {
         return await this.blocks.get(index);
     }
     async getBlockHeader(index: Uint64) {
-        return await this.blocks.getHeader(index);
+        return await this.blocks.get
     }
 
     async processBlock(block: Block) {
-        await this.blocks.add(block);
         
+        const processor = new AVM.TXProcessor(this.state.wallets, this.state.minters);
+
         for (const tx of block.body.transactions) {
-            await Execution.processTransaction(tx, this.state.wallets, this.state.minters);
+            await processor.executeTransaction(tx);
         }
+
+        await this.blocks.add(block);
 
     }
 
