@@ -67,6 +67,9 @@ export class Wallet {
         return true;
     }
 
+    /**
+     * @deprecated Use {@link Wallet.addMoney} or {@link Wallet.subtractMoneyIFPossible} instead.
+     */
     public adjustBalance(amount: NumberLike, type: "add" | "sub") {
         if (type === "add") {
             this.addMoney(amount);

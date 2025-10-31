@@ -25,6 +25,7 @@ export class ForkChoice {
         if (previousBlock.hash !== block.previousHash) return false;
 
         // block is invalid when containing tx with:
+        // - invalid signature
         // - invalid nonce (duplicate nonce or too high nonce)
         // - Insufficient balance for execution fee 
 
