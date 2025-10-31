@@ -1,8 +1,8 @@
-// import { cli } from "@leicoin/cli";
-// import Crypto from "@leicoin/crypto";
+// import { cli } from "@advena/cli";
+// import Crypto from "@advena/crypto";
 // import { ObjectEncoding, EncodingSettings } from "flexbuf";
-// import { Uint, Uint64 } from "@leicoin/utils/binary";
-// import { DataUtils } from "@leicoin/utils/dataUtils";
+// import { Uint, Uint64 } from "@advena/utils/binary";
+// import { DataUtils } from "@advena/utils/dataUtils";
 // import { AddressHex } from "./address.js";
 
 

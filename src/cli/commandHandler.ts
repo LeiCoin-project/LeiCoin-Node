@@ -1,5 +1,5 @@
-import { Main } from "@leicoin/core";
-import { Utils } from "@leicoin/utils";
+import { Main } from "@advena/core";
+import { Utils } from "@advena/utils";
 import { cli } from "./cli.js";
 import { BlockDBCMD } from "./commands/blockDBCMD.js";
 import { ChainstateDataCMD } from "./commands/chainstateDataCMD.js";

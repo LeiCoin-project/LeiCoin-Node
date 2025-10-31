@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { Utils } from "@leicoin/utils";
-import { cli } from "@leicoin/cli";
+import { Utils } from "@advena/utils";
+import { cli } from "@advena/cli";
 
 export type PeersConfigLike = string[];
 

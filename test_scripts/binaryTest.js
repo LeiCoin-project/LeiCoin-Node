@@ -1,6 +1,6 @@
-import { getElapsedTime, startTimer } from "@leicoin/utils/testUtils";
+import { getElapsedTime, startTimer } from "@advena/utils/testUtils";
 import { sha256 } from "./cryptoUtils.js"
-import { Uint, Uint256, Uint64, Uint8 } from "../build/s@leicoin/utils/binary"
+import { Uint, Uint256, Uint64, Uint8 } from "../build/s@advena/utils/binary"
 import crypto from "crypto";
 
 //console.log(process.memoryUsage().heapUsed)

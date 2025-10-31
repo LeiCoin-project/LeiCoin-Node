@@ -1,17 +1,17 @@
 import { describe, test, expect } from "bun:test";
-import { StorageAPI } from "@leicoin/storage/index";
-import { AddressHex } from "@leicoin/common/models/address";
-import { MinterData } from "@leicoin/common/models/minterData";
-import { AbstractRangeIndexes, BasicRangeIndexes } from "@leicoin/storage/leveldb/rangeIndexes";
+import { StorageAPI } from "@advena/storage/index";
+import { AddressHex } from "@advena/common/models/address";
+import { MinterData } from "@advena/common/models/minterData";
+import { AbstractRangeIndexes, BasicRangeIndexes } from "@advena/storage/leveldb/rangeIndexes";
 import { Uint64, Uint, BasicBinaryMap, BasicUintConstructable } from "low-level";
-import { PX } from "@leicoin/common/types/prefix";
-import { Stores } from "@leicoin/storage/store/index";
+import { PX } from "@advena/common/types/prefix";
+import { Stores } from "@advena/storage/store/index";
 import { Ref } from "ptr.js";
-import { LCrypt } from "@leicoin/crypto";
-import { QuickSort } from "@leicoin/utils/quick-sort";
-import { MinterDB } from "@leicoin/storage/state/minters";
-import { MinterHandler } from "@leicoin/pos/minter-handler";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { LCrypt } from "@advena/crypto";
+import { QuickSort } from "@advena/utils/quick-sort";
+import { MinterDB } from "@advena/storage/state/minters";
+import { MinterHandler } from "@advena/pos/minter-handler";
+import { Blockchain } from "@advena/storage/blockchain";
 
 abstract class FakeStorage<K extends Uint, V> implements StorageAPI.IChainStore<K, V> {
 

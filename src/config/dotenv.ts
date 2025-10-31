@@ -1,9 +1,9 @@
 import path from "path";
-import { type Dict } from "@leicoin/utils/dataUtils";
+import { type Dict } from "@advena/utils/dataUtils";
 import dotenv from "dotenv";
 import fs from "fs";
-import { Utils } from "@leicoin/utils";
-import { cli } from "@leicoin/cli";
+import { Utils } from "@advena/utils";
+import { cli } from "@advena/cli";
 
 export interface ENVConfigLike extends Dict<any> {}
 

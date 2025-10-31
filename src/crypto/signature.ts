@@ -1,4 +1,4 @@
-import { PX } from "@leicoin/common/types/prefix";
+import { PX } from "@advena/common/types/prefix";
 import elliptic from 'elliptic';
 import { FixedUint, Uint64, Uint8, UintUtils } from "low-level";
 

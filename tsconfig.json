@@ -9,14 +9,15 @@
     //"include": ["src/**/*.ts"]
     "files": ["./src/index.ts"],
     "references": [
-        { "path": "./src/core" },
+        { "path": "./src/avm" },
         { "path": "./src/cli" },
+        { "path": "./src/common" },
         { "path": "./src/config" },
+        { "path": "./src/core" },
         { "path": "./src/crypto" },
         { "path": "./src/http_api" },
-        { "path": "./src/network" },
         { "path": "./src/minter" },
-        { "path": "./src/common" },
+        { "path": "./src/network" },
         { "path": "./src/pos" },
         { "path": "./src/smart-contracts" },
         { "path": "./src/storage" },

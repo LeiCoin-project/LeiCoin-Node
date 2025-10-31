@@ -1,8 +1,8 @@
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { Uint64, UintMap } from "low-level";
-import { Constants } from "@leicoin/utils/constants";
-import { type MinterClient } from "@leicoin/minter";
-import { type ModuleLike } from "@leicoin/utils/dataUtils";
+import { Constants } from "@advena/utils/constants";
+import { type MinterClient } from "@advena/minter";
+import { type ModuleLike } from "@advena/utils/dataUtils";
 import { CronJob } from "cron";
 import { SlotExecution } from "./slot";
 import { POSUtils } from "./utils";

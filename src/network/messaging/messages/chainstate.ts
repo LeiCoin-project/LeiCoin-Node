@@ -1,9 +1,9 @@
 import { LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
-import { ForkChainstateData } from "@leicoin/storage/chainstate";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { ForkChainstateData } from "@advena/storage/chainstate";
+import { Dict } from "@advena/utils/dataUtils";
 import { BE, DataEncoder } from "flexbuf";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { Blockchain } from "@advena/storage/blockchain";
 import { ErrorResponseMsg } from "./error.js";
 import { NetworkSyncManager } from "../../chain-sync.js";
 

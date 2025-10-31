@@ -1,6 +1,6 @@
-import { Transaction } from "@leicoin/common/models/transaction";
-import { Block } from "@leicoin/common/models/block";
-import { CB } from "@leicoin/utils/callbacks";
+import { Transaction } from "@advena/common/models/transaction";
+import { Block } from "@advena/common/models/block";
+import { CB } from "@advena/utils/callbacks";
 import { BasicBinaryMap, Uint256 } from "low-level";
 
 export class Mempool {                                                                                                                                                                                                         

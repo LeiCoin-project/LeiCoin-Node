@@ -1,4 +1,4 @@
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils';
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils';
 import { sha256 } from './cryptoUtils.js';
 import crypto from "crypto";
 

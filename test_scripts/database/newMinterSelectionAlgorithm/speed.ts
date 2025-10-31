@@ -1,7 +1,7 @@
 import { Uint64 } from "low-level";
 import { type LevelDB } from "../../../src/storage/leveldb/index.js";
 import { type LevelIndexes } from "../../../src/storage/leveldb/indexes.js";
-import { getElapsedTime, startTimer } from "../@leicoin/utils/testUtils";
+import { getElapsedTime, startTimer } from "../@advena/utils/testUtils";
 import { LevelDBUtils } from "../leveldb_utils.js";
 import { generateMinterDB, indexDB, selectNextMinter } from "./utils.js";
 

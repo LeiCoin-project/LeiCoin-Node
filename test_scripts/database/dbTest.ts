@@ -1,14 +1,14 @@
 import { ClassicLevel } from "classic-level";
-import { LevelDB } from "@leicoin/storage/leveldb/index";
+import { LevelDB } from "@advena/storage/leveldb/index";
 import { shuffleArray } from '../cryptoUtils.js';
 import { startTimer, getElapsedTime } from "../utils/testUtils";
 import { Uint, Uint256, Uint64 } from "low-level";
 import { UintMap } from "low-level";
-import { AddressHex } from "@leicoin/common/models/address";
+import { AddressHex } from "@advena/common/models/address";
 import { LCrypt } from "../../src/crypto/index.js";
-import { PX } from "@leicoin/common/types/prefix";
+import { PX } from "@advena/common/types/prefix";
 import { LevelDBUtils } from "./leveldb_utils.js";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { Dict } from "@advena/utils/dataUtils";
 import { gen_minter } from "./generateRandData.js";
 
 async function speedTest(db1: LevelDBUtils.DBs = "stake1", db2?: LevelDBUtils.DBs) {

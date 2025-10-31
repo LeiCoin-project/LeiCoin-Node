@@ -3,10 +3,10 @@ import { BE, DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 import { LNMsgDefaultHandler, LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
-import { Deferred } from "@leicoin/utils/deferred";
-import { Schedule } from "@leicoin/utils/schedule";
-import { cli } from "@leicoin/cli";
-import { LCrypt } from "@leicoin/crypto";
+import { Deferred } from "@advena/utils/deferred";
+import { Schedule } from "@advena/utils/schedule";
+import { cli } from "@advena/cli";
+import { LCrypt } from "@advena/crypto";
 
 class ChallengeMsgStoreItem {
     constructor(

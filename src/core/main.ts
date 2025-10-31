@@ -1,4 +1,4 @@
-import { CLICMDHandler } from "@leicoin/cli";
+import { CLICMDHandler } from "@advena/cli";
 
 export class Main {
 

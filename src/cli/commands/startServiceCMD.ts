@@ -1,5 +1,5 @@
-import { HTTP_API } from "@leicoin/http-api";
-import { Utils } from "@leicoin/utils";
+import { HTTP_API } from "@advena/http-api";
+import { Utils } from "@advena/utils";
 import { cli } from "../cli.js";
 import { CLICMD, CLISubCMD } from "@cleverjs/cli";
 

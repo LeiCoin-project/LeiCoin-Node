@@ -1,22 +1,22 @@
 {
-    "name": "@leicoin/verification",
+    "name": "@advena/verification",
     "version": "1.0.0",
     "type": "module",
     "exports": {
       ".": "./index.ts"
     },
     "dependencies": {
-      "@leicoin/core": "^1.0.0",
-      "@leicoin/cli": "^1.0.0",
-      "@leicoin/config": "^1.0.0",
-      "@leicoin/crypto": "^1.0.0",
-      "@leicoin/http-api": "^1.0.0",
-      "@leicoin/net": "^1.0.0",
-      "@leicoin/minter": "^1.0.0",
-      "@leicoin/common": "^1.0.0",
-      "@leicoin/pos": "^1.0.0",
-      "@leicoin/smart-contracts": "^1.0.0",
-      "@leicoin/storage": "^1.0.0",
-      "@leicoin/utils": "^1.0.0"
+      "@advena/core": "^1.0.0",
+      "@advena/cli": "^1.0.0",
+      "@advena/config": "^1.0.0",
+      "@advena/crypto": "^1.0.0",
+      "@advena/http-api": "^1.0.0",
+      "@advena/net": "^1.0.0",
+      "@advena/minter": "^1.0.0",
+      "@advena/common": "^1.0.0",
+      "@advena/pos": "^1.0.0",
+      "@advena/smart-contracts": "^1.0.0",
+      "@advena/storage": "^1.0.0",
+      "@advena/utils": "^1.0.0"
     }
 }

@@ -1,4 +1,4 @@
-// import { Uint64 } from "@leicoin/utils/binary";
+// import { Uint64 } from "@advena/utils/binary";
 // import { Block } from "./block.js";
 // import { Slashing } from "./slashing.js";
 

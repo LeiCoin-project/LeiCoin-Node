@@ -3,10 +3,10 @@ import { Uint, Uint64 } from "low-level";
 import { type LevelIndexes } from "../../../src/storage/leveldb/indexes.js";
 import { LevelDBUtils } from "../leveldb_utils.js";
 import { firstMetaAddress, generateMinterDB, indexDB, selectNextMinter } from "./utils.js";
-import { AddressHex } from "@leicoin/common/models/address";
+import { AddressHex } from "@advena/common/models/address";
 import { getElapsedTime, startTimer } from "../../utils/testUtils.js";
-import { LevelDB } from "@leicoin/storage/leveldb/index";
-import { LCrypt } from "@leicoin/crypto";
+import { LevelDB } from "@advena/storage/leveldb/index";
+import { LCrypt } from "@advena/crypto";
 
 async function calulateResults(frequency: UintMap<Uint64>, slotsCount: number, prefixLength: number) {
     const expectedFrequency = slotsCount / 256 ** prefixLength;

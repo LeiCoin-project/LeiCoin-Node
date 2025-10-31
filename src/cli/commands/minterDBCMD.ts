@@ -1,9 +1,9 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { PX } from "@leicoin/common/types/prefix";
-import { MinterData } from "@leicoin/common/models/minterData";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { AddressHex } from "@advena/common/models/address";
+import { PX } from "@advena/common/types/prefix";
+import { MinterData } from "@advena/common/models/minterData";
+import { Blockchain } from "@advena/storage/blockchain";
 import { Uint64 } from "low-level";
-import { DataUtils } from "@leicoin/utils/dataUtils";
+import { DataUtils } from "@advena/utils/dataUtils";
 import { cli } from "../cli.js";
 import { CLICMD, type CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
 import { CommonCLIMessages } from "../commandHandler.js";

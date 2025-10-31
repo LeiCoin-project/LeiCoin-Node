@@ -1,10 +1,10 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { Transaction } from "@leicoin/common/models/transaction";
+import { AddressHex } from "@advena/common/models/address";
+import { Transaction } from "@advena/common/models/transaction";
 import { VCode, VCodes } from "./codes.js";
-import { PX } from "@leicoin/common/types/prefix";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { Block } from "@leicoin/common/models/block";
-import { SlotExecutionManager } from "@leicoin/pos";
+import { PX } from "@advena/common/types/prefix";
+import { Blockchain } from "@advena/storage/blockchain";
+import { Block } from "@advena/common/models/block";
+import { SlotExecutionManager } from "@advena/pos";
 
 
 export class Verification {

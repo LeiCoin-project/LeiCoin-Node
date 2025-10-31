@@ -1,7 +1,7 @@
 import { type Uint } from "low-level";
-import { cli } from "@leicoin/cli";
-import { LockedUint } from "@leicoin/common/types/prefix";
-import { type Dict } from "@leicoin/utils/dataUtils";
+import { cli } from "@advena/cli";
+import { LockedUint } from "@advena/common/types/prefix";
+import { type Dict } from "@advena/utils/dataUtils";
 import { type LNBasicMsgHandler } from "./abstractMsgHandler.js";
 import { DataEncoder, ObjectEncoding } from "flexbuf";
 

@@ -2,7 +2,7 @@ import { webcrypto } from 'node:crypto';
 // @ts-ignore
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 import * as ec from '@noble/secp256k1';
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils';
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils';
 import crypto from 'crypto';
 
 //const privKey = ed.utils.randomPrivateKey();

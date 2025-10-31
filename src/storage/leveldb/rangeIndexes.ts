@@ -1,4 +1,4 @@
-import { QuickSort } from "@leicoin/utils/quick-sort";
+import { QuickSort } from "@advena/utils/quick-sort";
 import { LevelDB } from "./index.js";
 import { Uint, Uint64 } from "low-level";
 

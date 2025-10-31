@@ -5,7 +5,7 @@ import { LNAbstractMsgBody, type LNMsgBodyConstructor, LNMsgID } from "../abstra
 import { LNMsgDefaultHandler } from "../abstractMsgHandler";
 import { StatusMsg } from "./status.js";
 import { ObjectEncoding } from "flexbuf";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { MessageRouter } from "../index.js";
 
 export class OneTimeRequestMsg<T extends LNAbstractMsgBody = LNAbstractMsgBody> extends LNAbstractMsgBody {

@@ -1,9 +1,9 @@
-import { CB } from "@leicoin/utils/callbacks";
-import { cli } from "@leicoin/cli";
-import { Wallet } from "@leicoin/common/models/wallet";
-import { Block } from "@leicoin/common/models/block";
+import { CB } from "@advena/utils/callbacks";
+import { cli } from "@advena/cli";
+import { Wallet } from "@advena/common/models/wallet";
+import { Block } from "@advena/common/models/block";
 import { Blockchain } from "../blockchain.js";
-import { AddressHex } from "@leicoin/common/models/address";
+import { AddressHex } from "@advena/common/models/address";
 import { Uint, Uint64 } from "low-level";
 import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
 import type { StorageAPI } from "../index.js";

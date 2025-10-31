@@ -2,15 +2,15 @@ import { LNBroadcastingMsgHandler, LNMsgRequestHandler, LNMsgResponseHandler } f
 import { BE, type DataEncoder } from "flexbuf";
 import { Uint64 } from "low-level";
 import { ErrorResponseMsg } from "./error.js";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { AutoProcessingQueue } from "@leicoin/utils/queue";
-import { Block } from "@leicoin/common/models/block";
+import { Blockchain } from "@advena/storage/blockchain";
+import { AutoProcessingQueue } from "@advena/utils/queue";
+import { Block } from "@advena/common/models/block";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
-import { SlotExecutionManager } from "@leicoin/pos";
-import { SlotExecution } from "@leicoin/pos/slot";
-import { Verification } from "@leicoin/verification";
+import { SlotExecutionManager } from "@advena/pos";
+import { SlotExecution } from "@advena/pos/slot";
+import { Verification } from "@advena/verification";
 import { NetworkSyncManager } from "../../index.js";
-import { POSUtils } from "@leicoin/pos/utils";
+import { POSUtils } from "@advena/pos/utils";
 
 export class NewBlockMsg extends LNAbstractMsgBody {
 

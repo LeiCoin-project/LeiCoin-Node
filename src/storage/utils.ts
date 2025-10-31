@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { cli } from "@leicoin/cli";
-import { Utils } from "@leicoin/utils";
+import { cli } from "@advena/cli";
+import { Utils } from "@advena/utils";
 import { type BasicBinarySet, Uint } from "low-level";
 import readline from "readline";
 import type { StorageAPI } from ".";

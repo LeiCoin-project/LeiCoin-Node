@@ -2,11 +2,11 @@ import { type Uint, Uint16, Uint32 } from "low-level";
 import { LeiCoinNetNode } from "./node.js";
 import { type LNBroadcastMsg, LNRequestMsg, LNStandartMsg } from "./messaging/networkMessages.js";
 import { PeerSocket } from "./socket.js";
-import { Port } from "@leicoin/common/types/netinfo";
+import { Port } from "@advena/common/types/netinfo";
 import { StatusMsg } from "./messaging/messages/status.js";
 import { LNActiveRequest } from "./requests.js";
 import { ChallengeMsg, ChallengeREQMsg, ChallengeResponseMsg } from "./messaging/messages/challenge.js";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { LNAbstractMsgBody } from "./messaging/abstractMsg.js";
 
 

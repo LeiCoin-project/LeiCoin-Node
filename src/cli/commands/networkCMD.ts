@@ -1,4 +1,4 @@
-import { LeiCoinNetNode } from "@leicoin/net";
+import { LeiCoinNetNode } from "@advena/net";
 import { cli } from "../cli.js";
 import { CLICMD, CLISubCMD } from "@cleverjs/cli";
 

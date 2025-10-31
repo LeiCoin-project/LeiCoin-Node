@@ -1,12 +1,12 @@
-import { cli } from "@leicoin/cli";
-import { Block } from "@leicoin/common/models/block";
-import { PX } from "@leicoin/common/types/prefix";
+import { cli } from "@advena/cli";
+import { Block } from "@advena/common/models/block";
+import { PX } from "@advena/common/types/prefix";
 import { Uint, Uint256 } from "low-level";
-import { CB } from "@leicoin/utils/callbacks";
-import { type Dict } from "@leicoin/utils/dataUtils";
+import { CB } from "@advena/utils/callbacks";
+import { type Dict } from "@advena/utils/dataUtils";
 import { StorageUtils } from "./utils.js";
 import { Blockchain } from "./blockchain.js";
-import { LCrypt } from "@leicoin/crypto";
+import { LCrypt } from "@advena/crypto";
 import { ObjectEncoding, DataEncoder, BE } from "flexbuf";
 
 

@@ -1,4 +1,4 @@
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils";
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils";
 
 async function callAsyncFunction(params) { return 1 + 1 };
 

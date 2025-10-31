@@ -1,8 +1,8 @@
 import { createInterface, Interface as ReadlineInterface } from "readline";
 import { type ChalkInstance } from "chalk";
 import { dirname as path_dirname } from "path";
-import { type Dict, DataUtils } from "@leicoin/utils/dataUtils";
-import { StorageUtils } from "@leicoin/storage/utils";
+import { type Dict, DataUtils } from "@advena/utils/dataUtils";
+import { StorageUtils } from "@advena/storage/utils";
 import { CLICMDHandler } from "./commandHandler.js";
 import fs from "fs";
 

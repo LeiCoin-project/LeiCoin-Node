@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { Dict } from "@advena/utils/dataUtils";
 
 interface Constructable<T> {
     new (...args: any[]): T;

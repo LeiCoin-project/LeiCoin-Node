@@ -1,13 +1,13 @@
 import { Uint, Uint256, Uint64 } from "low-level";
-import { LCrypt, Signature } from "@leicoin/crypto";
-import { AddressHex } from "@leicoin/common/models/address";
-import { SecretWallet } from "@leicoin/common/models/wallet";
+import { LCrypt, Signature } from "@advena/crypto";
+import { AddressHex } from "@advena/common/models/address";
+import { SecretWallet } from "@advena/common/models/wallet";
 import fs from "fs";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { PX } from "@leicoin/common/types/prefix";
-import { Transaction } from "@leicoin/common/models/transaction";
-import { Block, BlockBody } from "@leicoin/common/models/block";
-import { Verification } from "@leicoin/verification";
+import { Blockchain } from "@advena/storage/blockchain";
+import { PX } from "@advena/common/types/prefix";
+import { Transaction } from "@advena/common/models/transaction";
+import { Block, BlockBody } from "@advena/common/models/block";
+import { Verification } from "@advena/verification";
 
 class Wallets {
 

@@ -1,3 +1,3 @@
-import { Main } from "@leicoin/core";
+import { Main } from "@advena/core";
 
 Main.init();

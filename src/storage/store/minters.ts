@@ -1,9 +1,9 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { MinterData } from "@leicoin/common/models/minterData";
+import { AddressHex } from "@advena/common/models/address";
+import { MinterData } from "@advena/common/models/minterData";
 import type { StorageAPI } from "../index.js";
 import { AbstractChainStateStoreWithIndexes } from "./abstractStore";
 import type { Ref } from "ptr.js";
-import { PX } from "@leicoin/common/types/prefix";
+import { PX } from "@advena/common/types/prefix";
 
 /**
  * This class is used to store and manage the current state of active minters and keep track of their deposits.

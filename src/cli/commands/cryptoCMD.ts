@@ -1,8 +1,8 @@
-import { LCrypt } from "@leicoin/crypto";
-import { Address32, AddressHex } from "@leicoin/common/models/address";
+import { LCrypt } from "@advena/crypto";
+import { Address32, AddressHex } from "@advena/common/models/address";
 import { cli } from "../cli.js";
 import { CLICMD, CLISubCMD } from "@cleverjs/cli";
-import { PX } from "@leicoin/common/types/prefix";
+import { PX } from "@advena/common/types/prefix";
 import { CommonCLIMessages } from "../commandHandler.js";
 
 

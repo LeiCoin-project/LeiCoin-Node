@@ -1,9 +1,9 @@
 import { EventEmitter } from "events";
-import { cli } from "@leicoin/cli";
-import { HTTP_API } from "@leicoin/http-api";
-import { SlotExecutionManager } from "@leicoin/pos";
-import { LeiCoinNetNode } from "@leicoin/net";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { cli } from "@advena/cli";
+import { HTTP_API } from "@advena/http-api";
+import { SlotExecutionManager } from "@advena/pos";
+import { LeiCoinNetNode } from "@advena/net";
+import { Blockchain } from "@advena/storage/blockchain";
 import { type IModuleLike } from "./dataUtils.js";
 
 export class Utils {

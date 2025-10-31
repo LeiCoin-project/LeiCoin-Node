@@ -1,12 +1,12 @@
-import type { Block, BlockHeader } from "@leicoin/common/models/block";
-import type { AddressHex } from "@leicoin/common/models/address";
-import type { Stores } from "@leicoin/storage/store";
+import type { Block, BlockHeader } from "@advena/common/models/block";
+import type { AddressHex } from "@advena/common/models/address";
+import type { Stores } from "@advena/storage/store";
 import type { Uint64 } from "low-level";
-import type { FastEvents } from "@leicoin/utils/fastevents";
+import type { FastEvents } from "@advena/utils/fastevents";
 import { POSUtils } from "./utils.js";
-import type { Transaction } from "@leicoin/common/models/transaction";
+import type { Transaction } from "@advena/common/models/transaction";
 import { Ref } from "ptr.js";
-import { Execution } from "./execution.js";
+import { Execution } from "../avm/execution.js";
 
 export class ChainState {
 

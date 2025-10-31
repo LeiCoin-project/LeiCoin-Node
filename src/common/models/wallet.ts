@@ -1,8 +1,8 @@
 import { type NumberLike, Uint, Uint256, Uint64 } from "low-level";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
-import { PrivateKey, LCrypt } from "@leicoin/crypto";
+import { PrivateKey, LCrypt } from "@advena/crypto";
 import { ObjectEncoding, DataEncoder, BE } from "flexbuf";
 
 export class Wallet {

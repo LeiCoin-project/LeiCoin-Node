@@ -1,16 +1,16 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { type Block } from "@leicoin/common/models/block";
+import { AddressHex } from "@advena/common/models/address";
+import { type Block } from "@advena/common/models/block";
 import { type Uint64 } from "low-level";
-import { Execution } from "./execution.js";
-import { cli } from "@leicoin/cli";
+import { Execution } from "../avm/execution.js";
+import { cli } from "@advena/cli";
 import { SlotExecutionManager } from "./index.js";
 import { formatDate } from "date-fns/format";
 import { UTCDate } from "@date-fns/utc/date";
-import { ExecutionCheckpoint } from "@leicoin/utils/executionCheckpoint";
-import { Schedule } from "@leicoin/utils/schedule";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { Verification } from "@leicoin/verification";
-import type { FallbackIncomingBlockQueue } from "@leicoin/net/types";
+import { ExecutionCheckpoint } from "@advena/utils/executionCheckpoint";
+import { Schedule } from "@advena/utils/schedule";
+import { Blockchain } from "@advena/storage/blockchain";
+import { Verification } from "@advena/verification";
+import type { FallbackIncomingBlockQueue } from "@advena/net/types";
 import { POSUtils } from "./utils.js";
 
 export class SlotExecution {

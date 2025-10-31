@@ -1,11 +1,11 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { MinterData } from "@leicoin/common/models/minterData";
-import type { Transaction } from "@leicoin/common/models/transaction";
-import { PX } from "@leicoin/common/types/prefix";
-import { LCrypt } from "@leicoin/crypto";
-import { DepositContract } from "@leicoin/smart-contracts";
-import type { Stores } from "@leicoin/storage/store/index";
-import { Constants } from "@leicoin/utils/constants";
+import { AddressHex } from "@advena/common/models/address";
+import { MinterData } from "@advena/common/models/minterData";
+import type { Transaction } from "@advena/common/models/transaction";
+import { PX } from "@advena/common/types/prefix";
+import { LCrypt } from "@advena/crypto";
+import { DepositContract } from "@advena/smart-contracts";
+import type { Stores } from "@advena/storage/store/index";
+import { Constants } from "@advena/utils/constants";
 import { Uint64 } from "low-level";
 
 

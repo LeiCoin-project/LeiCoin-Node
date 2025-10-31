@@ -3,7 +3,7 @@ import { Uint, Uint256, Uint64, Uint8 } from "low-level";
 import { PX } from "../types/prefix.js";
 import { MinterCredentials } from "./minterData.js";
 import { BE, DataEncoder, HashableContainer } from "flexbuf";
-import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
+import { LCrypt, PrivateKey, Signature } from "@advena/crypto";
 
 export class Transaction extends HashableContainer {
 

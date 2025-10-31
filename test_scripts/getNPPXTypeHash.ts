@@ -1,5 +1,5 @@
 import LCrypt from "../src/crypto/index.js";
-import { Uint } from "../s@leicoin/utils/binary";
+import { Uint } from "../s@advena/utils/binary";
 
 function getHash(str: string) {
     return LCrypt.sha256(Uint.from(str.toUpperCase(), "utf-8")).slice(30).toHex();

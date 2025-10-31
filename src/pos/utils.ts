@@ -1,4 +1,4 @@
-import { Constants } from "@leicoin/utils/constants";
+import { Constants } from "@advena/utils/constants";
 import { Uint64 } from "low-level";
 
 export class POSUtils {

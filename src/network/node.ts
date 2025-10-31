@@ -1,11 +1,11 @@
 import { type TCPSocketListener } from "bun";
 import { LNSocketHandler, PeerSocket } from "./socket.js";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { PeerConnections } from "./connections.js";
 import { type EventEmitter } from "events";
-import { type ModuleLike } from "@leicoin/utils/dataUtils";
-import { Utils } from "@leicoin/utils";
-import { NetworkUtils } from "@leicoin/utils/network-utils";
+import { type ModuleLike } from "@advena/utils/dataUtils";
+import { Utils } from "@advena/utils";
+import { NetworkUtils } from "@advena/utils/network-utils";
 
 export class LeiCoinNetNode implements ModuleLike<typeof LeiCoinNetNode> {
     public static initialized = false;

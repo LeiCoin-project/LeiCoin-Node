@@ -1,4 +1,4 @@
-import { Utils } from "@leicoin/utils";
+import { Utils } from "@advena/utils";
 import { CLICMD } from "@cleverjs/cli";
 
 export class StopCMD extends CLICMD {

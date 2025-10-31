@@ -1,8 +1,8 @@
 import { type Uint64 } from "low-level";
-import { ExecutedBlock } from "@leicoin/common/models/block";
+import { ExecutedBlock } from "@advena/common/models/block";
 import { LevelBasedStorage } from "./leveldb/levelBasedStorage.js";
 import { LevelDBEncoders } from "./leveldb/encoders.js";
-import { FastEvents } from "@leicoin/utils/fastevents";
+import { FastEvents } from "@advena/utils/fastevents";
 
 export interface IBlockDB {
     add(block: ExecutedBlock, overwrite?: boolean): Promise<boolean>;

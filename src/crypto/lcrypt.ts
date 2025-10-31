@@ -3,7 +3,7 @@ import { type curve, ec as ellipticCurve } from 'elliptic';
 import { Uint, Uint256 } from "low-level";
 import { Signature } from "./signature.js";
 import { KeyPair, PrivateKey, PublicKey, PublicKeyPair } from "./cryptoKeys.js";
-import { PX } from "@leicoin/common/types/prefix";
+import { PX } from "@advena/common/types/prefix";
 
 export class LCrypt {
 

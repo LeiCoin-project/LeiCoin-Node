@@ -1,7 +1,7 @@
 import { FixedUint, Uint, Uint256 } from "low-level";
-import { DataUtils } from "@leicoin/utils/dataUtils";
+import { DataUtils } from "@advena/utils/dataUtils";
 import { PX } from "../types/prefix.js";
-import { LCrypt, PrivateKey, PublicKey, Signature } from "@leicoin/crypto";
+import { LCrypt, PrivateKey, PublicKey, Signature } from "@advena/crypto";
 
 export class SpecificAddress extends FixedUint {
     

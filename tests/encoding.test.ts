@@ -1,10 +1,10 @@
 import { describe, test, expect } from "bun:test";
-import { MinterData, MinterCredentials } from "@leicoin/common/models/minterData";
-import { AddressHex } from "@leicoin/common/models/address";
-import { Block, BlockBody } from "@leicoin/common/models/block";
-import { Transaction } from "@leicoin/common/models/transaction";
-import { Wallet } from "@leicoin/common/models/wallet";
-import { Signature, PrivateKey } from "@leicoin/crypto";
+import { MinterData, MinterCredentials } from "@advena/common/models/minterData";
+import { AddressHex } from "@advena/common/models/address";
+import { Block, BlockBody } from "@advena/common/models/block";
+import { Transaction } from "@advena/common/models/transaction";
+import { Wallet } from "@advena/common/models/wallet";
+import { Signature, PrivateKey } from "@advena/crypto";
 import { Uint64, Uint256 } from "low-level";
 
 describe("encoding", () => {

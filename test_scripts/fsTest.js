@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Block } from "@leicoin/common/models/block";
+import { Block } from "@advena/common/models/block";
 import { Uint } from "low-level";
 import path from 'path';
 

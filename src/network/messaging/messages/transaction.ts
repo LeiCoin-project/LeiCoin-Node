@@ -1,11 +1,11 @@
-import { Mempool } from "@leicoin/storage/mempool";
-import { Transaction } from "@leicoin/common/models/transaction";
-import { cli } from "@leicoin/cli";
-import { Verification } from "@leicoin/verification"
+import { Mempool } from "@advena/storage/mempool";
+import { Transaction } from "@advena/common/models/transaction";
+import { cli } from "@advena/cli";
+import { Verification } from "@advena/verification"
 import { Uint } from "low-level";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { LNBroadcastingMsgHandler, LNMsgRequestHandler } from "../abstractMsgHandler.js";
-import { Dict } from "@leicoin/utils/dataUtils";
+import { Dict } from "@advena/utils/dataUtils";
 import { BE, type DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 

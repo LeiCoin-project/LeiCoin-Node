@@ -1,6 +1,6 @@
-import { AddressHex } from "@leicoin/common/models/address";
+import { AddressHex } from "@advena/common/models/address";
 import type { StorageAPI } from "../index.js";
-import { Wallet } from "@leicoin/common/models/wallet";
+import { Wallet } from "@advena/common/models/wallet";
 import type { Uint64 } from "low-level";
 import { AbstractChainStateStore } from "./abstractStore";
 import type { Ref } from "ptr.js";

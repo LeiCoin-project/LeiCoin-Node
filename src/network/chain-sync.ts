@@ -1,14 +1,14 @@
 import { Uint64 } from "low-level";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { Queue } from "@leicoin/utils/queue";
-import { type ForkChainstateData } from "@leicoin/storage/chainstate";
+import { Blockchain } from "@advena/storage/blockchain";
+import { Queue } from "@advena/utils/queue";
+import { type ForkChainstateData } from "@advena/storage/chainstate";
 import { type ChainstateMsg, GetChainstateMsg } from "./messaging/messages/chainstate.js";
 import { type PeerSocket } from "./socket.js";
 import { BlocksMsg, GetBlocksMsg } from "./messaging/messages/block.js";
-import { cli } from "@leicoin/cli";
-import { Utils } from "@leicoin/utils";
-import { Block } from "@leicoin/common/models/block";
-import { SlotExecution } from "@leicoin/pos/slot";
+import { cli } from "@advena/cli";
+import { Utils } from "@advena/utils";
+import { Block } from "@advena/common/models/block";
+import { SlotExecution } from "@advena/pos/slot";
 import { LeiCoinNetNode } from "./node.js";
 
 export class NetworkSyncManager {

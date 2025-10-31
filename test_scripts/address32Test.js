@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { sha256 } from "./cryptoUtils.js";
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils"
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils"
 
 const leiCoinAddress32Chars = '123456789abcdefghjklmnpqrstuvwyz';
 //const leiCoinAddress32Chars = '0123456789abcdefghijklmnopqrstuv';

@@ -1,4 +1,4 @@
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils';
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils';
 import elliptic from 'elliptic';
 const { ec: EC } = elliptic;
 import crypto from 'crypto';

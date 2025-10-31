@@ -1,5 +1,5 @@
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { DataUtils } from "@leicoin/utils/dataUtils";
+import { Blockchain } from "@advena/storage/blockchain";
+import { DataUtils } from "@advena/utils/dataUtils";
 import { cli } from "../cli.js";
 import { CLICMD, type CLICMDExecMeta, CLISubCMD } from "@cleverjs/cli";
 

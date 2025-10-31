@@ -1,9 +1,9 @@
 import { type Uint, Uint32 } from "low-level";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { MessageRouter } from "./index.js";
 import { type LNAbstractMsgBody, type LNMsgBodyConstructor, LNMsgID } from "./abstractMsg.js";
 import { BE, DataEncoder, ObjectEncoding } from "flexbuf";
-import { LCrypt } from "@leicoin/crypto";
+import { LCrypt } from "@advena/crypto";
 
 
 export class LNStandartMsg<T extends LNAbstractMsgBody = LNAbstractMsgBody> {

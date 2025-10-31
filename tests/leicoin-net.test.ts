@@ -4,7 +4,7 @@ import { GetBlocksMsg } from "../src/network/messaging/messages/block.js";
 import { Uint32, Uint64 } from "low-level";
 import { LNResponseMsg } from "../src/network/messaging/networkMessages.js";
 import { NetworkSyncManager } from "../src/network/chain-sync.js";
-import { NetworkUtils } from "@leicoin/utils/network-utils";
+import { NetworkUtils } from "@advena/utils/network-utils";
 
 describe("leicoin-net", () => {
     test("unique_message_ids", async () => {

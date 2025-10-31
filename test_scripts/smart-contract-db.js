@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import { startTimer, getElapsedTime } from "@leicoin/utils/testUtils";
-import { Uint, Uint256, Uint64 } from "../build/s@leicoin/utils/binary";
+import { startTimer, getElapsedTime } from "@advena/utils/testUtils";
+import { Uint, Uint256, Uint64 } from "../build/s@advena/utils/binary";
 import Crypto from "../build/src/crypto/index.js";
 import { AddressHex } from "../build/src/common/models/address.js";
 import { PublicKey } from "../build/src/crypto/cryptoKeys.js";
@@ -82,7 +82,7 @@ async function getValidators(level) {
 }
 
 
-/** @type {(seedHash: Uint256) => Promise<[import('../build/s@leicoin/utils/objects').Dict<Uint>, number, boolean]>} */
+/** @type {(seedHash: Uint256) => Promise<[import('../build/s@advena/utils/objects').Dict<Uint>, number, boolean]>} */
 async function selectNextValidators(seedHash) {
     const level = await levelDBUtils.openDB(db);
 

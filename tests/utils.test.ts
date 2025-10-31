@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
-import { Deferred } from "@leicoin/utils/deferred";
-import { QuickSort } from "@leicoin/utils/quick-sort";
+import { Deferred } from "@advena/utils/deferred";
+import { QuickSort } from "@advena/utils/quick-sort";
 import { Readable } from 'stream';
 import { Uint, Uint64 } from "low-level";
 

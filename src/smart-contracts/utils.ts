@@ -1,4 +1,4 @@
-import { LCrypt } from "@leicoin/crypto";
+import { LCrypt } from "@advena/crypto";
 import { Uint } from "low-level";
 
 export class SCUtils {

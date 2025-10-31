@@ -1,10 +1,10 @@
 import { type NumberLike, type Uint, Uint64 } from "low-level";
-import { cli } from "@leicoin/cli";
+import { cli } from "@advena/cli";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
 import { BE, DataEncoder, ObjectEncoding } from "flexbuf";
-import { PrivateKey } from "@leicoin/crypto";
-import { Constants } from "@leicoin/utils/constants";
+import { PrivateKey } from "@advena/crypto";
+import { Constants } from "@advena/utils/constants";
 
 export class MinterData {
 

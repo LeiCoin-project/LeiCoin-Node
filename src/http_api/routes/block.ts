@@ -1,9 +1,9 @@
-import { Verification } from "@leicoin/verification";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { Verification } from "@advena/verification";
+import { Blockchain } from "@advena/storage/blockchain";
 import Elysia from "elysia";
-import { type Block } from "@leicoin/common/models/block";
+import { type Block } from "@advena/common/models/block";
 import { HTTPRouter405Route } from "../route.js";
-import { Mempool } from "@leicoin/storage/mempool";
+import { Mempool } from "@advena/storage/mempool";
 
 const router = new Elysia({prefix: '/sendBlocks'})
 

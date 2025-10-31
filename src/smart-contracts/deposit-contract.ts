@@ -1,5 +1,5 @@
-import { AddressHex } from "@leicoin/common/models/address";
-import { LCrypt } from "@leicoin/crypto";
+import { AddressHex } from "@advena/common/models/address";
+import { LCrypt } from "@advena/crypto";
 import { Uint } from "low-level";
 import { SCUtils } from "./utils";
 

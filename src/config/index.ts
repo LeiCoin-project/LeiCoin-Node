@@ -3,9 +3,9 @@ import { ENVConfigLike, ENVConfigParser } from "./dotenv.js";
 import { PeersConfigParser } from "./peers.js";
 import fs from "fs";
 import path from "path";
-import { cli } from "@leicoin/cli";
-import { NodeStartupFlags } from "@leicoin/cli/types";
-import { Utils } from "@leicoin/utils";
+import { cli } from "@advena/cli";
+import { NodeStartupFlags } from "@advena/cli/types";
+import { Utils } from "@advena/utils";
 
 export interface ConfigLike extends GeneralConfigLike, ENVConfigLike {
     peers: string[];

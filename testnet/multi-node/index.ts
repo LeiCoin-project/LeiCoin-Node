@@ -1,5 +1,5 @@
 import fs from "fs";
-import { MinterCredentials } from "@leicoin/common/models/minterData";
+import { MinterCredentials } from "@advena/common/models/minterData";
 import { type Server } from "bun";
 import { GeneralConfigLike } from "../../src/config/general";
 

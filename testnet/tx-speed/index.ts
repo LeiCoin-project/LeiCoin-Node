@@ -3,7 +3,7 @@ async function run() {
     process.env.CUSTOM_CWD = __dirname;
     process.env.NO_CLI = "true";
 
-    const utils = (await import("../../s@leicoin/utils")).default;
+    const utils = (await import("../../s@advena/utils")).default;
 
     //console.log(utils.procCWD);
     if (utils.procCWD !== __dirname) {

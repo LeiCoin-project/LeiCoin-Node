@@ -1,4 +1,4 @@
-import { Main } from "@leicoin/core";
+import { Main } from "@advena/core";
 import { cli } from "../cli.js";
 import { CLICMD, type CLICMDAlias } from "@cleverjs/cli";
 

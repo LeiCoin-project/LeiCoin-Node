@@ -3,8 +3,8 @@ import { Uint256, Uint64 } from "low-level";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
 import { BE, DataEncoder, HashableContainer } from "flexbuf";
-import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
-import { POSUtils } from "@leicoin/pos/utils";
+import { LCrypt, PrivateKey, Signature } from "@advena/crypto";
+import { POSUtils } from "@advena/pos/utils";
 
 export class BlockHeader extends HashableContainer {
     constructor(

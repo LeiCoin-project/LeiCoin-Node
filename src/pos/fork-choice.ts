@@ -1,4 +1,4 @@
-import { type BlockHeader } from "@leicoin/common/models/block";
+import { type BlockHeader } from "@advena/common/models/block";
 import { type Chain } from "./chain.js";
 import { POSUtils } from "./utils.js";
 

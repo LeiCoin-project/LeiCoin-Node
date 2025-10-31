@@ -1,11 +1,11 @@
-import { type Block } from "@leicoin/common/models/block";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { Verification } from "@leicoin/verification";
-import { Mempool } from "@leicoin/storage/mempool";
-import type { Transaction } from "@leicoin/common/models/transaction";
-import type { Stores } from "@leicoin/storage/store/index";
-import { DepositContract } from "@leicoin/smart-contracts";
-import { MinterHandler } from "./minter-handler";
+import { type Block } from "@advena/common/models/block";
+import { Blockchain } from "@advena/storage/blockchain";
+import { Verification } from "@advena/verification";
+import { Mempool } from "@advena/storage/mempool";
+import type { Transaction } from "@advena/common/models/transaction";
+import type { Stores } from "@advena/storage/store/index";
+import { DepositContract } from "@advena/smart-contracts";
+import { MinterHandler } from "@advena/pos/minter-handler";
 
 
 export class Execution {

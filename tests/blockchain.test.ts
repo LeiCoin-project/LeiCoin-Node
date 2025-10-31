@@ -1,8 +1,8 @@
 import { describe, test, expect } from "bun:test";
-import { AddressHex } from "@leicoin/common/models/address";
-import { Block } from "@leicoin/common/models/block";
-import { Signature } from "@leicoin/crypto";
-import { Blockchain } from "@leicoin/storage/blockchain";
+import { AddressHex } from "@advena/common/models/address";
+import { Block } from "@advena/common/models/block";
+import { Signature } from "@advena/crypto";
+import { Blockchain } from "@advena/storage/blockchain";
 import { Uint256, Uint64 } from "low-level";
 
 describe("blockchain", () => {

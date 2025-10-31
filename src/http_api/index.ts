@@ -1,8 +1,8 @@
 import EventEmitter from "events";
-import { type ModuleLike } from "@leicoin/utils/dataUtils";
+import { type ModuleLike } from "@advena/utils/dataUtils";
 import Elysia from "elysia";
-import { cli } from "@leicoin/cli";
-import { NetworkUtils } from "@leicoin/utils/network-utils";
+import { cli } from "@advena/cli";
+import { NetworkUtils } from "@advena/utils/network-utils";
 
 export class HTTP_API implements ModuleLike<typeof HTTP_API> {
     public static initialized = false;

@@ -1,11 +1,11 @@
-import { MinterData } from "@leicoin/common/models/minterData";
-import { AddressHex } from "@leicoin/common/models/address";
+import { MinterData } from "@advena/common/models/minterData";
+import { AddressHex } from "@advena/common/models/address";
 import { type Uint, Uint64 } from "low-level";
 import { LevelBasedStateStorageWithIndexes } from "../leveldb/levelBasedStorage.js";
-import { PX } from "@leicoin/common/types/prefix";
-import { LCrypt } from "@leicoin/crypto";
+import { PX } from "@advena/common/types/prefix";
+import { LCrypt } from "@advena/crypto";
 import type { StorageAPI } from "../index.js";
-import type { MinterHandler } from "@leicoin/pos/minter-handler";
+import type { MinterHandler } from "@advena/pos/minter-handler";
 import type { LevelRangeIndexes } from "../leveldb/rangeIndexes.js";
 
 

@@ -1,16 +1,16 @@
-import { cli } from "@leicoin/cli";
-import { LCrypt, PrivateKey, Signature } from "@leicoin/crypto";
-import { LNController, LNMsgRegistry } from "@leicoin/net";
-import { AddressHex } from "@leicoin/common/models/address";
-import { Block, BlockBody } from "@leicoin/common/models/block";
-import { MinterCredentials } from "@leicoin/common/models/minterData";
-import { PX } from "@leicoin/common/types/prefix";
-import { SlotExecution } from "@leicoin/pos/slot";
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { Mempool } from "@leicoin/storage/mempool";
-import { Verification } from "@leicoin/verification";
+import { cli } from "@advena/cli";
+import { LCrypt, PrivateKey, Signature } from "@advena/crypto";
+import { LNController, LNMsgRegistry } from "@advena/net";
+import { AddressHex } from "@advena/common/models/address";
+import { Block, BlockBody } from "@advena/common/models/block";
+import { MinterCredentials } from "@advena/common/models/minterData";
+import { PX } from "@advena/common/types/prefix";
+import { SlotExecution } from "@advena/pos/slot";
+import { Blockchain } from "@advena/storage/blockchain";
+import { Mempool } from "@advena/storage/mempool";
+import { Verification } from "@advena/verification";
 import { Uint256, Uint64 } from "low-level";
-import { POSUtils } from "@leicoin/pos/utils";
+import { POSUtils } from "@advena/pos/utils";
 
 
 export class MinterClient {

@@ -1,10 +1,10 @@
 import { Uint, Uint64 } from "low-level";
 import { LevelDBUtils } from "../leveldb_utils.js";
-import { AddressHex } from "@leicoin/common/models/address";
-import { PX } from "@leicoin/common/types/prefix";
-import { LCrypt } from "@leicoin/crypto";
-import { LevelDB } from "@leicoin/storage/leveldb/index";
-import { LevelIndexes } from "@leicoin/storage/leveldb/indexes";
+import { AddressHex } from "@advena/common/models/address";
+import { PX } from "@advena/common/types/prefix";
+import { LCrypt } from "@advena/crypto";
+import { LevelDB } from "@advena/storage/leveldb/index";
+import { LevelIndexes } from "@advena/storage/leveldb/indexes";
 
 export const metaSizeAddress = AddressHex.fromTypeAndBody(PX.META, Uint.from(2, 20));
 export const firstMetaAddress = AddressHex.fromTypeAndBody(PX.META, Uint.alloc(20));

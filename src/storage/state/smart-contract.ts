@@ -1,4 +1,4 @@
-import { AddressHex } from "@leicoin/common/models/address";
+import { AddressHex } from "@advena/common/models/address";
 import { Uint } from "low-level";
 import { LevelBasedStorage } from "../leveldb/levelBasedStorage.js";
 

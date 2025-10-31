@@ -1,10 +1,10 @@
-import { Blockchain } from "@leicoin/storage/blockchain";
-import { DataUtils } from "@leicoin/utils/dataUtils";
+import { Blockchain } from "@advena/storage/blockchain";
+import { DataUtils } from "@advena/utils/dataUtils";
 import { cli } from "../cli.js";
 import { CLICMD, type CLICMDExecMeta, CLISubCMD, CMDFlag, CMDFlagsParser } from "@cleverjs/cli";
 import { CommonCLIMessages } from "../commandHandler.js";
 import { Uint, Uint64 } from "low-level";
-import { Block, BlockHeader } from "@leicoin/common/models/block";
+import { Block, BlockHeader } from "@advena/common/models/block";
 
 export class BlockDBCMD extends CLISubCMD {
     readonly name = "blockdb";
