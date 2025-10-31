@@ -11,7 +11,10 @@ interface ITransactionsIndexDB extends StorageAPI.IChainStore<Uint256, any> {
 export class TransactionsIndexDB extends IndexDB<Uint256, any, Uint256> implements ITransactionsIndexDB {
 
     constructor() {
-        super("/indexes/transactions", LevelDBEncoders.Uint256);
+        super("/indexes/transactions", {
+            keyEncoding: LevelDBEncoders.Uint256,
+            valueEncoding: LevelDBEncoders.Uint256
+        });
     }
 
     async set(txHash: Uint256, blockHash: Uint256, indexInPayload: number) {
@@ -19,7 +22,7 @@ export class TransactionsIndexDB extends IndexDB<Uint256, any, Uint256> implemen
     }
 
     async get(txHash: Uint256) {
-        return await this.level.get(txHash);
+        return await this.level.get(txHash) || null;
     }
     
 }
