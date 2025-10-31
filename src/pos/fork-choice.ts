@@ -4,7 +4,7 @@ import { POSUtils } from "./utils.js";
 
 export class ForkChoice {
 
-    static async on_Block(block: BlockHeader, chain: Chain) {
+    static async isValidBlock(block: BlockHeader, chain: Chain) {
 
         if (!block.validateHash(block.hash)) return false;
 

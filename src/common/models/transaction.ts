@@ -4,6 +4,7 @@ import { PX } from "../types/prefix.js";
 import { MinterCredentials } from "./minterData.js";
 import { BE, DataEncoder, HashableContainer } from "flexbuf";
 import { LCrypt, PrivateKey, Signature } from "@advena/crypto";
+import { AVM } from "@advena/avm";
 
 export class Transaction extends HashableContainer {
 
@@ -85,7 +86,7 @@ export class ExecutedTransaction extends Transaction {
         timestamp: Uint64,
         input: Uint,
         signature: Signature,
-        readonly executionResult: Uint8,
+        readonly executionResult: AVM.TXExecResult,
         version = PX.V_00
     ) {
         super(
@@ -122,7 +123,7 @@ export class ExecutedTransaction extends Transaction {
 
     protected static encodingSettings: DataEncoder[] = [
         ...Transaction.encodingSettings,
-        BE(Uint8, "executionResult")
+        BE.Enum("executionResult", 1, AVM.TXExecResultValues)
     ]
 
 }
