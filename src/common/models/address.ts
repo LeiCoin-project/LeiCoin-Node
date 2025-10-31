@@ -26,6 +26,7 @@ export class SpecificAddress extends FixedUint {
 
     public static fromSignature(hash: Uint256, signature: Signature) {
         const publicKey = LCrypt.getPublicKeyFromSignature(hash, signature);
+        if (!publicKey) return null;
         return this.fromPublicKey(publicKey);
     }
 
@@ -60,6 +61,7 @@ export class AddressHex extends FixedUint {
 
     public static fromSignature(hash: Uint256, signature: Signature) {
         const publicKey = LCrypt.getPublicKeyFromSignature(hash, signature);
+        if (!publicKey) return null;
         return this.fromPublicKey(signature.getSignerType(), publicKey);
     }
 
@@ -107,6 +109,7 @@ export class Address32 {
 
     public static fromSignature(hash: Uint256, signature: Signature) {
         const publicKey = LCrypt.getPublicKeyFromSignature(hash, signature);
+        if (!publicKey) return null;
         return this.fromPublicKey(signature.getSignerType(), publicKey);
     }
 

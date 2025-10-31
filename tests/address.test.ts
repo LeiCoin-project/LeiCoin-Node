@@ -27,7 +27,8 @@ describe("address", () => {
         const signature = LCrypt.sign(hashData, PX.A_00, privateKeyHex);
         const recoveredAddress = AddressHex.fromSignature(hashData, signature);
 
-        expect((address.toHex() === recoveredAddress.toHex()) ? address.toHex() : null).toBe("000187213479336bd1e72786c2cac4b2fe6d2c8a14");
+        expect(recoveredAddress).not.toBeNull();
+        expect((address.toHex() === (recoveredAddress ? recoveredAddress.toHex() : null)) ? address.toHex() : null).toBe("000187213479336bd1e72786c2cac4b2fe6d2c8a14");
     });
     test("coinbase_address_gettting", () => {
 

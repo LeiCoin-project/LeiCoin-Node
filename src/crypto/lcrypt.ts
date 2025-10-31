@@ -43,7 +43,9 @@ export class LCrypt {
                 signature.getRecoveryParam()
             ) as curve.base.BasePoint).encode("array", true));
         } catch (error: any) {
-            return PublicKey.empty();
+            //return PublicKey.empty();
+            console.log("Error in getPublicKeyFromSignature:", error);
+            return null;
         }
     }
 

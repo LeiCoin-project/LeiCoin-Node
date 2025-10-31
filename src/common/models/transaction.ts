@@ -22,18 +22,20 @@ export class Transaction extends HashableContainer {
 
     static createCoinbaseTransaction(mc: MinterCredentials) {
 
+        const privateKey = LCrypt.generatePrivateKey();
+
         const coinbase_tx = new Transaction(
             Uint256.alloc(),
-            AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a"),
+            AddressHex.fromPrivateKey(PX.A_00, privateKey),
             mc.address,
             Uint64.from(10),
             Uint64.from(0),
             Uint64.from(new Date().getTime()),
             Uint.empty(),
-            Signature.alloc(),
+            Signature.empty(),
         );
 
-        coinbase_tx.sign(PrivateKey.empty());
+        coinbase_tx.sign(privateKey);
 
         return coinbase_tx;
     }
@@ -41,9 +43,12 @@ export class Transaction extends HashableContainer {
     protected static fromDict(obj: any) {
         if (!obj.version.eq(0)) return null;
 
+        const senderAddress = AddressHex.fromSignature(obj.txid, obj.signature);
+        if (!senderAddress) return null;
+
         const tx = new Transaction(
             obj.txid,
-            AddressHex.fromSignature(obj.txid, obj.signature),
+            senderAddress,
             obj.recipientAddress,
             obj.amount,
             obj.nonce,
@@ -105,9 +110,12 @@ export class ExecutedTransaction extends Transaction {
     protected static fromDict(obj: any) {
         if (!obj.version.eq(0)) return null;
 
+        const senderAddress = AddressHex.fromSignature(obj.txid, obj.signature);
+        if (!senderAddress) return null;
+
         const tx = new ExecutedTransaction(
             obj.txid,
-            AddressHex.fromSignature(obj.txid, obj.signature),
+            senderAddress,
             obj.recipientAddress,
             obj.amount,
             obj.nonce,

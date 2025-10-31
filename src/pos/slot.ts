@@ -1,7 +1,7 @@
 import { AddressHex } from "@advena/common/models/address";
 import { type Block } from "@advena/common/models/block";
 import { type Uint64 } from "low-level";
-import { Execution } from "../avm/execution.js";
+import { AVM } from "@advena/avm";
 import { cli } from "@advena/cli";
 import { SlotExecutionManager } from "./index.js";
 import { formatDate } from "date-fns/format";

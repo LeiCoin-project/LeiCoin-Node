@@ -4,13 +4,15 @@ import { AddressHex } from "@advena/common/models/address";
 import { Block, BlockBody } from "@advena/common/models/block";
 import { Transaction } from "@advena/common/models/transaction";
 import { Wallet } from "@advena/common/models/wallet";
-import { Signature, PrivateKey } from "@advena/crypto";
+import { Signature, PrivateKey, LCrypt } from "@advena/crypto";
 import { Uint64, Uint256 } from "low-level";
+import { PX } from "@advena/common/types/prefix";
 
 describe("encoding", () => {
     test("block_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
+        const privateKey = LCrypt.generatePrivateKey();
+        const address = AddressHex.fromPrivateKey(PX.A_0e, privateKey);
 
         const block = new Block(
             Uint64.from(0),
@@ -22,11 +24,10 @@ describe("encoding", () => {
             new BlockBody([])
         );
 
-        block.hash.set(block.calculateHash());
+        block.sign(privateKey);
 
         const decoded: any = Block.fromDecodedHex(block.encodeToHex());
         const decoded2 = Block.fromDecodedHex(decoded.encodeToHex());
-
         //fs.writeFileSync("./blockchain_data/test.bin", decoded2.encodeToHex(), {encoding: "hex", flag: "w"});
         //console.log(decoded2?.encodeToHex().length);
 
@@ -34,8 +35,9 @@ describe("encoding", () => {
     });
     test("transaction_enoding_and_decoding", () => {
 
-        const address = AddressHex.from("00dc33296e4d20f0ef35ff9fd449e23ebbaa5a049a");
-        const mc = new MinterCredentials(PrivateKey.empty(), address);
+        const privateKey = LCrypt.generatePrivateKey();
+        const address = AddressHex.fromPrivateKey(PX.A_0e, privateKey);
+        const mc = new MinterCredentials(privateKey, address);
 
         const tx = Transaction.createCoinbaseTransaction(mc);
 

@@ -17,17 +17,20 @@ export class BlockHeader extends HashableContainer {
         readonly body_hash: Uint256,
         readonly timestamp: Uint64 = Uint64.from(POSUtils.calculateSlotExecutionTime(slotIndex)),
         readonly version: PX = PX.A_00
-    ) {super()}
+    ) { super() }
 
     protected static fromDict(obj: Dict<any>) {
         if (!obj.version.eq(0)) return null;
+
+        const minter = AddressHex.fromSignature(obj.hash, obj.signature);
+        if (!minter) return null;
 
         const block_header = new BlockHeader(
             obj.index,
             obj.slotIndex,
             obj.hash,
             obj.previousHash,
-            AddressHex.fromSignature(obj.hash, obj.signature),
+            minter,
             obj.signature,
             obj.body_hash,
             Uint64.from(POSUtils.calculateSlotExecutionTime(obj.slotIndex)),
@@ -38,12 +41,12 @@ export class BlockHeader extends HashableContainer {
     }
 
     protected static encodingSettings: DataEncoder[] = [
-        BE(PX,"version"),
+        BE(PX, "version"),
         BE.BigInt("index"),
         BE.BigInt("slotIndex"),
         BE(Uint256, "hash", true),
         BE(Uint256, "previousHash"),
-        BE(Signature,"signature", true),
+        BE(Signature, "signature", true),
         BE(Uint256, "body_hash"),
     ]
 
@@ -59,7 +62,7 @@ export class BlockBody extends HashableContainer {
     constructor(
         readonly transactions: Transaction[],
         //public slashings: Uint256[] = []
-    ) {super()}
+    ) { super() }
 
     protected static fromDict(obj: Dict<any>) {
         return new BlockBody(obj.transactions);
@@ -84,27 +87,32 @@ export class Block extends BlockHeader {
         body_hash: Uint256 = body.calculateHash(),
         timestamp: Uint64 = Uint64.from(POSUtils.calculateSlotExecutionTime(slotIndex)),
         version: PX = PX.A_00
-    ) {super(
-        index,
-        slotIndex,
-        hash,
-        previousHash,
-        minter,
-        signature,
-        body_hash,
-        timestamp,
-        version
-    )}
+    ) {
+        super(
+            index,
+            slotIndex,
+            hash,
+            previousHash,
+            minter,
+            signature,
+            body_hash,
+            timestamp,
+            version
+        )
+    }
 
     protected static fromDict(obj: Dict<any>) {
         if (!obj.version.eq(0)) return null;
+
+        const minter = AddressHex.fromSignature(obj.hash, obj.signature);
+        if (!minter) return null;
 
         const block = new Block(
             obj.index,
             obj.slotIndex,
             obj.hash,
             obj.previousHash,
-            AddressHex.fromSignature(obj.hash, obj.signature),
+            minter,
             obj.signature,
             obj.body,
             obj.body_hash,
@@ -125,11 +133,11 @@ export class Block extends BlockHeader {
 
 
 export class ExecutedBlockBody extends BlockBody {
-    
+
     constructor(
         readonly transactions: ExecutedTransaction[],
         // slashings: Uint256[] = []
-    ) {super(transactions)}
+    ) { super(transactions) }
 
     protected static fromDict(obj: Dict<any>) {
         return new ExecutedBlockBody(obj.transactions);
@@ -158,28 +166,33 @@ export class ExecutedBlock extends Block {
         body_hash: Uint256 = body.calculateHash(),
         timestamp: Uint64 = Uint64.from(POSUtils.calculateSlotExecutionTime(slotIndex)),
         version: PX = PX.A_00
-    ) {super(
-        index,
-        slotIndex,
-        hash,
-        previousHash,
-        minter,
-        signature,
-        body,
-        body_hash,
-        timestamp,
-        version
-    )}
+    ) {
+        super(
+            index,
+            slotIndex,
+            hash,
+            previousHash,
+            minter,
+            signature,
+            body,
+            body_hash,
+            timestamp,
+            version
+        )
+    }
 
     protected static fromDict(obj: Dict<any>) {
         if (!obj.version.eq(0)) return null;
+
+        const minter = AddressHex.fromSignature(obj.hash, obj.signature);
+        if (!minter) return null;
 
         const block = new ExecutedBlock(
             obj.index,
             obj.slotIndex,
             obj.hash,
             obj.previousHash,
-            AddressHex.fromSignature(obj.hash, obj.signature),
+            minter,
             obj.signature,
             obj.body,
             obj.body_hash,
