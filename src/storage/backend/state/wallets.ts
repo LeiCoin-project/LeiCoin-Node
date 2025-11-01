@@ -6,9 +6,9 @@ import { Blockchain } from "../../blockchain.js";
 import { AddressHex } from "@advena/common/models/address";
 import { Uint, Uint64 } from "low-level";
 import { LevelBasedStateStorage } from "../../leveldb/levelBasedStorage.js";
-import type { StorageAPI } from "../../exports/index.js";
+import type { StorageBackend } from "../exports/index.js";
 
-export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
+export interface IWalletDB extends StorageBackend.IChainStateStore<AddressHex, Wallet> {
     set(wallet: Wallet): Promise<void>;
     get(address: AddressHex): Promise<Wallet>;
     exists(address: AddressHex): Promise<boolean>;
@@ -33,10 +33,6 @@ export class WalletLevelBackend extends LevelBasedStateStorage<AddressHex, Walle
             throw new Error(`Wallet Data could not be decoded for address ${address.toHex()}. Please check for corrupted or outdated data.`);
         }
         return wallet;
-    }
-
-    async getAllAddresses() {
-        return this.level.keys().all();
     }
 
     async set(wallet: Wallet) {

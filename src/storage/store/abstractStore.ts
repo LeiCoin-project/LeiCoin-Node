@@ -1,12 +1,12 @@
 import { Uint, Uint64, type BasicUintConstructable } from "low-level";
-import type { StorageAPI } from "../exports/index.js";
+import type { StorageBackend } from "../backend/exports/index.js";
 import type { Ref } from "ptr.js";
 import { type EncodeableObj, type EncodeableObjInstance } from "flexbuf";
 import { TempStorage, TempStorageWithIndexes } from "./tempStore";
 import { BasicRangeIndexes, type IKeyIndexRange } from "../leveldb/rangeIndexes.js";
 import { StorageUtils } from "../utils.js";
 
-export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStore<K, V>> {
+export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStore<K, V>> {
 
     protected readonly tempStorage: TempStorage<K, V>;
 
@@ -48,11 +48,11 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
 }
 
 
-export abstract class AbstractChainStateStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStore<K, V>> extends AbstractChainStore<K, V, S> {
+export abstract class AbstractChainStateStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStore<K, V>> extends AbstractChainStore<K, V, S> {
     abstract set(value: V): Promise<void>;
 }
 
-export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageAPI.IChainStateStoreWithIndexes<K, V>> extends AbstractChainStateStore<K, V, S> {
+export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStoreWithIndexes<K, V>> extends AbstractChainStateStore<K, V, S> {
 
     protected readonly tempStorage: TempStorageWithIndexes<K, V>;
 

@@ -2,12 +2,12 @@ import { LevelDB, type LevelDBOptions } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
-import type { StorageAPI } from "../exports/index.js";
+import type { StorageBackend } from "../backend/exports/index.js";
 
 export abstract class LevelBasedStorage<K extends LevelK, V,
     LevelK extends Uint = Uint,
     LevelV extends Uint = Uint
-> implements StorageAPI.IChainStore<K, V> {
+> implements StorageBackend.IChainStore<K, V> {
 
     protected readonly level: LevelDB<LevelK, LevelV>;
 
@@ -52,11 +52,11 @@ export abstract class LevelBasedStorage<K extends LevelK, V,
 export abstract class LevelBasedStateStorage<K extends LevelK, V,
     LevelK extends Uint = Uint,
     LevelV extends Uint = Uint
-> extends LevelBasedStorage<K, V, LevelK, LevelV> implements StorageAPI.IChainStateStore<K, V> {
+> extends LevelBasedStorage<K, V, LevelK, LevelV> implements StorageBackend.IChainStateStore<K, V> {
 
     abstract set(value: V): Promise<void>;
 
-    public createKeyStream(options?: StorageAPI.Types.Stream.CreateOptions<LevelK>): StorageAPI.Types.Stream<LevelK> {
+    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<LevelK>): StorageBackend.Types.Stream<LevelK> {
         return this.level.createKeyStream(options);
     }
 
@@ -65,7 +65,7 @@ export abstract class LevelBasedStateStorage<K extends LevelK, V,
 export abstract class LevelBasedStateStorageWithIndexes<K extends LevelK, V,
     LevelK extends Uint = Uint,
     LevelV extends Uint = Uint
-> extends LevelBasedStateStorage<K, V, LevelK, LevelV> implements StorageAPI.IChainStateStoreWithIndexes<K, V> {
+> extends LevelBasedStateStorage<K, V, LevelK, LevelV> implements StorageBackend.IChainStateStoreWithIndexes<K, V> {
 
     protected readonly indexes: LevelRangeIndexes<LevelK>;
 

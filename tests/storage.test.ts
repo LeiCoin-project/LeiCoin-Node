@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { StorageAPI } from "@advena/storage";
+import { StorageBackend } from "@advena/storage";
 import { AddressHex } from "@advena/common/models/address";
 import { MinterData } from "@advena/common/models/minterData";
 import { AbstractRangeIndexes, BasicRangeIndexes } from "@advena/storage/leveldb/rangeIndexes";
@@ -10,7 +10,7 @@ import { Ref } from "ptr.js";
 import { LCrypt } from "@advena/crypto";
 import { QuickSort } from "@advena/utils/quick-sort";
 
-abstract class FakeStorageBackend<K extends Uint, V> implements StorageAPI.IChainStore<K, V> {
+abstract class FakeStorageBackend<K extends Uint, V> implements StorageBackend.IChainStore<K, V> {
 
     protected readonly store: BasicBinaryMap<K, Uint>;
 
@@ -29,11 +29,11 @@ abstract class FakeStorageBackend<K extends Uint, V> implements StorageAPI.IChai
     }
 }
 
-abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBackend<K, V> implements StorageAPI.IChainStateStore<K, V> {
+abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBackend<K, V> implements StorageBackend.IChainStateStore<K, V> {
 
     abstract set(value: V): Promise<void>;
 
-    public createKeyStream(options?: StorageAPI.Types.Stream.CreateOptions<K>): StorageAPI.Types.Stream<K> {
+    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<K>): StorageBackend.Types.Stream<K> {
         const keys = this.store.keys().all();
         QuickSort.UintArray.sort(keys);
 
@@ -50,7 +50,7 @@ abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBac
     }
 }
 
-class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, MinterData> implements StorageAPI.IMinters {
+class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, MinterData> implements StorageBackend.MinterDB.Abstract {
 
     protected readonly indexes = new BasicRangeIndexes<Uint>(20, PX.A_0e);
 

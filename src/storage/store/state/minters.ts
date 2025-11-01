@@ -1,6 +1,6 @@
 import { AddressHex } from "@advena/common/models/address";
 import { MinterData } from "@advena/common/models/minterData";
-import type { StorageAPI } from "../../exports/index.js";
+import type { StorageBackend } from "../../backend/exports/index.js";
 import { AbstractChainStateStoreWithIndexes } from "../abstractStore.js";
 import type { Ref } from "ptr.js";
 import { PX } from "@advena/common/types/prefix";
@@ -11,10 +11,10 @@ import { PX } from "@advena/common/types/prefix";
 export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 	AddressHex,
 	MinterData,
-	StorageAPI.IMinters
+	StorageBackend.MinterDB.Abstract
 > {
 
-	constructor(isMainChain: Ref<boolean>, storageBackend: StorageAPI.IMinters) {
+	constructor(isMainChain: Ref<boolean>, storageBackend: StorageBackend.MinterDB.Abstract) {
 		super(isMainChain, storageBackend, AddressHex, MinterData as any, {
 			byteLength: 20,
 			prefix: PX.A_0e,

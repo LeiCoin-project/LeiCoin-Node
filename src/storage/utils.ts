@@ -4,7 +4,7 @@ import { cli } from "@advena/cli";
 import { Utils } from "@advena/utils";
 import { type BasicBinarySet, Uint } from "low-level";
 import readline from "readline";
-import type { StorageAPI } from "./exports";
+import type { StorageBackend } from "./backend/exports";
 
 export class StorageUtils {
 
@@ -155,7 +155,7 @@ export class StorageUtils {
 		baseStream: AsyncIterable<T>,
 		added: T[],
 		deleted: BasicBinarySet<T>,
-		options?: StorageAPI.Types.Stream.CreateOptions<T>
+		options?: StorageBackend.Types.Stream.CreateOptions<T>
 	) {
 		const iterator = baseStream[Symbol.asyncIterator]();
 		let arrayIndex = 0;

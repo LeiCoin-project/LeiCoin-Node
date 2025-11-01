@@ -1,8 +1,8 @@
 import type { Transaction } from "@advena/common/models/transaction";
-import { MinterHandler } from "@advena/pos/minter-handler";
 import { DepositContract } from "@advena/smart-contracts";
 import type { Stores } from "@advena/storage/store";
 import { TXExecResult } from "./executionResult";
+import { SmartContractExecution } from "./smart-contracts";
 
 export class TXProcessor {
 
@@ -74,7 +74,7 @@ export class TXProcessor {
 
     protected async processSmartContractTransaction(tx: Transaction, reverse = false) {
         if (tx.recipientAddress.eq(DepositContract.address)) {
-            return await MinterHandler.executeDepositContractTransaction(tx, this.minterState, this.walletState, reverse);
+            return await SmartContractExecution.executeDepositContractTransaction(tx, this.minterState, this.walletState, reverse);
         }
     }
 

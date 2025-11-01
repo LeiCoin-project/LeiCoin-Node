@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "type": "module",
     "exports": {
-      ".": "./exports/index.ts",
+      ".": "./backend/exports/index.ts",
       "./*": "./*.ts",
       "./store": "./store/exports/index.ts"
     },

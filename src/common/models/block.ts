@@ -102,6 +102,20 @@ export class Block extends BlockHeader {
         )
     }
 
+    public getHeader(): BlockHeader {
+        return new BlockHeader(
+            this.index,
+            this.slotIndex,
+            this.hash,
+            this.previousHash,
+            this.minter,
+            this.signature,
+            this.body_hash,
+            this.timestamp,
+            this.version
+        );
+    }
+
     protected static fromDict(obj: Dict<any>) {
         if (!obj.version.eq(0)) return null;
 
@@ -190,6 +204,21 @@ export class ExecutedBlock extends Block {
             body_hash,
             timestamp,
             version
+        );
+    }
+
+    static fromHeaderAndBody(header: BlockHeader, body: ExecutedBlockBody): ExecutedBlock {
+        return new ExecutedBlock(
+            header.index,
+            header.slotIndex,
+            header.hash,
+            header.previousHash,
+            header.minter,
+            header.signature,
+            body,
+            header.body_hash,
+            header.timestamp,
+            header.version
         );
     }
 

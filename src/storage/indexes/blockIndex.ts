@@ -1,9 +1,9 @@
 import { Uint256, Uint64 } from "low-level";
 import { IndexDB } from "../leveldb/indexDB";
 import { LevelDBEncoders } from "../leveldb/encoders";
-import type { StorageAPI } from "../exports/index.js";
+import type { StorageBackend } from "../backend/exports/index.js";
 
-interface IBlockIndexDB extends StorageAPI.IChainStore<Uint64, Uint256> {
+interface IBlockIndexDB extends StorageBackend.IChainStore<Uint64, Uint256> {
     exists(index: Uint64): Promise<boolean>;
     del(index: Uint64): Promise<void>;
 }

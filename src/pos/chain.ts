@@ -1,54 +1,74 @@
-import type { Block, BlockHeader } from "@advena/common/models/block";
+import { ExecutedBlock, type Block, type BlockHeader } from "@advena/common/models/block";
 import type { AddressHex } from "@advena/common/models/address";
 import type { Stores } from "@advena/storage/store";
-import type { Uint64 } from "low-level";
+import { Uint64 } from "low-level";
 import type { FastEvents } from "@advena/utils/fastevents";
 import { POSUtils } from "./utils.js";
 import type { Transaction } from "@advena/common/models/transaction";
 import { Ref } from "ptr.js";
 import { AVM } from "@advena/avm";
+import { LCrypt } from "@advena/crypto";
 
 export class ChainState {
 
+    public readonly isMain: Ref<boolean>;
+
     constructor(
+        isMain: Ref<boolean> | boolean,
         readonly time: Uint64,
-        latestBlockHeader: BlockHeader,
+        public latestBlockIndex: Uint64,
         readonly wallets: Stores.WalletState,
         readonly minters: Stores.MinterState,
-    ) {}
+    ) {
+        this.isMain = new Ref(isMain);
+    }
 
     async getMinter(address: AddressHex) {
         return await this.minters.get(address);
     }
 
+    /**
+     * The algorithm to select a minter for a given slot index based on the db state.
+     * @param slotIndex - the slot index to select a minter for
+     * @returns the address of the selected minter
+     */
     async getProposer(slotIndex: Uint64 = POSUtils.calulateCurrentSlotIndex(this.time)) {
-        return await this.minters.getProposer(slotIndex);
-    }
-
-    async update(block: Block) {
         
-    }
+        const dbSize = this.minters.getDBSize();
 
-    protected async verifyAndExecuteTransaction(tx: Transaction) {
-        
+        if (dbSize < 1) {
+            throw new Error("Minter DB is empty. Is the Database initialized and indexed?");
+        }
+
+        // get a random index from the database size and the hash of the slot index
+        const randomIndex = LCrypt.sha256(slotIndex).mod(dbSize);
+
+        const result = await this.minters.getAddressByIndex(Uint64.from(randomIndex));
+
+        if (!result) {
+            throw new Error("Index is not part of any range. Is the Database initialized and indexed?");
+        }
+        return result;   
+
     }
 
 }
 
 export class Chain {
 
-    public readonly isMain: Ref<boolean>;
-
-    // protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
-
     constructor(
-        isMain: boolean | Ref<boolean>,
-        readonly time: Uint64,
         readonly blocks: Stores.Blocks,
         readonly state: ChainState
     ) {
-        this.isMain = new Ref(isMain);
+        
         //this.updateListenerSubscription = this.blocks.
+    }
+
+    get isMain() {
+        return this.state.isMain;
+    }
+    get time() {
+        return this.state.time;
     }
 
     static async create(
@@ -58,12 +78,9 @@ export class Chain {
         wallets: Stores.WalletState,
         minters: Stores.MinterState
     ) {
-        //@todo Implement function to get the chain head
-        const latestBlockHeader: BlockHeader = await blocks.getHead();
 
-        const state = new ChainState(
+        const state = new ChainState.create(
             time,
-            latestBlockHeader,
             wallets,
             minters
         );
@@ -71,29 +88,37 @@ export class Chain {
         return new Chain(isMain, time, blocks, state);
     }
 
-    async getBlock(index: Uint64) {
-        return await this.blocks.get(index);
-    }
-    async getBlockHeader(index: Uint64) {
-        return await this.blocks.get
+    async getLatestBlockHeader(): Promise<BlockHeader> {
+        const head = await this.blocks.getHeader(this.state.latestBlockIndex);
+        if (!head) throw new Error("Blockchain has no Blocks");
+        return head;
     }
 
     async processBlock(block: Block) {
         
         const processor = new AVM.TXProcessor(this.state.wallets, this.state.minters);
 
+        const txExecutionResults: AVM.TXExecResult[] = [];
+
         for (const tx of block.body.transactions) {
             const result = await processor.executeTransaction(tx);
+            txExecutionResults.push(result);
         }
 
-        await this.blocks.add(block);
+        const executedBlock = ExecutedBlock.fromBlockAndExecResults(block, txExecutionResults);
 
+        await this.blocks.add(executedBlock);
     }
 
     protected async revertBlock(block: Block) {
         if (this.isMain == true) return;
 
 
+    }
+
+
+    async fork(): Promise<Chain> {
+        throw new Error("Method not implemented.");
     }
 
 }

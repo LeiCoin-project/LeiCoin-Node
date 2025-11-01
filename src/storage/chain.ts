@@ -1,7 +1,7 @@
-import { BlockLevelBackend } from "./backends/blocks.js";
-import { MinterLevelBackend } from "./backends/state/minters.js";
-import { SmartContractStateLevelBackend } from "./backends/state/smart-contract.js";
-import { WalletLevelBackend } from "./backends/state/wallets.js";
+import { BlockLevelBackend } from "./backend/blocks.js";
+import { MinterLevelBackend } from "./backend/state/minters.js";
+import { SmartContractStateLevelBackend } from "./backend/state/smart-contract.js";
+import { WalletLevelBackend } from "./backend/state/wallets.js";
 
 export class Chain {
 
