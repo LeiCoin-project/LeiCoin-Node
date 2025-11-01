@@ -1,8 +1,8 @@
 import { AddressHex } from "@advena/common/models/address";
-import type { StorageAPI } from "../index.js";
+import type { StorageAPI } from "../../index.js";
 import { Wallet } from "@advena/common/models/wallet";
 import type { Uint64 } from "low-level";
-import { AbstractChainStateStore } from "./abstractStore";
+import { AbstractChainStateStore } from "../abstractStore.js";
 import type { Ref } from "ptr.js";
 
 export class WalletStateStore extends AbstractChainStateStore<AddressHex, Wallet, StorageAPI.IWallets> {

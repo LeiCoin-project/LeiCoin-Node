@@ -1,4 +1,4 @@
-import { ExecutedBlock } from "@advena/common/models/block";
+import { BlockHeader, ExecutedBlock } from "@advena/common/models/block";
 import { Uint64 } from "low-level";
 import type { StorageAPI } from "../index.js";
 import { AbstractChainStore } from "./abstractStore";

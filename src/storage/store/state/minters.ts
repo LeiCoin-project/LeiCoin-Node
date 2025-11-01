@@ -1,7 +1,7 @@
 import { AddressHex } from "@advena/common/models/address";
 import { MinterData } from "@advena/common/models/minterData";
-import type { StorageAPI } from "../index.js";
-import { AbstractChainStateStoreWithIndexes } from "./abstractStore";
+import type { StorageAPI } from "../../index.js";
+import { AbstractChainStateStoreWithIndexes } from "../abstractStore.js";
 import type { Ref } from "ptr.js";
 import { PX } from "@advena/common/types/prefix";
 
