@@ -1,10 +1,11 @@
-import { ExecutedTransaction, Transaction } from "./transaction.js";
+import { Transaction } from "./transaction.js";
 import { Uint256, Uint64 } from "low-level";
 import { AddressHex } from "./address.js";
 import { PX } from "../types/prefix.js";
 import { BE, DataEncoder, HashableContainer } from "flexbuf";
 import { LCrypt, PrivateKey, Signature } from "@advena/crypto";
 import { POSUtils } from "@advena/pos/utils";
+import { AVM } from "@advena/avm";
 
 export class BlockHeader extends HashableContainer {
     constructor(
@@ -135,16 +136,27 @@ export class Block extends BlockHeader {
 export class ExecutedBlockBody extends BlockBody {
 
     constructor(
-        readonly transactions: ExecutedTransaction[],
+        transactions: Transaction[],
+        readonly txExecResults: AVM.TXExecResult[] = [],
         // slashings: Uint256[] = []
     ) { super(transactions) }
 
     protected static fromDict(obj: Dict<any>) {
-        return new ExecutedBlockBody(obj.transactions);
+
+        if (obj.transactions.length !== obj.txExecResults.length) {
+            throw new Error("Transaction count does not match execution results count which should not be possible");
+        }
+        return new ExecutedBlockBody(obj.transactions, obj.txExecResults);
     }
 
     protected static encodingSettings: DataEncoder[] = [
-        BE.Array("transactions", 2, ExecutedTransaction)
+        BE.Array("transactions", 2, Transaction),
+        BE.CustomArray(
+            "txExecResults", 2,
+            (item: AVM.TXExecResult, encoder) => encoder.encode(item),
+            (data, encoder) => encoder.decode(data),
+            BE.Enum("", 2, AVM.TXExecResultValues)
+        )
     ]
 
 }
@@ -178,7 +190,29 @@ export class ExecutedBlock extends Block {
             body_hash,
             timestamp,
             version
-        )
+        );
+    }
+
+    static fromBlockAndExecResults(block: Block, txExecResults: AVM.TXExecResult[]) {
+
+        if (block.body.transactions.length !== txExecResults.length) {
+            throw new Error("Transaction count does not match execution results count which should not be possible");
+        }
+
+        const executedBlockBody = new ExecutedBlockBody(block.body.transactions, txExecResults);
+
+        return new ExecutedBlock(
+            block.index,
+            block.slotIndex,
+            block.hash,
+            block.previousHash,
+            block.minter,
+            block.signature,
+            executedBlockBody,
+            block.body_hash,
+            block.timestamp,
+            block.version
+        );
     }
 
     protected static fromDict(obj: Dict<any>) {

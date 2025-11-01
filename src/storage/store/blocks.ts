@@ -17,13 +17,13 @@ export class BlockStore extends AbstractChainStore<Uint64, ExecutedBlock, Storag
 
     protected readonly events = new FastEvents.SingleEmitter<[ExecutedBlock]>();
 
-    constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IBlocks) {
-        super(isMainChain, storage, Uint64, ExecutedBlock);
+    constructor(isMainChain: Ref<boolean>, storageBackend: StorageAPI.IBlocks) {
+        super(isMainChain, storageBackend, Uint64, ExecutedBlock);
     }
 
     async add(block: ExecutedBlock, overwrite: boolean = false) {
         if (this.isMainChain == true) {
-            await this.storage.add(block, overwrite);
+            await this.storageBackend.add(block, overwrite);
         } else {
             if (!overwrite && this.tempStorage.has(block.index)) {
                 return;

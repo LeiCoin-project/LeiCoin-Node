@@ -39,7 +39,7 @@ export class Chain {
 
     public readonly isMain: Ref<boolean>;
 
-    protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
+    // protected readonly updateListenerSubscription: FastEvents.SubscriptionID;
 
     constructor(
         isMain: boolean | Ref<boolean>,
@@ -83,7 +83,7 @@ export class Chain {
         const processor = new AVM.TXProcessor(this.state.wallets, this.state.minters);
 
         for (const tx of block.body.transactions) {
-            await processor.executeTransaction(tx);
+            const result = await processor.executeTransaction(tx);
         }
 
         await this.blocks.add(block);

@@ -1,4 +1,4 @@
-import type { ExecutedTransaction, Transaction } from "@advena/common/models/transaction";
+import type { Transaction } from "@advena/common/models/transaction";
 import { MinterHandler } from "@advena/pos/minter-handler";
 import { DepositContract } from "@advena/smart-contracts";
 import type { Stores } from "@advena/storage/store";
@@ -40,8 +40,8 @@ export class TXProcessor {
         return TXExecResult.SUCCESS;
     }
 
-    async revertTransaction(tx: ExecutedTransaction) {
-        if (tx.executionResult !== TXExecResult.SUCCESS) {
+    async revertTransaction(tx: Transaction, execResult: TXExecResult) {
+        if (execResult !== TXExecResult.SUCCESS) {
             return;
         }
         

@@ -14,8 +14,8 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 	StorageAPI.IMinters
 > {
 
-	constructor(isMainChain: Ref<boolean>, storage: StorageAPI.IMinters) {
-		super(isMainChain, storage, AddressHex, MinterData as any, {
+	constructor(isMainChain: Ref<boolean>, storageBackend: StorageAPI.IMinters) {
+		super(isMainChain, storageBackend, AddressHex, MinterData as any, {
 			byteLength: 20,
 			prefix: PX.A_0e,
 		});
@@ -23,9 +23,9 @@ export class MinterStateStore extends AbstractChainStateStoreWithIndexes<
 
 	async set(minter: MinterData) {
 		if (this.isMainChain == true) {
-			await this.storage.set(minter);
+			await this.storageBackend.set(minter);
 		} else {
-			const type = (await this.storage.exists(minter.address))
+			const type = (await this.storageBackend.exists(minter.address))
 				? "modified"
 				: "added";
 			this.tempStorage.set(minter.address, minter, type);

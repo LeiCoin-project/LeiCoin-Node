@@ -10,7 +10,7 @@ import { Ref } from "ptr.js";
 import { LCrypt } from "@advena/crypto";
 import { QuickSort } from "@advena/utils/quick-sort";
 
-abstract class FakeStorage<K extends Uint, V> implements StorageAPI.IChainStore<K, V> {
+abstract class FakeStorageBackend<K extends Uint, V> implements StorageAPI.IChainStore<K, V> {
 
     protected readonly store: BasicBinaryMap<K, Uint>;
 
@@ -29,7 +29,7 @@ abstract class FakeStorage<K extends Uint, V> implements StorageAPI.IChainStore<
     }
 }
 
-abstract class FakeStateStorage<K extends Uint, V> extends FakeStorage<K, V> implements StorageAPI.IChainStateStore<K, V> {
+abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBackend<K, V> implements StorageAPI.IChainStateStore<K, V> {
 
     abstract set(value: V): Promise<void>;
 
@@ -50,7 +50,7 @@ abstract class FakeStateStorage<K extends Uint, V> extends FakeStorage<K, V> imp
     }
 }
 
-class FakeMinterStorage extends FakeStateStorage<AddressHex, MinterData> implements StorageAPI.IMinters {
+class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, MinterData> implements StorageAPI.IMinters {
 
     protected readonly indexes = new BasicRangeIndexes<Uint>(20, PX.A_0e);
 
@@ -94,7 +94,7 @@ describe("storage", () => {
 
     test("fake_storage", async () => {
 
-        const fakeStateStorage = new FakeMinterStorage();
+        const fakeStateStorage = new FakeMinterStorageBackend();
 
         for (let i = 0; i < 1_000; i++) {
             const address = AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20)));
@@ -117,7 +117,7 @@ describe("storage", () => {
     test("minter", async () => {
 
 
-        const baseStorage = new FakeMinterStorage();
+        const baseStorage = new FakeMinterStorageBackend();
 
         const minters1 = new Stores.MinterState(new Ref(true), baseStorage);
 

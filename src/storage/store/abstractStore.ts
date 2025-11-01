@@ -12,7 +12,7 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
 
     constructor(
         public isMainChain: Ref<boolean>,
-        protected readonly storage: S,
+        protected readonly storageBackend: S,
         protected readonly keyCLS: BasicUintConstructable<K>,
         protected readonly valueCLS: EncodeableObj<V>,
     ) {
@@ -25,7 +25,7 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
         if (value || value === null) {
             return value as any;
         }
-        return await this.storage.get(key) as any;
+        return await this.storageBackend.get(key) as any;
     }
 
     async exists(key: K) {
@@ -33,13 +33,13 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
         if (has !== false) {
             return has;
         }
-        return this.storage.exists(key);
+        return this.storageBackend.exists(key);
     }
     
     async del(key: K) {
         if (this.isMainChain == true) {
             this.tempStorage.delete(key, true);
-            this.storage.del(key);
+            this.storageBackend.del(key);
         } else {
             this.tempStorage.delete(key);
         }
@@ -58,7 +58,7 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
 
     constructor(
         isMainChain: Ref<boolean>,
-        storage: S,
+        storageBackend: S,
         keyCLS: BasicUintConstructable<K>,
         valueCLS: EncodeableObj<V>,
         indexesSettings: {
@@ -66,7 +66,7 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
             readonly prefix: Uint
         }
     ) {
-        super(isMainChain, storage, keyCLS, valueCLS);
+        super(isMainChain, storageBackend, keyCLS, valueCLS);
         this.tempStorage = new TempStorageWithIndexes<K, V>(
             keyCLS, valueCLS,
             new BasicRangeIndexes(indexesSettings.byteLength, indexesSettings.prefix),
@@ -75,7 +75,7 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
 
 
 	public getDBSize() {
-		const baseSize = this.storage.getDBSize();
+		const baseSize = this.storageBackend.getDBSize();
 		const { added, deleted } = this.tempStorage.size;
 
 		return baseSize + added - deleted;
@@ -86,7 +86,7 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
 		const { range, offset } = await this.getRangeByIndexFromMergedIndexes(index);
 
 		const count = Uint64.from(0);
-		const baseKeyStream = this.storage.createKeyStream({
+		const baseKeyStream = this.storageBackend.createKeyStream({
 			gte: range.firstPossibleKey,
 			lte: range.lastPossibleKey
 		});
@@ -116,9 +116,9 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
 
 		const totalOffset = Uint64.from(0);
 		
-		const rangesAmount = this.storage.getIndexes().getRangesAmount();
+		const rangesAmount = this.storageBackend.getIndexes().getRangesAmount();
 
-		const baseStorageRanges = this.storage.getIndexes().getRanges();
+		const baseStorageRanges = this.storageBackend.getIndexes().getRanges();
 		const tempStorageRanges = this.tempStorage.indexes.getRanges();
 
         for (let i = 0; i < rangesAmount; i++) {
