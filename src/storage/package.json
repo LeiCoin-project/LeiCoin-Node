@@ -3,10 +3,9 @@
     "version": "1.0.0",
     "type": "module",
     "exports": {
-      ".": "./index.ts",
+      ".": "./exports/index.ts",
       "./*": "./*.ts",
-      "./store": "./store/exports/index.ts",
-      "./store/*": "./store/exports/index.ts"
+      "./store": "./store/exports/index.ts"
     },
     "dependencies": {
       "@advena/core": "^1.0.0",

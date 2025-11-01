@@ -1,7 +1,7 @@
 import type { ExecutedTransaction, Transaction } from "@advena/common/models/transaction";
 import { MinterHandler } from "@advena/pos/minter-handler";
 import { DepositContract } from "@advena/smart-contracts";
-import type { Stores } from "@advena/storage/store/index";
+import type { Stores } from "@advena/storage/store";
 import { TXExecResult } from "./executionResult";
 
 export class TXProcessor {

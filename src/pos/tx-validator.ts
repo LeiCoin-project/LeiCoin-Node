@@ -1,6 +1,6 @@
 import { AddressHex } from "@advena/common/models/address";
 import type { Transaction } from "@advena/common/models/transaction";
-import type { Stores } from "@advena/storage/store/index";
+import type { Stores } from "@advena/storage/store";
 
 export class TXValidator {
 

@@ -4,7 +4,7 @@ import type { Transaction } from "@advena/common/models/transaction";
 import { PX } from "@advena/common/types/prefix";
 import { LCrypt } from "@advena/crypto";
 import { DepositContract } from "@advena/smart-contracts";
-import type { Stores } from "@advena/storage/store/index";
+import type { Stores } from "@advena/storage/store";
 import { Constants } from "@advena/utils/constants";
 import { Uint64 } from "low-level";
 

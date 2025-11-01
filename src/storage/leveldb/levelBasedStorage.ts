@@ -2,7 +2,7 @@ import { LevelDB, type LevelDBOptions } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
 import { LevelRangeIndexes } from "./rangeIndexes.js";
-import type { StorageAPI } from "../index.js";
+import type { StorageAPI } from "../exports/index.js";
 
 export abstract class LevelBasedStorage<K extends LevelK, V,
     LevelK extends Uint = Uint,

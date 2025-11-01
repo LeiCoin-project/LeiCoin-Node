@@ -1,5 +1,5 @@
 import { AddressHex } from "@advena/common/models/address";
-import type { StorageAPI } from "../../index.js";
+import type { StorageAPI } from "../../exports/index.js";
 import { Wallet } from "@advena/common/models/wallet";
 import type { Uint64 } from "low-level";
 import { AbstractChainStateStore } from "../abstractStore.js";

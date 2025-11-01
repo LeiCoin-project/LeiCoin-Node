@@ -1,4 +1,4 @@
-import type { StorageAPI } from "../../index.js";
+import type { StorageAPI } from "../../exports/index.js";
 import { MinterStateStore } from "./minters.js";
 import { WalletStateStore } from "./wallets.js";
 import type { Ref } from "ptr.js";

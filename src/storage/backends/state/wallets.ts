@@ -6,7 +6,7 @@ import { Blockchain } from "../../blockchain.js";
 import { AddressHex } from "@advena/common/models/address";
 import { Uint, Uint64 } from "low-level";
 import { LevelBasedStateStorage } from "../../leveldb/levelBasedStorage.js";
-import type { StorageAPI } from "../../index.js";
+import type { StorageAPI } from "../../exports/index.js";
 
 export interface IWalletDB extends StorageAPI.IChainStateStore<AddressHex, Wallet> {
     set(wallet: Wallet): Promise<void>;

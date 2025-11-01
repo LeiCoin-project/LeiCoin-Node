@@ -3,7 +3,7 @@ import { AddressHex } from "@advena/common/models/address";
 import { type Uint, Uint64 } from "low-level";
 import { LevelBasedStateStorageWithIndexes } from "../../leveldb/levelBasedStorage.js";
 import { PX } from "@advena/common/types/prefix";
-import type { StorageAPI } from "../../index.js";
+import type { StorageAPI } from "../../exports/index.js";
 
 
 export interface IMinterDB extends StorageAPI.IChainStateStoreWithIndexes<AddressHex, MinterData> {
