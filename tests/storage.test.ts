@@ -60,7 +60,7 @@ class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, Minte
 
     async get(address: AddressHex): Promise<MinterData | null> {
         const result = this.store.get(address);
-        if (!result) return MinterData.createNewMinter(address);
+        if (!result) return null
         return MinterData.fromDecodedHex(address, result);
     }
 
