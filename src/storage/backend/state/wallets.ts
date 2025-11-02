@@ -21,23 +21,23 @@ export class WalletLevelBackend extends LevelBasedStateStorage<AddressHex, Walle
         super("/wallets");
     }
 
-    async get(address: AddressHex) {
-        const raw_wallet = await this.level.get(address);
+    // async get(address: AddressHex) {
+    //     const raw_wallet = await this.level.get(address);
 
-        // Wallet not found, create an empty wallet
-        if (!raw_wallet) return Wallet.createEmptyWallet(address);
+    //     // Wallet not found, create an empty wallet
+    //     if (!raw_wallet) return Wallet.createEmptyWallet(address);
 
-        const wallet = Wallet.fromDecodedHex(address, raw_wallet);
+    //     const wallet = Wallet.fromDecodedHex(address, raw_wallet);
         
-        if (!wallet) {
-            throw new Error(`Wallet Data could not be decoded for address ${address.toHex()}. Please check for corrupted or outdated data.`);
-        }
-        return wallet;
-    }
+    //     if (!wallet) {
+    //         throw new Error(`Wallet Data could not be decoded for address ${address.toHex()}. Please check for corrupted or outdated data.`);
+    //     }
+    //     return wallet;
+    // }
 
-    async set(wallet: Wallet) {
-        return this.level.put(wallet.owner, wallet.encodeToHex());
-    }
+    // async set(wallet: Wallet) {
+    //     return this.level.put(wallet.owner, wallet.encodeToHex());
+    // }
     
     /** @todo walletdb */
 

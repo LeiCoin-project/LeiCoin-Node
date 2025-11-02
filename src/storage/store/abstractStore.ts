@@ -6,26 +6,30 @@ import { TempStorage, TempStorageWithIndexes } from "./tempStore";
 import { BasicRangeIndexes, type IKeyIndexRange } from "../leveldb/rangeIndexes.js";
 import { StorageUtils } from "../utils.js";
 
-export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStore<K, V>> {
+export abstract class AbstractChainStore<
+    K extends KBackend, 
+    V extends EncodeableObjInstance,
+    KBackend extends Uint,
+    const SB extends StorageBackend.IBackend<KBackend, Uint>
+> {
 
     protected readonly tempStorage: TempStorage<K, V>;
 
     constructor(
         public isMainChain: Ref<boolean>,
-        protected readonly storageBackend: S,
+        protected readonly storageBackend: SB,
         protected readonly keyCLS: BasicUintConstructable<K>,
         protected readonly valueCLS: EncodeableObj<V>,
     ) {
         this.tempStorage = new TempStorage(keyCLS, valueCLS);
     }
 
-    // @ts-ignore
-    async get(key: K): ReturnType<S["get"]> {
+    async get(key: K): Promise<V | null> {
         const value = this.tempStorage.get(key);
         if (value || value === null) {
             return value as any;
         }
-        return await this.storageBackend.get(key) as any;
+        return await this._get(key);
     }
 
     async exists(key: K) {
@@ -39,7 +43,7 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
     async del(key: K) {
         if (this.isMainChain == true) {
             this.tempStorage.delete(key, true);
-            this.storageBackend.del(key);
+            this._del(key);
         } else {
             this.tempStorage.delete(key);
         }
@@ -65,36 +69,58 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
         }
     }
 
+    protected async _get(key: K): Promise<V | null> {
+        const raw_value = await this.storageBackend.get(key);
+        if (!raw_value) return null;
+        return this.valueCLS.fromDecodedHex(raw_value);
+    }
 
-    abstract makeChangesPermanent(): Promise<void>;
+    protected _set(key: K, value: V) {
+        return this.storageBackend.put(key, value.encodeToHex(false));
+    }
 
-}
-
-
-export abstract class AbstractChainStateStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStore<K, V>> extends AbstractChainStore<K, V, S> {
-    abstract set(value: V): Promise<void>;
+    protected _del(key: K): Promise<void> {
+        return this.storageBackend.del(key);
+    }
 
     async makeChangesPermanent() {
-        // for (const [key, value] of this.tempStorage.added.entries()) {
-        //     await this.storageBackend.set(value);
-        // }
-        // for (const [key, value] of this.tempStorage.modified.entries()) {
-        //     await this.storageBackend.set(value);
-        // }
-        // for (const key of this.tempStorage.deleted) {
-        //     await this.storageBackend.del(key);
-        // }
-        // this.tempStorage.clear();
+        for (const [key, value] of this.tempStorage.added.entries()) {
+            await this.storageBackend.put(key, value);
+        }
+        for (const [key, value] of this.tempStorage.modified.entries()) {
+            await this.storageBackend.put(key, value);
+        }
+        for (const key of this.tempStorage.deleted) {
+            await this.storageBackend.del(key);
+        }
+        this.tempStorage.clear();
     }
+
 }
 
-export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStoreWithIndexes<K, V>> extends AbstractChainStateStore<K, V, S> {
+
+export abstract class AbstractChainStateStore<
+    K extends KBackend, 
+    V extends EncodeableObjInstance,
+    KBackend extends Uint,
+    const SB extends StorageBackend.IBackend<KBackend, Uint>
+> extends AbstractChainStore<K, V, KBackend, SB> {
+
+    abstract set(value: V): Promise<void>;
+}
+
+export abstract class AbstractChainStateStoreWithIndexes<
+    K extends KBackend, 
+    V extends EncodeableObjInstance,
+    KBackend extends Uint,
+    const SB extends StorageBackend.IBackendWithIndexes<KBackend, Uint, number, Uint>
+> extends AbstractChainStateStore<K, V, KBackend, SB> {
 
     protected readonly tempStorage: TempStorageWithIndexes<K, V>;
 
     constructor(
         isMainChain: Ref<boolean>,
-        storageBackend: S,
+        storageBackend: SB,
         keyCLS: BasicUintConstructable<K>,
         valueCLS: EncodeableObj<V>,
         indexesSettings: {

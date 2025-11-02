@@ -10,7 +10,7 @@ import { Ref } from "ptr.js";
 import { LCrypt } from "@advena/crypto";
 import { QuickSort } from "@advena/utils/quick-sort";
 
-abstract class FakeStorageBackend<K extends Uint, V> implements StorageBackend.IChainStore<K, V> {
+class FakeStorageBackend<K extends Uint, V extends Uint> implements StorageBackend.IBackend<K, V> {
 
     protected readonly store: BasicBinaryMap<K, Uint>;
 
@@ -18,7 +18,19 @@ abstract class FakeStorageBackend<K extends Uint, V> implements StorageBackend.I
         this.store = new BasicBinaryMap<K, Uint>(keyCLS);
     }
 
-    abstract get(key: K): Promise<V | null>;
+
+
+    async put(key: K, value: V) {
+        this.store.set(key, value as any);
+    }
+
+    async get(key: K): Promise<V | null> {
+        const value = this.store.get(key);
+        if (!value) {
+            return null;
+        }
+        return value as any;
+    }
 
     async exists(key: K): Promise<boolean> {
         return this.store.has(key);
@@ -45,77 +57,99 @@ abstract class FakeStorageBackend<K extends Uint, V> implements StorageBackend.I
     }
 }
 
-abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBackend<K, V> implements StorageBackend.IChainStateStore<K, V> {
+class FakeStorageBackendWithIndexes<K extends Uint, V extends Uint, ByteLength extends number, Prefix extends Uint> extends FakeStorageBackend<K, V> implements StorageBackend.IBackendWithIndexes<K, V, ByteLength, Prefix> {
 
-    abstract set(value: V): Promise<void>;
-
-    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<K>): StorageBackend.Types.Stream<K> {
-        const keys = this.store.keys().all();
-        QuickSort.UintArray.sort(keys);
-
-        return {
-            async *[Symbol.asyncIterator]() {
-                for (const key of keys) {
-                    if (options?.gte && key.lt(options.gte)) continue;
-                    if (options?.lte && key.gt(options.lte)) continue;
-                    yield key;
-                }
-            },
-            async destroy() {}
-        }
-    }
-}
-
-class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, MinterData> implements StorageBackend.MinterDB.Abstract {
-
-    protected readonly indexes = new BasicRangeIndexes<Uint>(20, PX.A_0e);
-
-    constructor() {
-        super(AddressHex);
+    protected readonly indexes: AbstractRangeIndexes<Uint>;
+    constructor(keyCLS: BasicUintConstructable<K>, readonly byteLength: ByteLength, readonly prefix: Prefix) {
+        super(keyCLS);
+        this.indexes = new BasicRangeIndexes<Uint>(byteLength, prefix);
     }
 
-    async get(address: AddressHex): Promise<MinterData | null> {
-        const raw_minter_data = this.store.get(address);
-        if (!raw_minter_data) return null
-        return MinterData.fromDecodedHex(address, raw_minter_data);
-    }
 
-    async set(minter: MinterData): Promise<void> {
-        if (!await this.exists(minter.address)) {
-            await this.indexes.addKey(minter.address);
-        }
-        this.store.set(minter.address, minter.encodeToHex());
-    }
 
-    async del(address: AddressHex): Promise<void> {
-        const exists = await this.exists(address);
-        if (exists) {
-            await this.indexes.removeKey(address);
-            this.store.delete(address);
-        }
+    async loadIndexes() {
+        this.indexes.load(this);
     }
 
     getIndexes(): AbstractRangeIndexes<Uint> {
         return this.indexes;
     }
-
-    getDBSize() {
+    getDBSize(): number {
         return this.indexes.getTotalSize();
     }
-
 }
+
+// abstract class FakeStateStorageBackend<K extends Uint, V extends Uint> extends FakeStorageBackend<K, V> implements StorageBackend.IChainStateStore<K, V> {
+
+//     abstract set(value: V): Promise<void>;
+
+//     public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<K>): StorageBackend.Types.Stream<K> {
+//         const keys = this.store.keys().all();
+//         QuickSort.UintArray.sort(keys);
+
+//         return {
+//             async *[Symbol.asyncIterator]() {
+//                 for (const key of keys) {
+//                     if (options?.gte && key.lt(options.gte)) continue;
+//                     if (options?.lte && key.gt(options.lte)) continue;
+//                     yield key;
+//                 }
+//             },
+//             async destroy() {}
+//         }
+//     }
+// }
+
+// class FakeMinterStorageBackend extends FakeStateStorageBackend<AddressHex, MinterData> implements StorageBackend.MinterDB.Abstract {
+
+//     protected readonly indexes = new BasicRangeIndexes<Uint>(20, PX.A_0e);
+
+//     constructor() {
+//         super(AddressHex);
+//     }
+
+//     async get(address: AddressHex): Promise<MinterData | null> {
+//         const raw_minter_data = this.store.get(address);
+//         if (!raw_minter_data) return null
+//         return MinterData.fromDecodedHex(address, raw_minter_data);
+//     }
+
+//     async set(minter: MinterData): Promise<void> {
+//         if (!await this.exists(minter.address)) {
+//             await this.indexes.addKey(minter.address);
+//         }
+//         this.store.set(minter.address, minter.encodeToHex());
+//     }
+
+//     async del(address: AddressHex): Promise<void> {
+//         const exists = await this.exists(address);
+//         if (exists) {
+//             await this.indexes.removeKey(address);
+//             this.store.delete(address);
+//         }
+//     }
+
+//     getIndexes(): AbstractRangeIndexes<Uint> {
+//         return this.indexes;
+//     }
+
+//     getDBSize() {
+//         return this.indexes.getTotalSize();
+//     }
+
+// }
 
 
 describe("storage", () => {
 
     test("fake_storage", async () => {
 
-        const fakeStateStorage = new FakeMinterStorageBackend();
+        const fakeStateStorage = new FakeStorageBackend(AddressHex);
 
         for (let i = 0; i < 1_000; i++) {
             const address = AddressHex.fromTypeAndBody(PX.A_0e, new Uint(LCrypt.randomBytes(20)));
             const data = new MinterData(address, Uint64.from(100_000_000));
-            await fakeStateStorage.set(data);
+            await fakeStateStorage.put(address, data.encodeToHex());
         }
 
         const keyStream = fakeStateStorage.createKeyStream();
@@ -133,7 +167,7 @@ describe("storage", () => {
     test("minter", async () => {
 
 
-        const baseStorage = new FakeMinterStorageBackend();
+        const baseStorage = new FakeStorageBackendWithIndexes(Uint, 20, PX.A_0e);
 
         const minters1 = new Stores.MinterState(new Ref(true), baseStorage);
 

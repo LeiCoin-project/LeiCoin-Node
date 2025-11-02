@@ -5,6 +5,7 @@ import { ChainstateStore } from "../../chainstate";
 import { SmartContractStateLevelBackend } from "../state/smart-contract";
 import type { AbstractRangeIndexes } from "../../leveldb/rangeIndexes";
 import type { Uint } from "low-level";
+import { LevelDBDriver } from "../drivers/leveldb";
 
 export { SmartContractStateLevelBackend as SmartContractStateLevelBackend }
 export { ChainstateStore as ChainState }
@@ -23,27 +24,47 @@ export class StorageBackend {
 }
 */
 
-export namespace BlockDB {
+// export namespace BlockDB {
 
-    export namespace Headers {
-        export const LevelBased = BlockHeaderLevelBackend;
-        export type Abstract = IBlockHeaderDB;
-    }
+//     export namespace Headers {
+//         export const LevelBased = BlockHeaderLevelBackend;
+//         export type Abstract = IBlockHeaderDB;
+//     }
 
-    export namespace Bodies {
-        export const LevelBased = BlockBodyLevelBackend;
-        export type Abstract = IBlockBodyDB;
-    }
+//     export namespace Bodies {
+//         export const LevelBased = BlockBodyLevelBackend;
+//         export type Abstract = IBlockBodyDB;
+//     }
+// }
+
+// export namespace WalletDB {
+//     export const LevelBased = WalletLevelBackend;
+//     export type Abstract = IWalletDB;
+// }
+
+// export namespace MinterDB {
+//     export const LevelBased = MinterLevelBackend;
+//     export type Abstract = IMinterDB;
+// }
+
+export namespace Drivers {
+    export const LevelDB = LevelDBDriver;
+    export type LevelDB = LevelDBDriver;
 }
 
-export namespace WalletDB {
-    export const LevelBased = WalletLevelBackend;
-    export type Abstract = IWalletDB;
+export interface IBackend<K, V> {
+    put(key: K, value: V): Promise<void>;
+    get(key: K): Promise<V | null>;
+    exists(key: K): Promise<boolean>;
+    del(key: K): Promise<void>;
+    createKeyStream(options?: Types.Stream.CreateOptions<Uint>): Types.Stream<Uint>;
 }
 
-export namespace MinterDB {
-    export const LevelBased = MinterLevelBackend;
-    export type Abstract = IMinterDB;
+export interface IBackendWithIndexes<K, V, ByteLength extends number, Prefix extends Uint> extends IBackend<K, V> {
+    readonly byteLength: ByteLength;
+    readonly prefix: Prefix;
+    getIndexes(): AbstractRangeIndexes<Uint>;
+    getDBSize(): number;
 }
 
 export interface IChainStore<K, V> {

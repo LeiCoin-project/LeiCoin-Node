@@ -1,6 +1,7 @@
 import { QuickSort } from "@advena/utils/quick-sort";
 import { LevelDB } from "./index.js";
 import { Uint, Uint64 } from "low-level";
+import { StorageBackend } from "../backend/exports/index.js";
 
 export interface IKeyIndexRange {
     readonly firstPossibleKey: Uint;
@@ -172,19 +173,19 @@ export class BasicRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndex
     }
 }
 
-export class LevelRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndexes<K> {
+export class StorageRangeIndexes<K extends Uint = Uint> extends AbstractRangeIndexes<K> {
 
     /**
-     * Initializes the ranges based on the provided keys in the LevelDB.
-     * @param level - The LevelDB instance to be used for range initialization.
+     * Initializes the ranges based on the provided keys in the storage backend.
+     * @param storage - The storage backend to load keys from.
      */
-    async load(level: LevelDB<K, any>) {
+    async load(storage: StorageBackend.IBackend<K, any>) {
 
         for (const range of this.ranges) {
 
-            const keyStream = level.createKeyStream({gte: range.firstPossibleKey as K, lte: range.lastPossibleKey as K});
+            const keyStream = storage.createKeyStream({gte: range.firstPossibleKey as K, lte: range.lastPossibleKey as K});
 
-            for await (const address of keyStream) {
+            for await (const _ of keyStream) {
                 range.size++;
             }
         }

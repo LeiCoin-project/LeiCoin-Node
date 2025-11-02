@@ -1,7 +1,7 @@
 import { LevelDB, type LevelDBOptions } from "./index.js";
 import { StorageUtils } from "../utils.js";
 import { Uint } from "low-level";
-import { LevelRangeIndexes } from "./rangeIndexes.js";
+import { StorageRangeIndexes } from "./rangeIndexes.js";
 import type { StorageBackend } from "../backend/exports/index.js";
 
 export abstract class LevelBasedStorage<K extends LevelK, V,
@@ -67,7 +67,7 @@ export abstract class LevelBasedStateStorageWithIndexes<K extends LevelK, V,
     LevelV extends Uint = Uint
 > extends LevelBasedStateStorage<K, V, LevelK, LevelV> implements StorageBackend.IChainStateStoreWithIndexes<K, V> {
 
-    protected readonly indexes: LevelRangeIndexes<LevelK>;
+    protected readonly indexes: StorageRangeIndexes<LevelK>;
 
     constructor(
         path: string,
@@ -78,7 +78,7 @@ export abstract class LevelBasedStateStorageWithIndexes<K extends LevelK, V,
         }
     ) {
         super(path, levelOptions);
-        this.indexes = new LevelRangeIndexes(
+        this.indexes = new StorageRangeIndexes(
             indexesOptions.keyByteLengthWithoutPrefix,
             indexesOptions.keyPrefix
         );

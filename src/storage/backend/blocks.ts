@@ -72,20 +72,20 @@ export class BlockBodyLevelBackend extends LevelBasedStorage<Uint64, ExecutedBlo
         });
     }
 
-    async add(index: Uint64, blockBody: ExecutedBlockBody, overwrite = false) {
-        if (!overwrite) {
-            if (await this.level.has(index)) {
-                return false;
-            }
-        }
-        await this.level.put(index, blockBody.encodeToHex());
-        return true;
-    }
+    // async add(index: Uint64, blockBody: ExecutedBlockBody, overwrite = false) {
+    //     if (!overwrite) {
+    //         if (await this.level.has(index)) {
+    //             return false;
+    //         }
+    //     }
+    //     await this.level.put(index, blockBody.encodeToHex());
+    //     return true;
+    // }
 
-    async get(index: Uint64) {
-        const raw = await this.level.get(index);
-        if (!raw) return null;
-        return ExecutedBlockBody.fromDecodedHex(raw);
-    }
+    // async get(index: Uint64) {
+    //     const raw = await this.level.get(index);
+    //     if (!raw) return null;
+    //     return ExecutedBlockBody.fromDecodedHex(raw);
+    // }
 
 }

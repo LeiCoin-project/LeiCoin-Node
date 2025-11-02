@@ -1,19 +1,19 @@
 import { BlockHeader, ExecutedBlock, ExecutedBlockBody } from "@advena/common/models/block";
-import { Uint64 } from "low-level";
+import { Uint, Uint64 } from "low-level";
 import type { StorageBackend } from "../backend/exports/index.js";
 import { AbstractChainStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
 import { FastEvents } from "@advena/utils/fastevents";
 
-class BlockHeaderStore extends AbstractChainStore<Uint64, BlockHeader, StorageBackend.BlockDB.Headers.Abstract> {
+class BlockHeaderStore extends AbstractChainStore<Uint64, BlockHeader, Uint64, StorageBackend.IBackend<Uint64, Uint>> {
 
-    constructor(isMainChain: Ref<boolean>, storageBackend: StorageBackend.BlockDB.Headers.Abstract) {
+    constructor(isMainChain: Ref<boolean>, storageBackend: StorageBackend.IBackend<Uint64, Uint>) {
         super(isMainChain, storageBackend, Uint64, BlockHeader);
     }
 
     async add(blockHeader: BlockHeader, overwrite: boolean = false) {
         if (this.isMainChain == true) {
-            await this.storageBackend.add(blockHeader, overwrite);
+            await this._add(blockHeader, overwrite);
         } else {
             if (!overwrite && this.tempStorage.has(blockHeader.index)) {
                 return;
@@ -22,23 +22,56 @@ class BlockHeaderStore extends AbstractChainStore<Uint64, BlockHeader, StorageBa
         }
     }
 
+    protected async _add(blockHeader: BlockHeader, overwrite = false) {
+        if (!overwrite) {
+            if (await this.storageBackend.exists(blockHeader.index)) {
+                return false;
+            }
+        }
+        await this._set(blockHeader.index, blockHeader);
+        return true;
+    }
+
+    protected async _get(index: Uint64) {
+        const raw = await this.storageBackend.get(index);
+        if (!raw) return null;
+        return BlockHeader.fromDecodedHex(raw);
+    }
+
+
 }
 
-class BlockBodyStore extends AbstractChainStore<Uint64, any, StorageBackend.BlockDB.Bodies.Abstract> {
+class BlockBodyStore extends AbstractChainStore<Uint64, ExecutedBlockBody, Uint64, StorageBackend.IBackend<Uint64, Uint>> {
 
-    constructor(isMainChain: Ref<boolean>, storageBackend: StorageBackend.BlockDB.Bodies.Abstract) {
+    constructor(isMainChain: Ref<boolean>, storageBackend: StorageBackend.IBackend<Uint64, Uint>) {
         super(isMainChain, storageBackend, Uint64, ExecutedBlockBody);
     }
 
     async add(index: Uint64, blockBody: ExecutedBlockBody, overwrite: boolean = false) {
         if (this.isMainChain == true) {
-            await this.storageBackend.add(index, blockBody, overwrite);
+            await this._add(index, blockBody, overwrite);
         } else {
             if (!overwrite && this.tempStorage.has(index)) {
                 return;
             }
             this.tempStorage.set(index, blockBody, "added");
         }
+    }
+
+    protected async _add(index: Uint64, blockBody: ExecutedBlockBody, overwrite = false) {
+        if (!overwrite) {
+            if (await this.storageBackend.exists(index)) {
+                return false;
+            }
+        }
+        await this._set(index, blockBody);
+        return true;
+    }
+
+    protected async _get(index: Uint64) {
+        const raw = await this.storageBackend.get(index);
+        if (!raw) return null;
+        return ExecutedBlockBody.fromDecodedHex(raw);
     }
 
 }
@@ -52,8 +85,8 @@ export class BlockStore {
 
     constructor(
         public isMainChain: Ref<boolean>,
-        headersBackend: StorageBackend.BlockDB.Headers.Abstract,
-        bodiesBackend: StorageBackend.BlockDB.Bodies.Abstract,
+        headersBackend: StorageBackend.IBackend<Uint64, Uint>,
+        bodiesBackend: StorageBackend.IBackend<Uint64, Uint>,
     ) {
         this.headers = new BlockHeaderStore(isMainChain, headersBackend);
         this.bodies = new BlockBodyStore(isMainChain, bodiesBackend);

@@ -73,28 +73,34 @@ export abstract class LockedUint extends Uint {
 
 class Prefix extends LockedUint {
     public static readonly byteLength = 1;
-
-    /** Prefix vor version 00 */
-    static readonly V_00 = Prefix.from("00");
-
-    /** Meta Data Prefix */
-    static readonly META = Prefix.from("ff");
-
-    /** Standard Address Prefix: 00 */
-    static readonly A_00 = Prefix.from("00");
-
-    /** Smart Contract Address Prefix: 0c */
-    static readonly A_0c = Prefix.from("0c");
-
-    /** Node Address Prefix: 0d */
-    static readonly A_0d = Prefix.from("0d");
-
-    /** Minter Address Prefix: 0e */
-    static readonly A_0e = Prefix.from("0e");
-    
 }
 
 namespace Prefix {
+
+    /** Prefix vor version 00 */
+    export const V_00 = Prefix.from("00") as PX_V_00;
+    declare type PX_V_00 = Prefix & { __type: "V_00" };
+
+    /** Meta Data Prefix */
+    export const META = Prefix.from("ff") as PX_META;
+    declare type PX_META = Prefix & { __type: "META" };
+
+    /** Standard Address Prefix: 00 */
+    export const A_00 = Prefix.from("00") as PX_A_00;
+    declare type PX_A_00 = Prefix & { __type: "A_00" };
+
+    /** Smart Contract Address Prefix: 0c */
+    export const A_0c = Prefix.from("0c") as PX_A_0c;
+    declare type PX_A_0c = Prefix & { __type: "A_0c" };
+
+    /** Node Address Prefix: 0d */
+    export const A_0d = Prefix.from("0d") as PX_A_0d;
+    declare type PX_A_0d = Prefix & { __type: "A_0d" };
+
+    /** Minter Address Prefix: 0e */
+    export const A_0e = Prefix.from("0e") as PX_A_0e;
+    declare type PX_A_0e = Prefix & { __type: "A_0e" };
+
     export type AddressType = typeof Prefix.A_00 | typeof Prefix.A_0c | typeof Prefix.A_0d | typeof Prefix.A_0e;
 }
 
