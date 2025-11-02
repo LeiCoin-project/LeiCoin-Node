@@ -27,6 +27,22 @@ abstract class FakeStorageBackend<K extends Uint, V> implements StorageBackend.I
     async del(key: K): Promise<void> {
         this.store.delete(key);
     }
+
+    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<Uint>): StorageBackend.Types.Stream<Uint> {
+        const keys = this.store.keys().all();
+        QuickSort.UintArray.sort(keys);
+
+        return {
+            async *[Symbol.asyncIterator]() {
+                for (const key of keys) {
+                    if (options?.gte && key.lt(options.gte)) continue;
+                    if (options?.lte && key.gt(options.lte)) continue;
+                    yield key;
+                }
+            },
+            async destroy() {}
+        }
+    }
 }
 
 abstract class FakeStateStorageBackend<K extends Uint, V> extends FakeStorageBackend<K, V> implements StorageBackend.IChainStateStore<K, V> {

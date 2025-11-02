@@ -50,11 +50,11 @@ export interface IChainStore<K, V> {
     get(key: K): Promise<V | null>;
     exists(key: K): Promise<boolean>;
     del(key: K): Promise<void>;
+    createKeyStream(options?: Types.Stream.CreateOptions<Uint>): Types.Stream<Uint>;
 }
 
 export interface IChainStateStore<K, V> extends IChainStore<K, V> {
     set(value: V): Promise<void>;
-    createKeyStream(options?: Types.Stream.CreateOptions<Uint>): Types.Stream<Uint>;
 }
 
 export interface IChainStateStoreWithIndexes<K, V> extends IChainStateStore<K, V> {

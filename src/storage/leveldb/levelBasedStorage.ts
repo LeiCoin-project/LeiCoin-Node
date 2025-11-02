@@ -47,6 +47,10 @@ export abstract class LevelBasedStorage<K extends LevelK, V,
     public getLevel() {
         return this.level;
     }
+
+    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<LevelK>): StorageBackend.Types.Stream<LevelK> {
+        return this.level.createKeyStream(options);
+    }
 }
 
 export abstract class LevelBasedStateStorage<K extends LevelK, V,
@@ -55,10 +59,6 @@ export abstract class LevelBasedStateStorage<K extends LevelK, V,
 > extends LevelBasedStorage<K, V, LevelK, LevelV> implements StorageBackend.IChainStateStore<K, V> {
 
     abstract set(value: V): Promise<void>;
-
-    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<LevelK>): StorageBackend.Types.Stream<LevelK> {
-        return this.level.createKeyStream(options);
-    }
 
 }
 

@@ -45,11 +45,47 @@ export abstract class AbstractChainStore<K extends Uint, V extends EncodeableObj
         }
     }
 
+    public createKeyStream(options?: StorageBackend.Types.Stream.CreateOptions<Uint>): StorageBackend.Types.Stream<Uint> {
+
+        const baseKeyStream = this.storageBackend.createKeyStream(options);
+
+        const stream = StorageUtils.mergeSortedKeyStream(
+            baseKeyStream,
+            this.tempStorage.added.keys().all(),
+            this.tempStorage.deleted,
+            options
+        );
+        return {
+            [Symbol.asyncIterator]() {
+                return stream[Symbol.asyncIterator]();
+            },
+            destroy() {
+                baseKeyStream.destroy();
+            }
+        }
+    }
+
+
+    abstract makeChangesPermanent(): Promise<void>;
+
 }
 
 
 export abstract class AbstractChainStateStore<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStore<K, V>> extends AbstractChainStore<K, V, S> {
     abstract set(value: V): Promise<void>;
+
+    async makeChangesPermanent() {
+        // for (const [key, value] of this.tempStorage.added.entries()) {
+        //     await this.storageBackend.set(value);
+        // }
+        // for (const [key, value] of this.tempStorage.modified.entries()) {
+        //     await this.storageBackend.set(value);
+        // }
+        // for (const key of this.tempStorage.deleted) {
+        //     await this.storageBackend.del(key);
+        // }
+        // this.tempStorage.clear();
+    }
 }
 
 export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V extends EncodeableObjInstance, S extends StorageBackend.IChainStateStoreWithIndexes<K, V>> extends AbstractChainStateStore<K, V, S> {
@@ -86,24 +122,15 @@ export abstract class AbstractChainStateStoreWithIndexes<K extends Uint, V exten
 		const { range, offset } = await this.getRangeByIndexFromMergedIndexes(index);
 
 		const count = Uint64.from(0);
-		const baseKeyStream = this.storageBackend.createKeyStream({
-			gte: range.firstPossibleKey,
-			lte: range.lastPossibleKey
-		});
 
-		const keyStream = StorageUtils.mergeSortedKeyStream(
-			baseKeyStream,
-			this.tempStorage.added.keys().all(),
-			this.tempStorage.deleted,
-			{
-				gte: range.firstPossibleKey,
-				lte: range.lastPossibleKey,
-			}
-		);
+        const keyStream = this.createKeyStream({
+            gte: range.firstPossibleKey,
+            lte: range.lastPossibleKey,
+        });
 
         for await (const addr of keyStream) {
             if (count.eq(offset)) {
-                baseKeyStream.destroy();
+                keyStream.destroy();
                 return new this.keyCLS(addr);
             }
             count.iadd(1);
