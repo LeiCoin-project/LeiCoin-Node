@@ -56,12 +56,12 @@ export class PeerSocket {
         skipStatusCheck = false
     ) {
         try {
-            const tcp_socket = await (new BoundedExecutor(() => {
+            const tcp_socket = await new BoundedExecutor(() => {
                 return Bun.connect({
                     hostname: host, port,
                     socket: LNSocketHandler.Client,
                 });
-            }, 5_000)).awaitResult();
+            }, 5_000, {});
 
             if (!tcp_socket) return null;
 

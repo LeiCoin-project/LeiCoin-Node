@@ -22,7 +22,7 @@ class ChallengeMsgStoreItem {
     }
 
     public awaitResult() {
-        return this.result.awaitResult();
+        return this.result;
     }
 }
 

@@ -1,7 +1,7 @@
 import { LNMsgRequestHandler, LNMsgResponseHandler } from "../abstractMsgHandler.js";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { ForkChainstateData } from "@advena/storage/chainstate";
-import { Dict } from "@advena/utils/dataUtils";
+import type { Dict } from "@advena/utils/dataUtils";
 import { BE, DataEncoder } from "flexbuf";
 import { Blockchain } from "@advena/storage/blockchain";
 import { ErrorResponseMsg } from "./error.js";
@@ -31,8 +31,9 @@ export namespace GetChainstateMsg {
     }
 }
 
-// @ts-ignore
+
 export class ChainstateMsg extends LNAbstractMsgBody {
+    
     constructor(readonly chainstate: ForkChainstateData) {super()}
 
     protected static fromDict(obj: Dict<any>) {
