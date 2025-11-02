@@ -7,10 +7,10 @@ import type { StorageBackend } from "../exports/index.js";
 
 
 export interface IMinterDB extends StorageBackend.IChainStateStoreWithIndexes<AddressHex, MinterData> {
-    get(address: AddressHex): Promise<MinterData | null>;
-    set(minter: MinterData): Promise<void>;
-    exists(address: AddressHex): Promise<boolean>;
-    del(address: AddressHex): Promise<void>;
+    // get(address: AddressHex): Promise<MinterData | null>;
+    // set(minter: MinterData): Promise<void>;
+    // exists(address: AddressHex): Promise<boolean>;
+    // del(address: AddressHex): Promise<void>;
 }
 
 export class MinterLevelBackend extends LevelBasedStateStorageWithIndexes<AddressHex, MinterData> implements IMinterDB {

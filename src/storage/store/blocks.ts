@@ -4,7 +4,6 @@ import type { StorageBackend } from "../backend/exports/index.js";
 import { AbstractChainStore } from "./abstractStore";
 import type { Ref } from "ptr.js";
 import { FastEvents } from "@advena/utils/fastevents";
-import type { TempStorage } from "./tempStore.js";
 
 class BlockHeaderStore extends AbstractChainStore<Uint64, BlockHeader, StorageBackend.BlockDB.Headers.Abstract> {
 

@@ -5,7 +5,7 @@ import { Verification } from "@advena/verification"
 import { Uint } from "low-level";
 import { LNAbstractMsgBody, LNMsgID } from "../abstractMsg.js";
 import { LNBroadcastingMsgHandler, LNMsgRequestHandler } from "../abstractMsgHandler.js";
-import { Dict } from "@advena/utils/dataUtils";
+import type { Dict } from "@advena/utils/dataUtils";
 import { BE, type DataEncoder } from "flexbuf";
 import { type PeerSocket } from "../../socket.js";
 

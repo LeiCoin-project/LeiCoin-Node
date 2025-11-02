@@ -9,10 +9,10 @@ import { LevelBasedStateStorage } from "../../leveldb/levelBasedStorage.js";
 import type { StorageBackend } from "../exports/index.js";
 
 export interface IWalletDB extends StorageBackend.IChainStateStore<AddressHex, Wallet> {
-    set(wallet: Wallet): Promise<void>;
+    // set(wallet: Wallet): Promise<void>;
     get(address: AddressHex): Promise<Wallet>;
-    exists(address: AddressHex): Promise<boolean>;
-    del(address: AddressHex): Promise<void>;
+    // exists(address: AddressHex): Promise<boolean>;
+    // del(address: AddressHex): Promise<void>;
 }
 
 export class WalletLevelBackend extends LevelBasedStateStorage<AddressHex, Wallet> implements IWalletDB {

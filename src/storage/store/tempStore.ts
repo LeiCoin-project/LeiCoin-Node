@@ -361,4 +361,9 @@ export class TempStorageWithIndexes<K extends Uint, V extends EncodeableObjInsta
         return super.delete(key, fully);
     }
 
+    public clear() {
+        super.clear();
+        this.indexes.clear();
+    }
+
 }

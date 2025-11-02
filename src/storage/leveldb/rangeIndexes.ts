@@ -139,6 +139,12 @@ export abstract class AbstractRangeIndexes<K extends Uint = Uint> {
         return totalSize;
     }
 
+    public clear() {
+        for (const range of this.ranges) {
+            range.size = 0;
+        }
+    }
+
 
     public getRangesAmount() {
         return (this.constructor as RangeIndexConstructor<K>).rangeSize;

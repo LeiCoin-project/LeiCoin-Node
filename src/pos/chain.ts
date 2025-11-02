@@ -2,9 +2,7 @@ import { ExecutedBlock, type Block, type BlockHeader } from "@advena/common/mode
 import type { AddressHex } from "@advena/common/models/address";
 import type { Stores } from "@advena/storage/store";
 import { Uint64 } from "low-level";
-import type { FastEvents } from "@advena/utils/fastevents";
 import { POSUtils } from "./utils.js";
-import type { Transaction } from "@advena/common/models/transaction";
 import { Ref } from "ptr.js";
 import { AVM } from "@advena/avm";
 import { LCrypt } from "@advena/crypto";
@@ -110,10 +108,15 @@ export class Chain {
         await this.blocks.add(executedBlock);
     }
 
-    protected async revertBlock(block: Block) {
-        if (this.isMain == true) return;
+    protected async revertLatestBlock() {
+        // no need to revert on main chain because blocks are reverted on the fork chain and main chain is dropped when fork gets new main
+        // so when we want to revert blocks on main chain we create a fork
+        // then we can revert the blocks on that fork
+        // finally we drop the current main chain and set the fork as the new main chain
+        // this writes all changes the fork has made do the persistent storage
+        if (this.isMain == true) throw new Error("Cannot revert blocks on main chain directly.");
 
-
+        const processor = new AVM.TXProcessor(this.state.wallets, this.state.minters);
     }
 
 
